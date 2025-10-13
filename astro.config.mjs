@@ -9,7 +9,8 @@ import vercel from "@astrojs/vercel";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://neonmint.efeele.dev",
+  site: "https://wangm23456.github.io",
+  base: '/blog/',
 
   integrations: [preact(), icon(), sitemap({
     filter: (page) =>
