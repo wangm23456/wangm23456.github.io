@@ -8,7 +8,7 @@ interface Props {
   variant: Variant;
 }
 
-function formatUtc(value?: string | Date | null): string {
+function formatUtc(value?: string | number | Date | null): string {
   if (!value) return '—';
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return '—';
@@ -191,7 +191,7 @@ function SpaceLaunchWidgetContent({ variant }: Props) {
         <div className="space-feed-status" data-state={query.isPending ? 'connecting' : query.isError ? 'error' : 'online'} aria-live="polite">
           <span className="space-feed-status__label">FEED STATUS</span>
           <strong>{query.isPending ? 'CONNECTING' : query.isError ? 'OFFLINE' : 'ONLINE'}</strong>
-          <time>{query.dataUpdatedAt ? `UPDATED ${formatUtc(new Date(query.dataUpdatedAt))} UTC` : 'WAITING FOR RESPONSE'}</time>
+          <time>{query.dataUpdatedAt ? `UPDATED ${formatUtc(query.dataUpdatedAt)} UTC` : 'WAITING FOR RESPONSE'}</time>
           <button type="button" onClick={() => query.refetch()} disabled={query.isFetching}>
             {query.isFetching ? 'SYNCING…' : 'REFRESH FEED'}
           </button>

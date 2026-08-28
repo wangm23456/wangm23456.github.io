@@ -16,7 +16,9 @@ html.dark body { background-image: none; }
 
 .site-header__inner { max-width: var(--wide-width); margin: 0px auto; padding: 1.2rem 1.5rem 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem 1.5rem; }
 
-.site-title { text-decoration: none; }
+.site-title { text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; }
+.site-title__logo { display: inline-block; flex-shrink: 0; transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.site-title:hover .site-title__logo { transform: rotate(45deg) scale(1.1); }
 
 .site-title__en { font-weight: 900; font-size: 1.35rem; letter-spacing: -0.02em; color: var(--paper); background: var(--ink); padding: 0.1rem 0.5rem; display: inline-block; }
 

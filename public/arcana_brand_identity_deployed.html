@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcana — Official Brand Identity Package (#P1.2 The Hyper-Sharp Ray Star)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #111111;
+            --muted: #555555;
+            --paper: #f4e8d6;
+            --paper-2: #ead9c1;
+            --card: #fffaf1;
+            --brand: #d92d20;
+            --yellow: #ffd23f;
+            --blue: #2f5fe0;
+            --border: 3.5px solid var(--ink);
+            --shadow: 6px 6px 0 var(--ink);
+        }
+        body {
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Space Grotesk', sans-serif;
+            background-image: radial-gradient(rgba(17, 17, 17, 0.08) 0.8px, transparent 0.8px);
+            background-size: 8px 8px;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .neo-card {
+            background: var(--card);
+            border: var(--border);
+            box-shadow: var(--shadow);
+        }
+        .neo-badge {
+            border: 2px solid var(--ink);
+            box-shadow: 2px 2px 0 var(--ink);
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body class="py-12 px-4 sm:px-8">
+    <div class="max-w-5xl mx-auto">
+        
+        {/* Banner */}
+        <div class="neo-card p-8 md:p-12 mb-10 bg-white">
+            <div class="inline-block px-3 py-0.5 neo-badge bg-[var(--yellow)] text-black font-mono text-xs mb-3">
+                OFFICIAL IDENTITY ASSETS DEPLOYED
+            </div>
+            <h1 class="text-4xl md:text-6xl font-black tracking-tight uppercase mb-4">
+                Arcana 官方品牌标识 · 落地完成
+            </h1>
+            <p class="text-base md:text-lg font-bold text-slate-900 mb-4">
+                已正式定型并部署方案：<strong>#P1.2 超锐利放射自旋星标（The Hyper-Sharp Ray Star）</strong>
+            </p>
+            <p class="text-xs md:text-sm font-mono text-[var(--muted)] leading-relaxed bg-[var(--paper-2)] p-4 border-2 border-[var(--ink)]">
+                普罗米修斯之火（向外全向探索与创造） × 弱相互作用手征自旋（角动量吸积核） × 新粗野主义（4.5px 重墨黑描边 + 网站核能黄 #ffd23f）。
+            </p>
+        </div>
+
+        {/* Master Showcase Grid */}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            
+            {/* Asset 1: Master Vector */}
+            <div class="neo-card p-6 flex flex-col justify-between">
+                <div>
+                    <span className="neo-badge px-2.5 py-1 bg-[var(--yellow)] text-black font-mono text-xs">
+                        VECTOR ASSET
+                    </span>
+                    <div class="h-48 bg-[var(--paper-2)] border-2 border-[var(--ink)] flex items-center justify-center p-4 my-4">
+                        <img src="/logo.svg" alt="Arcana Master Logo" class="w-32 h-32 drop-shadow-[3px_3px_0_rgba(0,0,0,0.2)]" />
+                    </div>
+                    <h3 class="text-xl font-black mb-1 uppercase">website/public/logo.svg</h3>
+                    <p class="text-xs text-slate-700 font-mono">
+                        生产级矢量母版，viewBox 0 0 100 100，无限无损缩放。
+                    </p>
+                </div>
+            </div>
+
+            {/* Asset 2: Dynamic Favicon */}
+            <div class="neo-card p-6 flex flex-col justify-between">
+                <div>
+                    <span className="neo-badge px-2.5 py-1 bg-[var(--ink)] text-white font-mono text-xs">
+                        DYNAMIC FAVICON
+                    </span>
+                    <div class="h-48 bg-[var(--paper-2)] border-2 border-[var(--ink)] flex items-center justify-center gap-6 p-4 my-4">
+                        <div class="text-center font-mono text-xs">
+                            <img src="/favicon.svg" alt="Favicon Light" class="w-12 h-12 border border-black bg-white p-1 mb-2 shadow-[2px_2px_0_#000]" />
+                            <span>LIGHT</span>
+                        </div>
+                        <div class="text-center font-mono text-xs">
+                            <img src="/favicon.svg" alt="Favicon Dark" class="w-12 h-12 border border-white bg-black p-1 mb-2 shadow-[2px_2px_0_#FFF]" />
+                            <span>DARK</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-black mb-1 uppercase">website/public/favicon.svg</h3>
+                    <p class="text-xs text-slate-700 font-mono">
+                        媒体查询自适应深色模式，浏览器标签栏原生适配。
+                    </p>
+                </div>
+            </div>
+
+            {/* Asset 3: Live Navigation */}
+            <div class="neo-card p-6 flex flex-col justify-between">
+                <div>
+                    <span className="neo-badge px-2.5 py-1 bg-[var(--brand)] text-white font-mono text-xs">
+                        HEADER INTEGRATED
+                    </span>
+                    <div class="h-48 bg-[var(--paper)] border-2 border-[var(--ink)] flex flex-col items-center justify-center p-4 my-4">
+                        <div class="flex items-center gap-2 bg-[var(--card)] p-3 border-2 border-[var(--ink)] shadow-[3px_3px_0_var(--ink)]">
+                            <img src="/logo.svg" alt="Navbar Logo" class="w-7 h-7" />
+                            <span class="font-black text-sm text-[var(--paper)] bg-[var(--ink)] px-1.5 py-0.5">Arcana</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-black mb-1 uppercase">BaseLayout.astro</h3>
+                    <p class="text-xs text-slate-700 font-mono">
+                        已正式注入全站布局，Hover 具备 45° 粒子自旋微交互动效。
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>
