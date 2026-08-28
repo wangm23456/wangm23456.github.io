@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "GlucoFM 双流架构与 JEPA 潜变量预训练",
+    "locale": "zh-CN",
+    "output": "website/public/diagrams/glucofm-architecture.html",
+    "viewBox": [1120, 500],
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "dual-stream-path",
+        "label": "双流因果解耦路径",
+        "focus": ["cgm-input", "obs-mask", "time-enc", "state-stream", "event-stream", "patch-fusion"],
+        "note": "24 小时时序通过因果高斯滤波分离出稳态基线与急性脉冲残差，再与圆形时刻编码融合成 24 个小时级 Patch。"
+      },
+      {
+        "id": "jepa-latent-training",
+        "label": "JEPA 潜变量目标对齐",
+        "focus": ["patch-fusion", "context-encoder", "target-encoder", "predictor", "mcr-loss", "td-loss"],
+        "note": "在线 Context Encoder 对掩码上下文提取特征并预测潜变量，与 EMA Target 提取的高阶表征对齐。"
+      },
+      {
+        "id": "full-system",
+        "label": "端到端系统全景",
+        "focus": ["cgm-input", "state-stream", "event-stream", "patch-fusion", "context-encoder", "target-encoder", "predictor", "mcr-loss", "td-loss"],
+        "note": "总览从物理信号输入、双流因果滤波、JEPA 潜变量优化到通用生理表征的完整链路。"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "cgm-input",
+      "type": "frontend",
+      "label": "24h CGM 时序",
+      "sublabel": "288 步 / 5min 采样",
+      "pos": [40, 80],
+      "size": [140, 58],
+      "tag": "物理读数"
+    },
+    {
+      "id": "obs-mask",
+      "type": "security",
+      "label": "观测掩码 M",
+      "sublabel": "显式标记物理缺失",
+      "pos": [40, 185],
+      "size": [140, 58],
+      "tag": "真实事实"
+    },
+    {
+      "id": "time-enc",
+      "type": "cloud",
+      "label": "昼夜时刻编码",
+      "sublabel": "正弦/余弦圆形相位",
+      "pos": [40, 290],
+      "size": [140, 58],
+      "tag": "24h 周期"
+    },
+    {
+      "id": "state-stream",
+      "type": "backend",
+      "label": "慢变 State 流",
+      "sublabel": "因果高斯滤波平滑",
+      "pos": [260, 80],
+      "size": [145, 58],
+      "tag": "稳态基线"
+    },
+    {
+      "id": "event-stream",
+      "type": "messagebus",
+      "label": "快变 Event 流",
+      "sublabel": "观测残差与变化率",
+      "pos": [260, 185],
+      "size": [145, 58],
+      "tag": "急性脉冲"
+    },
+    {
+      "id": "patch-fusion",
+      "type": "backend",
+      "label": "24h Patch 融合",
+      "sublabel": "128 维生理 Token",
+      "pos": [480, 132],
+      "size": [145, 58],
+      "tag": "逐时表征"
+    },
+    {
+      "id": "context-encoder",
+      "type": "backend",
+      "label": "Context Encoder",
+      "sublabel": "随机掩码 50%~60%",
+      "pos": [700, 80],
+      "size": [145, 58],
+      "tag": "在线分支"
+    },
+    {
+      "id": "target-encoder",
+      "type": "database",
+      "label": "Target Encoder",
+      "sublabel": "完整序列 EMA 编码",
+      "pos": [700, 215],
+      "size": [145, 58],
+      "tag": "目标分支"
+    },
+    {
+      "id": "predictor",
+      "type": "backend",
+      "label": "潜变量 Predictor",
+      "sublabel": "1 层轻量预测头",
+      "pos": [920, 80],
+      "size": [145, 58],
+      "tag": "潜空间投影"
+    },
+    {
+      "id": "mcr-loss",
+      "type": "security",
+      "label": "掩码表征损失",
+      "sublabel": "L_MCR (加权观测)",
+      "pos": [920, 185],
+      "size": [145, 58],
+      "tag": "SmoothL1"
+    },
+    {
+      "id": "td-loss",
+      "type": "messagebus",
+      "label": "时序动力学损失",
+      "sublabel": "L_TD (残差转移)",
+      "pos": [920, 290],
+      "size": [145, 58],
+      "tag": "自注意力前"
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "security-group",
+      "label": "双流因果解耦 (Causal Decomposition)",
+      "wraps": ["state-stream", "event-stream"]
+    },
+    {
+      "kind": "region",
+      "label": "JEPA 非生成式潜变量学习 (Latent Prediction)",
+      "wraps": ["context-encoder", "target-encoder", "predictor", "mcr-loss", "td-loss"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "cgm-to-state",
+      "from": "cgm-input",
+      "to": "state-stream",
+      "label": "因果滤波",
+      "variant": "emphasis"
+    },
+    {
+      "id": "cgm-to-event",
+      "from": "cgm-input",
+      "to": "event-stream",
+      "label": "差分残差"
+    },
+    {
+      "id": "mask-to-event",
+      "from": "obs-mask",
+      "to": "event-stream",
+      "label": "缺失置零",
+      "variant": "security",
+      "labelDy": 20
+    },
+    {
+      "id": "time-to-patch",
+      "from": "time-enc",
+      "to": "patch-fusion",
+      "label": "圆形时刻",
+      "variant": "dashed",
+      "labelDy": 20
+    },
+    {
+      "id": "state-to-patch",
+      "from": "state-stream",
+      "to": "patch-fusion",
+      "label": "State Token",
+      "variant": "emphasis"
+    },
+    {
+      "id": "event-to-patch",
+      "from": "event-stream",
+      "to": "patch-fusion",
+      "label": "Event Token",
+      "labelDx": -30
+    },
+    {
+      "id": "patch-to-context",
+      "from": "patch-fusion",
+      "to": "context-encoder",
+      "label": "掩码采样",
+      "variant": "emphasis"
+    },
+    {
+      "id": "patch-to-target",
+      "from": "patch-fusion",
+      "to": "target-encoder",
+      "label": "完整输入"
+    },
+    {
+      "id": "context-to-pred",
+      "from": "context-encoder",
+      "to": "predictor",
+      "label": "潜表征",
+      "variant": "emphasis"
+    },
+    {
+      "id": "pred-to-mcr",
+      "from": "predictor",
+      "to": "mcr-loss",
+      "label": "预测对齐",
+      "variant": "security",
+      "labelDy": 20
+    },
+    {
+      "id": "target-to-mcr",
+      "from": "target-encoder",
+      "to": "mcr-loss",
+      "label": "EMA 目标",
+      "variant": "default"
+    },
+    {
+      "id": "target-to-td",
+      "from": "target-encoder",
+      "to": "td-loss",
+      "label": "状态转移",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "因果解耦与多尺度分工",
+      "items": [
+        "可学习因果高斯滤波（带宽 10-60 min）精准锁定慢变稳态基线",
+        "快变 Event 流消除基线偏移，专职捕捉高频餐后与应激脉冲",
+        "预融合探针证实：State 解释均值水平，Event 解释变化率"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "非生成式 JEPA 潜变量约束",
+      "items": [
+        "不在观测空间拟合带有传感器压缩低血糖与插值误差的原始数值",
+        "在抽象潜表征流形上对齐 Context Encoder 与 EMA Target",
+        "观测加权损失确保物理缺失区域不干扰模型参数更新"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "0.72M 极轻量的高效泛化",
+      "items": [
+        "无需数十亿参数，3 层 Transformer 即可实现跨任务冻结迁移",
+        "14 个代谢表型探针 PR-AUC 达到 58.8（显著超越同类基准）",
+        "在 CGMacros 双设备上达成 21.88 mg/dL 两小时餐后血糖预测精度"
+      ]
+    }
+  ]
+}

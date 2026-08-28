@@ -1,0 +1,314 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "GlucoFM 双流因果滤波与 JEPA 潜变量预训练数据流",
+    "locale": "zh-CN",
+    "output": "website/public/diagrams/glucofm-dataflow.html",
+    "viewBox": [1120, 780],
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "dual-stream-split",
+        "label": "因果双流解耦",
+        "focus": ["cgm-input", "obs-mask", "state-stream", "event-stream", "patch-fusion"],
+        "note": "将 24 小时原始读数通过因果高斯滤波解耦为慢变基线与高频残差脉冲。"
+      },
+      {
+        "id": "jepa-latent-alignment",
+        "label": "JEPA 掩码潜变量对齐",
+        "focus": ["context-encoder", "target-encoder", "predictor", "mcr-loss", "td-loss"],
+        "note": "在线上下文 Encoder 预测 EMA 目标在表征流形上的潜变量，避免像素级过拟合。"
+      },
+      {
+        "id": "downstream-transfer",
+        "label": "冻结表征与下游任务",
+        "focus": ["patch-fusion", "linear-probes", "ppgr-forecast"],
+        "note": "冻结 Encoder 提取通用生理 Embedding，支持 14 个代谢表型探针与两小时 PPGR 预测。"
+      }
+    ]
+  },
+  "stages": [
+    { "label": "采样与对齐" },
+    { "label": "因果解耦" },
+    { "label": "Patch 融合" },
+    { "label": "JEPA 潜变量" },
+    { "label": "下游迁移" }
+  ],
+  "nodes": [
+    {
+      "id": "cgm-input",
+      "type": "frontend",
+      "label": "24h CGM 时序",
+      "sublabel": "288 步 / 5min 采样",
+      "stage": 0,
+      "row": 0,
+      "tag": "生理时序"
+    },
+    {
+      "id": "obs-mask",
+      "type": "security",
+      "label": "观测掩码 M",
+      "sublabel": "显式标记物理缺失",
+      "stage": 0,
+      "row": 2,
+      "tag": "真实事实"
+    },
+    {
+      "id": "time-enc",
+      "type": "cloud",
+      "label": "昼夜时刻编码",
+      "sublabel": "正弦/余弦圆形相位",
+      "stage": 0,
+      "row": 4,
+      "tag": "24h 周期"
+    },
+    {
+      "id": "state-stream",
+      "type": "backend",
+      "label": "慢变 State 流",
+      "sublabel": "因果高斯滤波平滑",
+      "stage": 1,
+      "row": 0,
+      "tag": "稳态基线"
+    },
+    {
+      "id": "event-stream",
+      "type": "messagebus",
+      "label": "快变 Event 流",
+      "sublabel": "观测残差与变化率",
+      "stage": 1,
+      "row": 2,
+      "tag": "急性脉冲"
+    },
+    {
+      "id": "patch-fusion",
+      "type": "backend",
+      "label": "24h Patch 融合",
+      "sublabel": "128 维生理 Token",
+      "stage": 2,
+      "row": 0,
+      "tag": "逐时表征"
+    },
+    {
+      "id": "context-encoder",
+      "type": "backend",
+      "label": "Context Encoder",
+      "sublabel": "随机掩码 50%~60%",
+      "stage": 2,
+      "row": 2,
+      "tag": "在线分支"
+    },
+    {
+      "id": "target-encoder",
+      "type": "database",
+      "label": "Target Encoder",
+      "sublabel": "完整序列 EMA 编码",
+      "stage": 2,
+      "row": 4,
+      "tag": "目标分支"
+    },
+    {
+      "id": "predictor",
+      "type": "backend",
+      "label": "潜变量 Predictor",
+      "sublabel": "1 层轻量预测头",
+      "stage": 3,
+      "row": 1,
+      "tag": "潜空间投影"
+    },
+    {
+      "id": "mcr-loss",
+      "type": "security",
+      "label": "掩码表征损失 L_MCR",
+      "sublabel": "真实观测比例加权",
+      "stage": 3,
+      "row": 3,
+      "tag": "SmoothL1"
+    },
+    {
+      "id": "td-loss",
+      "type": "messagebus",
+      "label": "时序动力学 L_TD",
+      "sublabel": "残差状态转移约束",
+      "stage": 3,
+      "row": 4,
+      "tag": "注意力前"
+    },
+    {
+      "id": "linear-probes",
+      "type": "database",
+      "label": "14 个代谢表型探针",
+      "sublabel": "冻结线性评估头",
+      "stage": 4,
+      "row": 0,
+      "tag": "PR-AUC 58.8"
+    },
+    {
+      "id": "ppgr-forecast",
+      "type": "frontend",
+      "label": "2小时 PPGR 预测",
+      "sublabel": "餐前 CGM + 宏量营养",
+      "stage": 4,
+      "row": 2,
+      "tag": "MAE 21.88"
+    }
+  ],
+  "flows": [
+    {
+      "id": "cgm-to-state",
+      "from": "cgm-input",
+      "to": "state-stream",
+      "label": "因果滤波平滑",
+      "classification": "慢变趋势",
+      "variant": "emphasis",
+      "route": "straight"
+    },
+    {
+      "id": "cgm-to-event",
+      "from": "cgm-input",
+      "to": "event-stream",
+      "label": "残差差分计算",
+      "classification": "快变脉冲",
+      "variant": "default"
+    },
+    {
+      "id": "mask-to-filter",
+      "from": "obs-mask",
+      "to": "state-stream",
+      "label": "掩码感知加权",
+      "classification": "防插值污染",
+      "variant": "security"
+    },
+    {
+      "id": "mask-to-event",
+      "from": "obs-mask",
+      "to": "event-stream",
+      "label": "缺失项置零",
+      "classification": "有效残差",
+      "variant": "security",
+      "route": "straight"
+    },
+    {
+      "id": "state-to-patch",
+      "from": "state-stream",
+      "to": "patch-fusion",
+      "label": "64维 State Token",
+      "classification": "基线特征",
+      "variant": "emphasis",
+      "route": "straight"
+    },
+    {
+      "id": "event-to-patch",
+      "from": "event-stream",
+      "to": "patch-fusion",
+      "label": "64维 Event Token",
+      "classification": "事件特征",
+      "variant": "default"
+    },
+    {
+      "id": "time-to-patch",
+      "from": "time-enc",
+      "to": "patch-fusion",
+      "label": "圆形时刻注入",
+      "classification": "相位特征",
+      "variant": "dashed"
+    },
+    {
+      "id": "patch-to-context",
+      "from": "patch-fusion",
+      "to": "context-encoder",
+      "label": "可见上下文采样",
+      "classification": "随机掩码",
+      "variant": "emphasis"
+    },
+    {
+      "id": "patch-to-target",
+      "from": "patch-fusion",
+      "to": "target-encoder",
+      "label": "完整生理序列",
+      "classification": "无掩码输入",
+      "variant": "default"
+    },
+    {
+      "id": "context-to-pred",
+      "from": "context-encoder",
+      "to": "predictor",
+      "label": "上下文潜表征",
+      "classification": "潜空间预测",
+      "variant": "emphasis"
+    },
+    {
+      "id": "pred-to-mcr",
+      "from": "predictor",
+      "to": "mcr-loss",
+      "label": "预测目标潜变量",
+      "classification": "表征空间对齐",
+      "variant": "security"
+    },
+    {
+      "id": "target-to-mcr",
+      "from": "target-encoder",
+      "to": "mcr-loss",
+      "label": "EMA 潜变量目标",
+      "classification": "梯度截断",
+      "variant": "default"
+    },
+    {
+      "id": "target-to-td",
+      "from": "target-encoder",
+      "to": "td-loss",
+      "label": "下一步状态目标",
+      "classification": "残差转移",
+      "variant": "default",
+      "route": "straight"
+    },
+    {
+      "id": "patch-to-probes",
+      "from": "patch-fusion",
+      "to": "linear-probes",
+      "label": "冻结日级 Embedding",
+      "classification": "少样本表型",
+      "variant": "emphasis",
+      "route": "straight"
+    },
+    {
+      "id": "patch-to-ppgr",
+      "from": "patch-fusion",
+      "to": "ppgr-forecast",
+      "label": "餐前 24h/1h 上下文",
+      "classification": "两小时轨迹",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "生理时钟双流解耦",
+      "items": [
+        "通过可学习因果高斯核（带宽 10-60 min）剥离慢变稳态基线",
+        "快变 Event 流专职捕捉餐后糖负荷与急性应激脉冲",
+        "彻底解决单一时间尺度模型对高频噪声与基线漂移混淆的问题"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "非生成式 JEPA 潜变量学习",
+      "items": [
+        "不在观测空间做带有传感器压缩伪影与插值误差的数值重建",
+        "在抽象表征流形上通过 Predictor 预测被掩码 Patch 的 EMA 潜变量",
+        "观测加权损失使严重缺失的 Patch 不干扰整体模型优化"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "0.72M 极简表征的高效迁移",
+      "items": [
+        "3 层 Transformer 即可支撑 14 类异构代谢表型探针（PR-AUC 58.8）",
+        "在 CGMacros 双传感器基准上实现 21.88 mg/dL 的两小时餐后轨迹 MAE",
+        "轻量级架构为智能手表、手环与端侧边缘代谢监测铺平工程道路"
+      ]
+    }
+  ]
+}
