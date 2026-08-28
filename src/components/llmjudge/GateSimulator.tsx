@@ -249,7 +249,7 @@ export default function GateSimulator() {
             marginBottom: "0.3rem",
           }}
         >
-          评分细则（must-have ⛔ · soft ☆）
+          评分细则（must-have · soft ☆）
         </div>
         <div
           style={{
@@ -281,7 +281,7 @@ export default function GateSimulator() {
                   cursor: "pointer",
                 }}
               >
-                {c.severity === "must" ? "⛔" : "☆"} {c.label}
+                {c.severity === "must" ? "must" : "☆"} {c.label}
               </button>
             );
           })}

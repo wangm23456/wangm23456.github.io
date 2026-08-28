@@ -11,7 +11,7 @@ const fmt = (d: Date) =>
 
 <BaseLayout title="博客文章" description="Arcana 文章目录">
   <article class="prose">
-    <h1>✍️ 博客文章</h1>
+    <h1>博客文章</h1>
     {posts.map((post) => (
       <section>
         <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
