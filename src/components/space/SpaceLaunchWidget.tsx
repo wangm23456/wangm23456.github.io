@@ -187,7 +187,6 @@ function SpaceLaunchWidgetContent({ variant }: Props) {
         <div>
           <p className="space-kicker">LAUNCH LIBRARY 2 / LIVE MANIFEST</p>
           <h1>Space<br /><em>Now.</em></h1>
-          <p className="space-intro__dek">把下一次发射变成一张任务卡：时间、地点、运营方，以及离点火还有多久。</p>
         </div>
         <div className="space-feed-status" data-state={query.isPending ? 'connecting' : query.isError ? 'error' : 'online'} aria-live="polite">
           <span className="space-feed-status__label">FEED STATUS</span>
