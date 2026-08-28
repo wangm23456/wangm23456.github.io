@@ -1,0 +1,235 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Solar Watch"
+  description="NASA DONKI 近实时太阳活动观测"
+  wide
+>
+  <div class="solar-page">
+    <header class="solar-intro">
+      <div>
+        <p class="solar-kicker">NASA / DONKI / 07-DAY WINDOW</p>
+        <h1>Solar Watch</h1>
+        <p class="solar-intro__dek">把太阳活动做成一张可读的观测卡。主图表达状态，数据负责说明发生了什么。</p>
+      </div>
+      <div class="solar-status" aria-live="polite">
+        <span class="solar-status__label">FEED STATUS</span>
+        <strong id="feed-status">CONNECTING</strong>
+        <time id="feed-updated">—</time>
+      </div>
+    </header>
+
+    <section class="solar-dashboard" aria-label="Solar Watch dashboard">
+      <div class="solar-visual-card" id="solar-visual-card" data-level="quiet">
+        <div class="solar-card-head">
+          <span>SOLAR ACTIVITY / VISUAL INDEX</span>
+          <span id="activity-label">QUIET</span>
+        </div>
+        <div class="solar-visual" role="img" aria-label="太阳活动可视化：中央太阳与活动等级">
+          <svg viewBox="0 0 640 430" aria-hidden="true" focusable="false">
+            <path class="solar-orbit solar-orbit--outer" d="M86 215C86 103 210 32 335 32s249 71 249 183-124 183-249 183S86 327 86 215Z" />
+            <path class="solar-orbit solar-orbit--inner" d="M143 215c0-76 86-133 192-133s192 57 192 133-86 133-192 133-192-57-192-133Z" />
+            <path class="solar-scanline" d="M92 215h456" />
+            <g class="solar-rays" id="solar-rays">
+              <path d="M320 36h18l-3 53h-12Z" />
+              <path d="m464 74 14 9-31 43-10-7Z" />
+              <path d="m566 205 1 17-53 2-1-13Z" />
+              <path d="m474 347-14 9-27-46 11-6Z" />
+              <path d="M320 394h18l-3-53h-12Z" />
+              <path d="m172 356-14-9 31-43 10 7Z" />
+              <path d="m72 222-1-17 53-2 1 13Z" />
+              <path d="m164 83 14-9 27 46-11 6Z" />
+            </g>
+            <circle class="solar-sun-shadow" cx="329" cy="222" r="105" />
+            <circle class="solar-sun" cx="320" cy="213" r="105" />
+            <path class="solar-sun-cut" d="M253 157c23-23 53-35 86-35 35 0 65 12 88 37-24 11-51 17-80 17-35 0-66-7-94-19Z" />
+            <path class="solar-flare solar-flare--left" d="M224 175c-30-20-47-17-62-2 19 2 27 12 34 25-9 8-12 17-10 27 18-12 33-25 38-50Z" />
+            <path class="solar-flare solar-flare--right" d="M415 151c29-16 49-11 62 8-18-1-28 7-37 19 10 10 12 20 8 30-18-13-29-29-33-57Z" />
+            <circle class="solar-spark solar-spark--red" cx="280" cy="188" r="9" />
+            <circle class="solar-spark solar-spark--blue" cx="363" cy="246" r="7" />
+            <circle class="solar-spark solar-spark--ink" cx="337" cy="176" r="5" />
+            <g class="solar-satellite" transform="translate(506 102)">
+              <rect x="-19" y="-12" width="38" height="24" />
+              <path d="M-34-5h15v10h-15ZM19-5h15v10H19Z" />
+              <circle cx="0" cy="0" r="5" />
+            </g>
+            <text class="solar-svg-label solar-svg-label--top" x="320" y="18" text-anchor="middle">SUN-EARTH OBSERVATORY</text>
+            <text class="solar-svg-label solar-svg-label--bottom" x="320" y="415" text-anchor="middle" id="solar-svg-summary">MONITORING THE STAR</text>
+          </svg>
+        </div>
+        <div class="solar-scale" aria-label="太阳耀斑等级">
+          <span>LOW</span>
+          <div class="solar-scale__bar"><i></i><i></i><i></i><i></i></div>
+          <span>HIGH</span>
+        </div>
+      </div>
+
+      <aside class="solar-data-card">
+        <div class="solar-card-head">
+          <span>TELEMETRY / 07 DAYS</span>
+          <span class="solar-live-dot">LIVE</span>
+        </div>
+        <div class="solar-primary-stat">
+          <strong id="flare-count">—</strong>
+          <span>flares recorded</span>
+        </div>
+        <dl class="solar-metrics">
+          <div>
+            <dt>PEAK CLASS</dt>
+            <dd id="peak-class">—</dd>
+          </div>
+          <div>
+            <dt>CMEs</dt>
+            <dd id="cme-count">—</dd>
+          </div>
+          <div>
+            <dt>WINDOW</dt>
+            <dd id="window-label">—</dd>
+          </div>
+        </dl>
+        <div class="solar-events-head">
+          <span>RECENT EVENTS</span>
+          <span id="event-count">—</span>
+        </div>
+        <ol class="solar-event-list" id="event-list" aria-live="polite">
+          <li class="solar-event solar-event--loading">Reading NASA DONKI…</li>
+        </ol>
+      </aside>
+    </section>
+
+    <footer class="solar-source">
+      <span>SOURCE: <a href="https://ccmc.gsfc.nasa.gov/tools/DONKI/" target="_blank" rel="noopener">NASA DONKI</a></span>
+      <span>NEAR-REAL-TIME · NOT A FORECAST</span>
+    </footer>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  const API = 'https://api.nasa.gov/DONKI';
+  const card = document.querySelector('#solar-visual-card');
+  const status = document.querySelector('#feed-status');
+  const updated = document.querySelector('#feed-updated');
+  const activityLabel = document.querySelector('#activity-label');
+  const svgSummary = document.querySelector('#solar-svg-summary');
+  const flareCount = document.querySelector('#flare-count');
+  const peakClass = document.querySelector('#peak-class');
+  const cmeCount = document.querySelector('#cme-count');
+  const windowLabel = document.querySelector('#window-label');
+  const eventCount = document.querySelector('#event-count');
+  const eventList = document.querySelector('#event-list');
+
+  function dateRange() {
+    const end = new Date();
+    const start = new Date(end);
+    start.setUTCDate(start.getUTCDate() - 7);
+    const fmt = (date) => date.toISOString().slice(0, 10);
+    return { start: fmt(start), end: fmt(end) };
+  }
+
+  function classScore(classType = '') {
+    const letter = classType.trim().charAt(0).toUpperCase();
+    const number = Number.parseFloat(classType.slice(1)) || 0;
+    if (letter === 'X') return 4 + number / 10;
+    if (letter === 'M') return 3 + number / 10;
+    if (letter === 'C') return 2 + number / 10;
+    if (letter === 'B') return 1 + number / 10;
+    return 0;
+  }
+
+  function levelFor(score) {
+    if (score >= 4) return 'extreme';
+    if (score >= 3) return 'high';
+    if (score >= 2) return 'active';
+    return 'quiet';
+  }
+
+  function formatUtc(value) {
+    if (!value) return '—';
+    return new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'UTC',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).format(new Date(value));
+  }
+
+  function eventMarkup(event) {
+    const classType = event.classType || '—';
+    const level = levelFor(classScore(classType));
+    return `<li class="solar-event solar-event--${level}">
+      <div><strong>${classType}</strong><span>${event.sourceLocation || 'SOLAR SURFACE'}</span></div>
+      <time>${formatUtc(event.peakTime || event.beginTime)} UTC</time>
+    </li>`;
+  }
+
+  function fallbackData() {
+    return {
+      flares: [
+        { classType: 'C3.2', peakTime: new Date(Date.now() - 7 * 3600000).toISOString(), sourceLocation: 'S18W42' },
+        { classType: 'B8.6', peakTime: new Date(Date.now() - 28 * 3600000).toISOString(), sourceLocation: 'N12E07' },
+        { classType: 'C1.4', peakTime: new Date(Date.now() - 51 * 3600000).toISOString(), sourceLocation: 'S05W19' },
+      ],
+      cmes: [{ startTime: new Date(Date.now() - 19 * 3600000).toISOString() }],
+      fallback: true,
+    };
+  }
+
+  async function loadSolarData() {
+    const range = dateRange();
+    windowLabel && (windowLabel.textContent = `${range.start.slice(5)} — ${range.end.slice(5)}`);
+    const fetchJson = async (url) => {
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 8000);
+      try {
+        const response = await fetch(url, { signal: controller.signal });
+        if (!response.ok) throw new Error('NASA DONKI unavailable');
+        return await response.json();
+      } finally {
+        window.clearTimeout(timeout);
+      }
+    };
+
+    try {
+      const [flares, cmes] = await Promise.all([
+        fetchJson(`${API}/FLR?startDate=${range.start}&endDate=${range.end}&api_key=DEMO_KEY`),
+        fetchJson(`${API}/CME?startDate=${range.start}&endDate=${range.end}&api_key=DEMO_KEY`),
+      ]);
+      return {
+        flares,
+        cmes,
+        fallback: false,
+      };
+    } catch {
+      return fallbackData();
+    }
+  }
+
+  async function renderSolarData() {
+    const data = await loadSolarData();
+    const flares = data.flares.filter((event) => event.classType);
+    const peak = flares.reduce((best, event) => classScore(event.classType) > classScore(best.classType) ? event : best, flares[0] || { classType: '—' });
+    const level = levelFor(classScore(peak.classType));
+    const levelText = { quiet: 'QUIET', active: 'ACTIVE', high: 'HIGH', extreme: 'EXTREME' }[level];
+
+    card?.setAttribute('data-level', level);
+    status && (status.textContent = data.fallback ? 'DEMO DATA' : 'ONLINE');
+    updated && (updated.textContent = `UPDATED ${formatUtc(new Date().toISOString())} UTC`);
+    activityLabel && (activityLabel.textContent = levelText);
+    svgSummary && (svgSummary.textContent = data.fallback ? 'DEMO TELEMETRY' : 'MONITORING THE STAR');
+    flareCount && (flareCount.textContent = String(flares.length));
+    peakClass && (peakClass.textContent = peak.classType || '—');
+    cmeCount && (cmeCount.textContent = String(data.cmes.length));
+    eventCount && (eventCount.textContent = `${Math.min(flares.length, 4)} SHOWN`);
+    if (eventList) {
+      eventList.innerHTML = flares.length
+        ? flares.slice().sort((a, b) => new Date(b.peakTime || b.beginTime || 0).getTime() - new Date(a.peakTime || a.beginTime || 0).getTime()).slice(0, 4).map(eventMarkup).join('')
+        : '<li class="solar-event solar-event--loading">No flares in this window.</li>';
+    }
+  }
+
+  renderSolarData();
+</script>

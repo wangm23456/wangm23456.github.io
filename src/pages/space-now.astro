@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SpaceLaunchWidget from '../components/space/SpaceLaunchWidget';
+---
+
+<BaseLayout
+  title="Space Now"
+  description="Launch Library 2 发射任务实时观测"
+  wide
+>
+  <SpaceLaunchWidget variant="full" client:load />
+</BaseLayout>

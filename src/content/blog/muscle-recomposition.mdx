@@ -1,0 +1,168 @@
+---
+title: 增肌与减脂：同时进行的可能与肌肉减少的机制
+description: 基于 200+ 篇原始文献的身体重组（body recomposition）与肌肉减少机制综述，附交互式通路图与重组窗口模拟器
+date: 2026-08-25
+author: 潘勒斯
+tags:
+  - 肌肉科学
+  - 文献综述
+  - 交互式
+---
+
+import Callout from '../../components/Callout.astro';
+import PathwayMap from '../../components/muscle/PathwayMap';
+import RecompSimulator from '../../components/muscle/RecompSimulator';
+import EvidenceCards from '../../components/muscle/EvidenceCards';
+import LossTabs from '../../components/muscle/LossTabs';
+import GlossaryPanel from '../../components/Glossary';
+import { RECOMPOSITION_GLOSSARY_TERMS } from './muscle-recomposition-glossary';
+import Term from '../../components/muscle/Term';
+
+<Callout type="important" title="一页结论">
+**增肌与减脂可以同时发生，但只在一条窄窗口里成立。**
+
+窗口的边界由四件事共同决定：能量赤字 ≤ 20–25%、蛋白质 1.6–2.4 g/kg/d、抗阻训练 ≥ 3 次/周、睡眠 7–9 小时。这四件同时满足，骨骼肌量净平衡可以转正——也就是「身体重组」<Term cn="body recomposition" tip="同一时段内瘦体重增加、脂肪量下降、净体重基本不变">body recomposition</Term>。
+
+窗口的分子边界由两条信号轴定义：
+
+- **合成轴** = 肌肉蛋白合成（<Term cn="Muscle Protein Synthesis" tip="Muscle Protein Synthesis，骨骼肌把氨基酸拼成新肌蛋白的过程。单位时间合成量减去分解量（MPB）的净值决定肌肉增减">MPS</Term>），由 <Term cn="合成侧的总开关" tip="细胞生长的中央信号枢纽，整合营养、激素、机械张力三路信号">mTORC1</Term> 驱动，下游到 <Term cn="细胞的蛋白工厂" tip="细胞内把氨基酸拼成蛋白的工厂">核糖体</Term>。
+- **分解轴** = 肌肉蛋白分解（<Term cn="Muscle Protein Breakdown" tip="Muscle Protein Breakdown，肌蛋白水解回氨基酸的过程。主要执行者是泛素-蛋白酶体与自噬-溶酶体">MPB</Term>），由 <Term cn="分解侧的总开关" tip="Forkhead box O 转录因子，FoxO1/3/4。Akt 信号弱时入核启动 atrogene 转录">FoxO</Term> 控制，分 <Term cn="泛素-蛋白酶体" tip="Ubiquitin-Proteasome System，分解侧主程序：E3 泛素连接酶给蛋白贴 K48 泛素链，运进 26S 蛋白酶体切碎">泛素-蛋白酶体</Term>（给蛋白贴销毁标签再切碎）与 <Term cn="自噬-溶酶体通路" tip="Autophagy-Lysosome Pathway，把整块细胞垃圾吞进自噬体，溶酶体消化">自噬</Term>（把整块细胞垃圾吞掉消化）两条通路。
+
+赤字超过 40% 时，mTORC1 这个总开关对蛋白补给「不应」（<Term cn="mTOR refractory" tip="信号停摆，mTORC1 不再响应营养与蛋白补给">refractory</Term>），窗口关闭。
+</Callout>
+
+<GlossaryPanel terms={RECOMPOSITION_GLOSSARY_TERMS} client:load />
+
+## 一张图看懂全部机制
+
+骨骼肌处于两条独立信号轴的拔河之中。**合成侧**由机械张力（举铁时肌纤维被拉伸）、<Term cn="必需氨基酸" tip="Leucine，蛋白里的一种关键氨基酸，是触发 MPS 的「点火钥匙」">亮氨酸</Term>、<Term cn="运动后升高的激素" tip="Insulin-like Growth Factor 1，运动后升高的一种生长激素">IGF-1</Term> 三路信号汇入 <Term cn="合成侧的总开关" tip="Mechanistic Target Of Rapamycin Complex 1，细胞生长的中央信号枢纽">mTORC1</Term>；**分解侧**由能量赤字（吃得不够）、卸载（卧床或失重）、炎症、<Term cn="皮质醇一类压力激素" tip="Glucocorticoid，皮质醇是代表，长期升高会拆肌肉、堆脂肪">糖皮质激素</Term> 汇入 <Term cn="分解侧的总开关" tip="Forkhead box O 转录因子，分解侧的总开关">FoxO</Term>。
+
+这两条轴不是「按下 A 就关掉 B」的互斥开关，而是各自独立可调——这正是重组可行的分子基础。点击下方通路的任一节点可看机制说明与文献：
+
+<div class="widget">
+  <div class="widget__title"><span>信号通路图 · SIGNAL MAP</span><span>可点击</span></div>
+  <PathwayMap client:visible />
+</div>
+
+---
+
+## 增肌侧：MPS 如何被驱动
+
+**mTORC1 是合成侧的总开关。** 它同时整合三路上游：机械张力走 Akt 非依赖通路——<Term cn="开关细胞生长的蛋白激酶" tip="Protein Kinase B，一种「关 / 开细胞生长」的蛋白激酶，不经过它也能启动 mTORC1">Akt</Term> 是这种蛋白激酶，不走它也能启动 mTORC1；亮氨酸走 <Term cn="把亮氨酸信号搬进细胞的小蛋白" tip="一类把亮氨酸信号搬进细胞的小蛋白">Rag GTPase</Term>；IGF-1 走 PI3K-Akt。
+
+三路信号汇聚后，mTORC1 激活下游 <Term cn="mTORC1 下游翻译启动器" tip="两个翻译起始因子：p70S6K 加速核糖体生物合成与翻译延伸；4E-BP1 释放 eIF4E 让 mRNA 启动翻译">p70S6K 与 4E-BP1</Term>，把核糖体工厂开起来。
+
+Rapamycin 是雷帕霉素，一种免疫抑制药，能特异阻断 mTORC1。它的人体试验反向证明：阻断后 MPS 几乎消失，蛋白补给再充足也救不回来。mTORC1 不可替代。原文索引见 PMC2678224，可在 pubmed.ncbi.nlm.nih.gov 搜到全文。
+
+**核糖体本身是翻译能力的瓶颈。** 训练后 <Term tip="核糖体 RNA 的前体；rDNA 转录出的初始产物">45S pre-rRNA</Term> 的增幅能预测长期肥大的量级。细胞不是在等氨基酸，而是在等核糖体被造出来（PMC4732984）。
+
+**<Term cn="休眠干细胞" tip="位于肌纤维膜与基底膜之间的肌肉干细胞，平时不分裂，肌纤维受损或承受机械张力时被激活">卫星细胞</Term>在基础肥大中并非必需。** Pax7-DTA 小鼠（一种把卫星细胞清除 >90% 的基因工程模型）的过载肥大实验显示，肌肉照样长大。卫星细胞只在损伤再生与极量负荷时不可缺（PMC3152923）。这个发现推翻了「卫星细胞 = 增肌必需」的旧教条。
+
+**训练剂量学有三条经验规律：**
+
+- 每周组数与肥大致性相关，受训者 18–27 组/周接近上限。
+- 高负荷与低负荷对肥大无差异——前提是都练到接近力竭。
+- 训练频率在「周总组数均衡」时无影响。
+
+**蛋白质摄入的阈值有两个：** 单餐约 20–40 g 触发 MPS 平台；每日约 1.62 g/kg/d 进入平台（Morton 2018 汇总 49 项 <Term cn="随机对照试验" tip="Randomized Controlled Trial，医学证据等级最高一档的研究设计——把受试者随机分组，一组给干预、一组给对照">RCT</Term> 的结果）。亮氨酸是「触发器」而非「持续驱动器」——少量就够点燃 MPS，更多不会让 MPS 持续更久。进食时机对 MPS 的影响甚微，把每日蛋白分散在 3–6 餐即可。
+
+---
+
+## 减脂侧：赤字及其代价
+
+**能量赤字是减脂的唯一驱动。** 拆脂肪的活由三个酶接力完成——ATGL 起头、HSL 接力、MGL 收尾，速度看 ATGL。拆出来的脂肪酸送进细胞的发电厂，也就是线粒体，去烧掉；但进这扇门要过一个关卡，叫 CPT1。胰岛素高时这道关卡被守门人 malonyl-CoA 关死，脂肪酸进不去；空腹时门才开，烧脂顺畅。宏量营养素比例的所谓「代谢优势」撑不过 12 个月。
+
+**赤字的代价有三档：**
+
+- **轻度（≤20–25%）**：mTOR 信号仍对蛋白补给敏感，重组窗口可开启。
+- **中度（40–55%）**：餐后 MPS 钝化 20–50%；无防护减重时，瘦体重损失占减重的 15–35%。
+- **重度（>40%）**：mTOR 直接 <Term cn="不应" tip="信号停摆，mTORC1 不再响应蛋白补给">refractory</Term>，即便补蛋白、做抗阻训练也无法阻止流失。
+
+**高蛋白是赤字期唯一稳健的杠杆。** 相对标准蛋白方案，每公斤体重多 0.8–1.2 g/d 蛋白可多保留约 0.5–1.0 kg 瘦体重。高蛋白的次级收益：食物热效应（消化蛋白本身多耗热）+ 饱腹感加成。
+
+**同期训练干扰存在但有限。** 耐力训练激活 <Term cn="细胞能量警戒器" tip="AMP-activated Protein Kinase，ATP 下降 / AMP 上升时激活，启动节能程序（燃脂、自噬、关闭合成）">AMPK</Term>——进而抑制 mTORC1。
+
+Wilson 2012 的一项 <Term cn="汇总多项独立研究的统计综述" tip="Meta-analysis，把同主题不同实验数据合并再算一遍，得到更稳的效应估计">meta 分析</Term>——给出了量化：同期训练的肥大效应量 <Term cn="effect size，标准差倍数" tip="Effect Size，衡量差距大小的标准差倍数。0.2 小、0.5 中、0.8 大">ES</Term> = 0.85，只相当于单独抗阻训练 ES = 1.23 的 70%。在减脂目标下，三种训练模式（抗阻 / 耐力 / 同期）的脂肪减少量无显著差异。缓解办法：先抗阻后耐力，间隔 6–24 小时。
+
+**代谢适应是减重的隐藏账单。** 减重后，静息能量消耗 <Term cn="resting energy expenditure" tip="Resting Energy Expenditure，躺着不动也烧的热量，占每日总消耗 60–75%">REE</Term>——额外下降 5–15%（每天少 100–500 大卡）。核心中介是 <Term cn="饱腹感脂肪激素" tip="Leptin，脂肪细胞分泌的激素，水平下降会让食欲上升、代谢率下降">瘦素</Term>——下降，可持续数年。这正是「减完必反弹」的生理底牌。
+
+---
+
+## 核心议题：身体重组
+
+「身体重组」（body recomposition）= 同一时段内瘦体重增加、脂肪量下降、净体重基本不变。它与「减脂期保肌肉」是不同概念——后者只要求不掉肌肉，前者要求肌肉净增长。
+
+**Barakat 等 2020**（发表于 <Term cn="力量与训练研究期刊" tip="Strength and Conditioning Journal，2020 年第 42 卷第 5 期第 7–21 页">*Strength Cond J*</Term>）挑战了「重组只属于新手」的教条：训练个体同样可实现，前提是渐进抗阻训练 + 循证营养。关键 RCT（随机对照试验）证据——点击展开具体数字：
+
+<div class="widget">
+  <div class="widget__title"><span>关键 RCT 证据 · EVIDENCE</span><span>可展开</span></div>
+  <EvidenceCards client:visible />
+</div>
+
+### 重组成败的变量表
+
+下表把「四件硬条件」拆成六个变量。每一行左右两栏给出窗口的边界，越过边界即失效。
+
+| 因素 | 重组友好 | 重组不利 |
+| --- | --- | --- |
+| 训练状态 | 新手 / 久坐 / 停训回归者 / 超重者 | ≥ 1–2 年系统训练者 |
+| 初始体脂 | 男 ≥ 18–25%、女 ≥ 25–30% | 极瘦运动员 |
+| 蛋白质 | **1.6–2.4 g/kg/d**，3–6 餐分散 | < 1.2 g/kg/d → 净流失 |
+| 赤字幅度 | **~20–25%（≤ 500 kcal/d）** | > 40%：mTOR refractory、皮质醇↑ |
+| 抗阻训练 | ≥ 3 次/周，多关节复合动作 | 仅有氧 → 瘦体重明显损失 |
+| 睡眠 | 7–9 小时/夜 | ≤ 5.5 小时显著劣化结局 |
+| 能量可用性 | <Term cn="能量可用性" tip="Energy Availability = (摄入 − 运动消耗) / FFM，单位 kcal/kg FFM/d">EA</Term> ≥ 30 kcal/kg <Term cn="去脂体重" tip="Fat-Free Mass，体重减去全身脂肪量。包括骨骼肌、骨骼、内脏、水分">FFM</Term>/d | < 30 → 进入 <Term cn="低能量可用性" tip="Low Energy Availability">LEA</Term>，长期引发 <Term cn="运动员三联征" tip="Relative Energy Deficiency in Sport：月经紊乱、骨密度下降、免疫抑制">RED-S</Term> |
+
+**EA（能量可用性）**是运动员专属指标：每日摄入减去运动消耗，再除以瘦体重。低于 30 kcal/kg FFM/d 即进入 **LEA（低能量可用性）**，长期会引发 **RED-S（运动员三联征）**：月经紊乱、骨密度下降、免疫抑制。普通训练者通常不必单独看这条，但每天大运动量的人需要盯紧。
+
+用下方模拟器拖动滑块，看自己的组合落在哪个区间：
+
+<div class="widget">
+  <div class="widget__title"><span>重组窗口模拟器 · RECOMP SIMULATOR</span><span>可交互</span></div>
+  <RecompSimulator client:visible />
+</div>
+
+<Callout type="warning" title="测量方法学的警示">
+「DXA」是什么？——一种用两束不同能量 X 线扫全身的机器，能把身体里的脂肪、瘦肉、骨骼分别称重，躺 6–10 分钟。是医院和研究里测体成分的标准方法。它的**最小显著变化（LSC）**约为脂肪量 1.5 kg、瘦体重 1.0 kg——意思是仪器能稳定分辨的最小差距，比这更小的变化落在噪声里。许多报告「瘦体重保持」的研究，变化其实就在这个噪声之内。要判断重组是否真发生，请用：4–8 周体重趋势 + 围度（腰围、臂围等身体周长测量）+ 力量表现（同样动作的负重进步）三件套复合判断。家用体脂秤直接放弃。
+</Callout>
+
+---
+
+- **泛素-蛋白酶体（UPS）**：MuRF1 与 MAFbx（又称 atrogin-1）是两个 E3 泛素连接酶，专门给蛋白贴销毁标签的酶。它们给肌蛋白打 K48 泛素链，一种送进回收站的化学标记，运进 26S 蛋白酶体——细胞内的碎纸机——切碎。
+- **自噬-溶酶体通路（ALP）**：把整块细胞垃圾（线粒体、内质网等）整个吞进自噬体，由溶酶体——细胞内的垃圾处理厂——消化。
+
+**FoxO 是这两条通路的共同控制点。** Akt 是一种蛋白激酶，平时它磷酸化 FoxO 让它留在细胞质；Akt 信号弱时，FoxO 进细胞核，启动上面两个 atrogene——萎缩相关基因（atrophy-related gene）的转录。
+
+**Myostatin 是肌肉抑制素，身体自带的天花板。** 它与 Activin 一起走 SMAD2/3 通路抑制 mTOR、促进分解，是肌肉总量的内生「主刹车」，也是肌少症药物（治疗老年肌肉萎缩的药）的核心靶点。
+**糖皮质激素（皮质醇等压力激素）走 <Term cn="两个中介蛋白" tip="REDD1 / KLF15，糖皮质激素压制合成代谢的关键中介">REDD1 / KLF15</Term> 这条捷径。** 它绕过所有营养可修复的通路，直接压制 mTORC1，并把氨基酸从 MPS 抽走去产糖——<Term cn="肝脏把氨基酸转成葡萄糖的应激反应" tip="Gluconeogenesis，应激或饥饿时肝脏把氨基酸转成葡萄糖维持血糖">肝脏把氨基酸转成葡萄糖</Term>的应激反应。这就是为什么「赤字 > 40% 时皮质醇升高」会让窗口关闭。
+四种典型流失场景（能量赤字 / 废用 / <Term cn="老年或疾病导致的肌肉流失" tip="Sarcopenia，增龄或疾病相关的骨骼肌量与肌力进行性丢失，是老年失能的核心原因之一">肌少症</Term> / <Term cn="癌症等重症引起的身体消耗" tip="Cachexia，癌症、心衰等重症引起的全身性消耗综合征，区别于单纯饥饿：营养支持难以逆转">恶病质</Term>）共享同一套 atrogene 程序，只是触发轴不同——切换查看：
+
+<div class="widget">
+  <div class="widget__title"><span>流失触发轴对比 · FOUR STATES</span><span>可切换</span></div>
+  <LossTabs client:visible />
+</div>
+
+---
+
+## 证据缺口
+
+本节列出的是现有文献尚未解决的问题——它们不是「结论还有争议」，而是「还没人真正研究过」。
+
+1. **训练有素者的重组上限。** 严格赤字下净增肌极难，多数「保持」结论处于 <Term cn="双能 X 线吸收法" tip="Dual-energy X-ray Absorptiometry，临床体成分测量的金标准，详见下方测量警示">DXA</Term> 噪声边缘。缺 <Term cn="磁共振成像" tip="Magnetic Resonance Imaging，用磁场与射频脉冲重建体内影像，无辐射，对软组织对比度极高">MRI</Term> 与 DXA 交叉验证的长期 <Term cn="随机对照试验" tip="Randomized Controlled Trial，医学证据等级最高一档">RCT</Term>。
+2. **「重组阈值」无共识。** 赤字 × 蛋白 × 训练量的最优组合存在巨大个体差异。
+3. **女性特异性与 <Term cn="GLP-1 受体激动剂" tip="Glucagon-Like Peptide-1 receptor agonist，司美格鲁肽一类的新型减重药">GLP-1 减重药</Term> 时代的肌肉保护。** 月经周期、激素避孕对重组窗口的影响研究稀少；GLP-1 类减重药让瘦体重损失占减重的 25–40%，对应的肌肉保护方案研究同样稀少。
+4. **赤字期流失主因之争。** 短期证据支持 MPS 抑制为主，长期 / 严重赤字下分解通路贡献上升——边界未定量。
+
+---
+
+## 实践压缩结论
+
+1. **想同时增肌减脂：** 赤字 ≤ 20–25%（≤ 500 kcal/d），蛋白 1.6–2.4 g/kg/d 分散 3–6 餐，抗阻 ≥ 3 次/周多关节为主，睡够 7–9 小时。
+2. **训练年限越长、体脂越低，重组越难。** 赤字应当更保守，「保持即胜利」是合理目标。
+3. **防流失的第一道防线不是补剂。** 抗阻训练（赤字下保留约 45–95% <Term cn="去脂体重" tip="Fat-Free Mass，体重减去全身脂肪量">FFM</Term>）+ 足量蛋白剂量。<Term cn="β-羟基 β-甲基丁酸" tip="β-Hydroxy β-Methylbutyrate，亮氨酸的代谢产物，仅在老年合成抵抗场景有附加价值">HMB</Term> / 亮氨酸补剂仅在 <Term cn="老年合成抵抗" tip="Anabolic Resistance，衰老让 MPS 不易被蛋白补给点燃">老年合成抵抗</Term> 场景有附加价值，健康训练者吃它们几乎无收益。
+
+---
+
+<Callout type="note" title="引用说明">
+本文为文献综述，全部定量结论锚定可核查的文献编号。文献编号体系分三套：<Term cn="PubMed 编号" tip="PubMed Identifier，pubmed.ncbi.nlm.nih.gov 的论文编号">PMID</Term>、<Term cn="PubMed Central 全文库编号" tip="PubMed Central ID，PubMed 全文库的论文编号">PMC ID</Term>、<Term cn="数字对象标识符" tip="Digital Object Identifier，论文的「身份证号」">DOI</Term>。在 pubmed.ncbi.nlm.nih.gov 或 doi.org 输入编号即可溯源。正文与组件内已附链接。本页不构成医学建议。
+</Callout>

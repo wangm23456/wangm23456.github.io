@@ -1,22 +1,73 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Experience from "../components/portfolio/Experience.astro";
-import HeroIndex from "../components/portfolio/HeroIndex.astro";
-import Contact from "../components/portfolio/Contact.astro";
-import ListProjects from "../components/portfolio/ListProjects.astro";
-import { getCollection } from "astro:content";
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NewsList from '../components/NewsList';
+import SpaceLaunchWidget from '../components/space/SpaceLaunchWidget';
 
-const [staticData] = await getCollection("staticData");
-const { pageTitle, pageDescription, OGImage } = staticData.data;
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+const fmt = (d: Date) =>
+  `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+const featured = posts[0];
 ---
 
-<Layout
-  pageTitle={pageTitle}
-  description={pageDescription}
-  ogimage={{ alt: OGImage.alt, url: OGImage.url }}
+<BaseLayout
+  title="首页"
+  description="潘勒斯的个人博客：原创技术与科学长文，附 AI 圈 24 小时精选"
+  wide
 >
-  <HeroIndex />
-  <Experience />
-  <ListProjects />
-  <Contact />
-</Layout>
+  <section class="home-hero">
+    <a class="home-space-card" href="/space-now/" aria-label="打开 Space Now 发射任务页面">
+      <SpaceLaunchWidget variant="compact" client:load />
+    </a>
+    <div class="home-hero__feature">
+      <span class="feature-kicker">LATEST FIELD NOTE / {featured ? fmt(featured.data.date) : '—'}</span>
+      {featured ? (
+        <>
+          <h2><a href={`/blog/${featured.id}/`}>{featured.data.title}</a></h2>
+          {featured.data.description && <p>{featured.data.description}</p>}
+          <div class="feature-tags">
+            {featured.data.tags.slice(0, 3).map((tag) => <span class="tag">{tag}</span>)}
+          </div>
+          <a class="feature-link" href={`/blog/${featured.id}/`}>阅读这篇 →</a>
+        </>
+      ) : (
+        <p>新的文章正在准备中。</p>
+      )}
+    </div>
+  </section>
+
+  <div class="home-grid">
+    <section>
+      <div class="section-head">
+        <h2>博客文章</h2>
+        <span class="section-head__sub">原创长文</span>
+        <a class="section-head__more" href="/blog/">全部 →</a>
+      </div>
+      <ul class="post-list">
+        {posts.map((post) => (
+          <li>
+            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+            {post.data.description && <p class="post-list__desc">{post.data.description}</p>}
+            <div class="post-list__meta">
+              <time>{fmt(post.data.date)}</time>
+              {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <aside class="home-side">
+      <div class="section-head">
+        <h2>AI 圈现在</h2>
+        <a class="section-head__more" href="https://aihot.virxact.com" target="_blank" rel="noopener">更多 →</a>
+      </div>
+      <NewsList client:load />
+      <p class="news-attribution">
+        数据来源：<a href="https://aihot.virxact.com" target="_blank" rel="noopener">AI HOT</a>
+      </p>
+    </aside>
+  </div>
+</BaseLayout>

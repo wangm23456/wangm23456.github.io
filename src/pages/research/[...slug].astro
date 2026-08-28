@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('research');
+  return notes.map((note) => ({
+    params: { slug: note.id.replace(/\.md$/, '') },
+    props: { note },
+  }));
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+const notes = await getCollection('research');
+const orderedNotes = notes.sort((a, b) => a.id.localeCompare(b.id, 'en'));
+const currentIndex = orderedNotes.findIndex((item) => item.id === note.id);
+const previous = orderedNotes[currentIndex - 1];
+const next = orderedNotes[currentIndex + 1];
+---
+
+<BaseLayout title={`${note.data.title} · 原始研究资料`} description={note.data.description}>
+  <article class="prose research-document">
+    <nav class="research-breadcrumb" aria-label="页面路径">
+      <a href="/research/">原始研究资料</a>
+      <span aria-hidden="true">/</span>
+      <span>{note.data.title}</span>
+    </nav>
+    <header class="research-header">
+      <p class="eyebrow">RESEARCH MATERIAL / {String(currentIndex + 1).padStart(2, '0')}</p>
+      <h1>{note.data.title}</h1>
+      <p>{note.data.description}</p>
+    </header>
+    <div class="research-content"><Content /></div>
+    <nav class="research-pagination" aria-label="研究资料导航">
+      {previous ? <a href={`/research/${previous.id.replace(/\.md$/, '')}/`}>← {previous.data.title}</a> : <span />}
+      {next ? <a href={`/research/${next.id.replace(/\.md$/, '')}/`}>{next.data.title} →</a> : <span />}
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .research-document { max-width: 900px; margin: 0 auto; }
+  .research-breadcrumb { display: flex; gap: 0.55rem; flex-wrap: wrap; margin-bottom: 2rem; font: 0.74rem var(--font-mono); color: var(--muted); }
+  .research-breadcrumb a { color: var(--brand); }
+  .research-header { padding-bottom: 1.5rem; margin-bottom: 2rem; border-bottom: var(--border); }
+  .eyebrow { font: 0.72rem var(--font-mono); letter-spacing: 0.08em; color: var(--muted); }
+  .research-header h1 { margin-bottom: 0.5rem; }
+  .research-header p:last-child { margin: 0; color: var(--muted); }
+  .research-content { font-size: 0.96rem; line-height: 1.8; }
+  .research-content :global(h2) { margin-top: 2.6rem; }
+  .research-content :global(h3) { margin-top: 2rem; }
+  .research-content :global(table) { display: block; overflow-x: auto; }
+  .research-content :global(blockquote) { border-left: 3px solid var(--brand); background: var(--paper-2); }
+  .research-pagination { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: var(--border); }
+  .research-pagination a:last-child { text-align: right; }
+  .research-pagination a { color: var(--brand); }
+</style>

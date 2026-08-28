@@ -1,0 +1,149 @@
+---
+title: 减重药物不是魔法：机制、疗效与副作用
+description: 把正在使用和研发中的减重药物放回机制、疗效、证据等级与真实副作用里看。包含可搜索词条表。
+date: 2026-08-28
+author: 潘勒斯
+tags:
+  - 肌肉科学
+  - 减重药物
+  - 文献综述
+  - GLP-1
+research:
+  - weight-loss-drugs/06-GLP-1机制与管线
+  - weight-loss-drugs/07-肌肉减少与FFM
+  - weight-loss-drugs/08-精神与皮肤副作用
+  - weight-loss-drugs/09-活动与代谢适应
+  - weight-loss-drugs/10-胃肠道与脏器安全
+  - weight-loss-drugs/11-停药与反弹
+  - weight-loss-drugs/12-特殊人群与心血管获益
+  - weight-loss-drugs/13-实践指南与未来
+---
+
+import Callout from '../../components/Callout.astro';
+import Term from '../../components/muscle/Term';
+import GlossaryPanel from '../../components/Glossary';
+import EvidencePanel, { EvidenceLink } from '../../components/EvidenceIndex';
+import { GLOSSARY_TERMS } from './weight-loss-drugs-glossary';
+import { EVIDENCE_SOURCES, EVIDENCE_CLAIMS } from './weight-loss-drugs-evidence';
+
+<Callout type="important" title="先看结论">
+减重药物的主要目标是降低体重、改善代谢和减轻肥胖相关疾病负担。肌肉变化不是 GLP-1 类药物的主要治疗目标，而是评估“减重质量”时必须关注的风险项；少数研发药物把保留瘦体重作为潜在加分方向。
+
+- 司美格鲁肽和替尔泊肽：已上市，人体减重证据较成熟
+- Retatrutide、CagriSema 和 Orforglipron：处于不同研发或审批阶段，长期安全性和最终适应证仍需更多证据
+- FFM 下降可能伴随减重发生，但 DXA 的瘦体重不等于纯骨骼肌
+- 自杀意念与 GLP-1 的因果关系尚未确立
+- 停药后体重回升是长期治疗中需要预先讨论的问题
+</Callout>
+
+## 这类药物究竟改变了什么
+
+GLP-1 是一种 <Term cn="肠促胰素" tip="餐后由肠道分泌、调节胰岛素和饱腹感的激素">incretin</Term>。药物激活 GLP-1R 后，主要通过三个方向改变进食和血糖调节：减少食欲和食物奖赏、延缓胃排空、在血糖升高时增强胰岛素分泌。<EvidenceLink claimId="mechanism">[E1]</EvidenceLink>
+
+可以把它理解成一条因果链：药物信号增强 → 饥饿和食物奖赏下降 → 能量摄入下降 → 体重下降 → 脂肪量和瘦体重共同变化。药物的治疗目标在体重和代谢结局，体成分变化则会受到蛋白摄入、抗阻训练、减重速度、年龄、疾病和基线肌肉量影响。
+
+替尔泊肽进一步激活 GIPR。Retatrutide 则加入 glucagon 受体，理论上同时提高能量消耗和脂肪氧化。CagriSema 把 semaglutide 和胰淀素类似物 cagrilintide 组合起来。多靶点的“更强”不等于“副作用更少”，尤其是恶心、呕吐和摄入不足仍需监测。
+
+## 药物谱系与证据成熟度
+
+| 类别 | 代表药物 | 主要作用 | 当前证据 |
+| --- | --- | --- | --- |
+| GLP-1 单靶 | semaglutide、liraglutide | 食欲下降、胃排空减慢、血糖改善 | 上市药物，减重和部分心血管结局证据成熟 |
+| GLP-1/GIP 双靶 | tirzepatide | GLP-1 与 GIP 协同调节摄食和代谢 | 上市药物，减重幅度较高 |
+| GLP-1/GIP/glucagon 三靶 | retatrutide | 在双靶基础上增加能量消耗通路 | 临床研发，长期安全性未定 |
+| 胰淀素 + GLP-1 | CagriSema | 两条饱腹通路叠加 | 已完成关键 III 期，上市状态依地区和时间而异 |
+| 口服非肽 GLP-1 | orforglipron | 以小分子口服方式激活 GLP-1R | 临床研发，关注可及性和胃肠道耐受 |
+| MC4R 激动 | setmelanotide | 恢复特定遗传性肥胖的中枢饱腹信号 | 主要用于遗传性肥胖，不是普通肥胖通用药 |
+| ActRII 抗体 | bimagrumab | 研发方向：减少脂肪并尽量保留瘦体重 | 潜在加分项，尚非 GLP-1 类药物的普遍目标 |
+
+## 上市药物与研发中的药物
+
+
+目前人体减重证据最完整的是 semaglutide 和 tirzepatide。STEP 1 中，semaglutide 2.4 mg 使用 68 周后平均体重变化约 −14.9%<EvidenceLink claimId="step-1-weight">[E2]</EvidenceLink>；SURMOUNT-1 中，tirzepatide 15 mg 使用 72 周后约 −20.9%<EvidenceLink claimId="surmount-1-weight">[E3]</EvidenceLink>。Retatrutide 二期 48 周约 −24.2%<EvidenceLink claimId="retatrutide-weight">[E4]</EvidenceLink>，但仍属于临床研发药物，长期安全性不能按上市药物推断。
+
+Orforglipron 的特点是口服非肽 GLP-1；setmelanotide 主要用于特定遗传性肥胖，并非普通肥胖人群的通用减重药。Bimagrumab/BELIEVE 关注减少脂肪并保留瘦体重，仍应视为研发中的保肌方向<EvidenceLink claimId="bimagrumab-direction">[E5]</EvidenceLink>。
+CagriSema 在 REDEFINE-1 中的 68 周平均体重变化约 −20.4%<EvidenceLink claimId="cagrisema-weight">[E6]</EvidenceLink>。Cagrilintide 单药二期的 26 周减重约 6.0%–10.8%，安慰剂组约 3.0%<EvidenceLink claimId="cagrilintide-weight">[E7]</EvidenceLink>。这些结果说明胰淀素通路具有减重效应，不等于已经证明它能保留更多肌肉。
+### 口服药物能改变什么
+
+Orforglipron 是口服非肽 GLP-1 激动剂。二期试验第 36 周各剂量组平均体重变化约 −9.4% 至 −14.7%，安慰剂组 −2.3%；达到至少 10% 减重者为 46%–75%，安慰剂组 9%<EvidenceLink claimId="orforglipron-weight">[E15]</EvidenceLink>。口服解决的是给药方式，不会自动消除 GLP-1 类常见的胃肠道耐受问题。
+
+## 平均减重数字应该怎么读
+
+平均值能描述试验总体效果，却不能告诉某个人最终会减多少。STEP 1 同时报告了不同减重阈值。第 68 周达到至少 5%、10% 和 15% 减重者，在 semaglutide 组分别为 86.4%、69.1% 和 50.5%，安慰剂组分别为 31.5%、12.0% 和 4.9%<EvidenceLink claimId="step1-response">[E16]</EvidenceLink>。
+
+比较不同试验时还要看 <Term cn="目标治疗效应" tip="临床试验预先定义如何处理停药、补救治疗和缺失数据">estimand</Term>。有的数字假定受试者持续用药，有的数字把停药和补救治疗也纳入结果。入组人群、生活方式干预、剂量递增和随访时间不同，都会影响最终数字。跨试验排名只能作为粗略线索，不能替代头对头试验。
+
+
+## 减重质量与肌肉变化
+
+减重时体重下降通常由脂肪量和 <Term cn="瘦体重" tip="fat-free mass，包含肌肉、水分、骨骼和器官等，不等同于骨骼肌">FFM</Term> 共同构成。肌肉和瘦体重在这里属于“减重质量”指标：它们帮助判断减重是否伴随功能损失，但不是这类药物追求的主要疗效终点。<EvidenceLink claimId="ffm">[E8]</EvidenceLink>
+
+现有 GLP-1 体成分研究提示，FFM 可能约占总减重的四分之一至两分之一，但比例受测量方法、基线体脂、蛋白摄入和训练状态影响。一个研究报告 FFM 占总减重 25%，另一个报告 40%，不一定互相矛盾。
+
+因此，“FFM 损失 30%”不能直接翻译成“肌肉损失 30%”。DXA、BIA 和 MRI 测到的是不同层面的身体成分；真正决定功能的还包括握力、椅子起立、步速和力量训练表现。老年人、低肌肉量人群和极低热量饮食者，更需要在减重过程中监测这些指标。
+
+抗阻训练和足量蛋白是合理且低成本的基础措施，但不能把它们包装成已经被充分验证的 GLP-1 专属保肌方案。HMB、肌酸、维生素 D、bimagrumab 等措施应分别判断证据，不能因为它们与肌肉有关，就推断能够抵消 GLP-1 期间的全部 FFM 损失。
+## 胃肠道耐受和剂量递增
+
+胃肠道反应通常在剂量递增期更明显。STEP 1 中，恶心和腹泻最常见，多为暂时性、轻至中度；因胃肠道事件永久停药者为 4.5%，安慰剂组 0.8%<EvidenceLink claimId="step1-gi">[E17]</EvidenceLink>。这个数字是“因胃肠道事件停药”的比例，不能当成所有胃肠道症状的发生率。
+
+SURMOUNT-1 中，因不良事件停药者在 tirzepatide 5、10、15 mg 组分别为 4.3%、7.1%、6.2%，安慰剂组 2.6%；常见不良事件主要是剂量递增期出现的轻至中度胃肠道反应<EvidenceLink claimId="surmount1-gi">[E18]</EvidenceLink>。剂量更高不意味着所有不良事件都会按同一比例增加，具体症状和停药决定仍有个体差异。
+
+研发药物也有类似问题。Retatrutide 二期试验中的胃肠道事件呈剂量相关，较低起始剂量可部分缓解；心率随剂量升高，在第 24 周达到峰值，之后下降<EvidenceLink claimId="retatrutide-safety">[E19]</EvidenceLink>。REDEFINE-1 中，CagriSema 组总体胃肠道不良事件为 79.6%，安慰剂组 39.9%，多为暂时性、轻至中度<EvidenceLink claimId="cagrisema-gi">[E20]</EvidenceLink>。
+
+这些数据说明耐受性不能只看“有没有恶心”。还要区分症状发生、严重程度、持续时间、是否发生在递增期，以及是否因此停药。持续呕吐、无法进食饮水、进行性腹痛或明显脱水需要尽快就医。
+
+
+## 精神、皮肤和活动相关问题
+
+### 精神情绪
+
+EMA 和 FDA 对 GLP-1 与自杀意念的审查尚未确认因果关系。肥胖本身、快速减重、既往抑郁、睡眠变化和合并用药都可能影响情绪。现有证据适合表述为“存在低频上市后信号，但因果证据不足”。<EvidenceLink claimId="mental-signal">[E9]</EvidenceLink> 若出现持续抑郁、自伤想法或异常行为，应立即寻求专业帮助。
+
+### 皮肤和毛发
+
+“Ozempic face”通常指快速减重后面部脂肪减少和皮肤松弛，不能简单归因于药物毒性。脱发可能属于休止期脱发，常见相关因素包括热量不足、蛋白质不足、疾病或生理应激。注射部位红肿、结节和皮疹则更接近给药方式或免疫反应。
+
+### 活动与代谢适应
+
+动物实验对 GLP-1 是否改变自发活动的方向并不一致。人体中，体重下降可能改善步行耐量和心肺负担，也可能因摄入不足、恶心或疲劳使非运动活动减少。REE 的变化不能直接等同于“代谢被药物破坏”；相关结果仍需区分体重变化、瘦体重变化和药物直接作用。
+
+## 停药后的体重变化
+
+STEP 1 延伸和 SURMOUNT-4 都提示，停药后体重可能明显回升。<EvidenceLink claimId="weight-regain">[E10]</EvidenceLink> 这与食欲、食物奖赏和能量消耗等生物调节重新变化有关，并不能简单归因于个人意志力。
+## 体重之外的临床结局
+
+体重不是唯一终点。SELECT 研究在已有心血管疾病、但没有糖尿病的超重/肥胖人群中观察到三点 <Term cn="主要不良心血管事件" tip="通常包括心血管死亡、非致死性心肌梗死和非致死性卒中">MACE</Term> 风险下降约 20%<EvidenceLink claimId="mace-select">[E11]</EvidenceLink>。SOUL 研究回答的是另一问题：口服 semaglutide 在高风险 2 型糖尿病人群中的心血管结局<EvidenceLink claimId="oral-cv">[E12]</EvidenceLink>。两者的人群和终点不同，不能把一个试验的结果直接外推到另一个人群。
+
+FLOW 研究关注 2 型糖尿病合并慢性肾病患者的肾脏结局<EvidenceLink claimId="kidney">[E13]</EvidenceLink>。HFpEF、阻塞性睡眠呼吸暂停和 MASH 研究也报告了各自疾病相关的症状、功能或组织学结局<EvidenceLink claimId="functional-outcomes">[E14]</EvidenceLink>。这些结果说明药物可能带来超出体重数字的获益，但每个结论都依赖特定入组人群、剂量、随访时间和预设终点。
+## 特殊人群需要单独阅读
+
+青少年证据不能从成人试验直接外推。STEP TEENS 中，第 68 周 BMI 平均变化为 semaglutide 组 −16.1%、安慰剂组 +0.6%；达到至少 5% 体重下降者为 73% 和 18%<EvidenceLink claimId="step-teens">[E21]</EvidenceLink>。研究同时包含生活方式干预，成长发育、心理健康和更长期安全性仍需持续观察。
+
+Setmelanotide 处理的是另一类问题。约 1 年时，达到至少 10% 体重下降者在 POMC 缺陷组为 80%，LEPR 缺陷组为 45%，同时观察到饥饿评分下降<EvidenceLink claimId="setmelanotide-genetic">[E22]</EvidenceLink>。这类证据依赖明确遗传诊断，不适合作为普通肥胖人群的通用减重效果。
+
+老年人、慢性肾病、肝病、妊娠计划和既往进食障碍患者也不能只套用平均减重数字。试验中的入排标准会排除部分高风险人群，实际决策需要结合具体药物说明书、合并用药和疾病状态。
+
+
+
+开始治疗前应讨论治疗目标、预计维持时间，以及因费用或副作用需要停药时的替代方案。自行加量、减量或突然停药，都不能从这些试验结果直接推出安全方案。
+
+想继续阅读完整研究过程、专题笔记和扩展参考资料，可以进入[原始研究资料页](/research/)。
+
+<GlossaryPanel terms={GLOSSARY_TERMS} client:load />
+<EvidencePanel sources={EVIDENCE_SOURCES} claims={EVIDENCE_CLAIMS} client:load />
+
+
+## 证据等级说明
+
+- **A**：大型随机对照试验或多中心 III 期试验
+- **B**：小型随机试验、亚组、体成分研究或高质量综述
+- **C**：观察性研究、真实世界数据或药物警戒信号
+- **D**：动物、细胞和机制推断
+- **E**：监管文件、试验注册、公司公告或尚无正式同行评议论文
+
+## 证据边界
+
+本文保留了随机试验、体成分研究、观察性研究、药物警戒和机制研究等不同类型的证据。已核验的来源用于支持主要结论；尚未完成来源核验的内容会明确标注为“待核验”，不应视为确定事实。
+
+> 本文用于研究资料整理与健康信息交流，不构成诊断、处方或停药建议。药物选择和剂量调整应由具备资质的医生根据个体情况决定。

@@ -1,22 +1,28 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Hero from "../../components/blog/Hero.astro";
-import Tags from "../../components/blog/Tags.astro";
-import ListPosts from "../../components/blog/ListPosts.astro";
-const pageTitle = "Web Development and Technology Blog | Fernando López | EFEELE";
-const description = "Welcome to my blog, where I share my passion for frontend development, web design, and the latest technology trends.";
-const ogimage ={
-    url: "/images/blogimage.webp",
-    alt: "EFEELE.dev logo with green background and light effect. Text: 'Web Development and Technology Blog' and URL 'www.efeele.dev'."
-};
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+const fmt = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 ---
 
-<Layout  pageTitle={pageTitle} description={description} ogimage={ogimage}>
-   
-    <Hero />
-    <Tags />
-    <div class="px-8 max-sm:px-4">
-        <ListPosts />
-    </div>
-
-</Layout>
+<BaseLayout title="博客文章" description="Arcana 文章目录">
+  <article class="prose">
+    <h1>✍️ 博客文章</h1>
+    {posts.map((post) => (
+      <section>
+        <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+        <blockquote>
+          <p>
+            <strong>{fmt(post.data.date)}</strong>
+            {post.data.tags.length > 0 && <> · {post.data.tags.join(' · ')}</>}
+          </p>
+          {post.data.description && <p>{post.data.description}</p>}
+        </blockquote>
+      </section>
+    ))}
+  </article>
+</BaseLayout>

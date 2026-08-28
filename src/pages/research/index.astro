@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const notes = await getCollection('research');
+const topicOrder = ['muscle', 'alcohol', 'weight-loss-drugs'];
+const topicLabels = { muscle: '增肌、减脂与肌肉减少', alcohol: '酒精与训练恢复', 'weight-loss-drugs': '减重药物与针剂' };
+const grouped = topicOrder.map((topic) => ({ topic, label: topicLabels[topic], notes: notes.filter((note) => note.data.topic === topic).sort((a, b) => a.id.localeCompare(b.id, 'en')) }));
+---
+
+<BaseLayout title="research · 原始研究资料" description="按研究主题组织的原始研究资料与专题笔记。">
+  <article class="prose research-index">
+    <p class="eyebrow">RESEARCH MATERIALS</p>
+    <h1>原始研究资料</h1>
+    <p class="lede">按研究主题组织的资料页。每篇博客文章可以关联一组延伸研究，读者可从文章末尾进入对应主题。</p>
+    <div class="research-notice"><strong>资料说明</strong><span>这些页面保留专题研究笔记的章节结构，包含不同证据等级。需要快速结论时，先阅读博客文章。</span></div>
+    {grouped.map(({ topic, label, notes: topicNotes }) => topicNotes.length > 0 && <section class="research-topic" aria-labelledby={`topic-${topic}`}>
+      <h2 id={`topic-${topic}`}>{label}</h2>
+      <nav class="research-list" aria-label={label}>
+        {topicNotes.map((note, index) => <a class="research-card" href={`/research/${note.id.replace(/\.md$/, '')}/`}><span class="research-number">{String(index + 1).padStart(2, '0')}</span><span><strong>{note.data.title}</strong><small>{note.data.description}</small></span><span class="research-arrow" aria-hidden="true">↗</span></a>)}
+      </nav>
+    </section>)}
+  </article>
+</BaseLayout>
+
+<style>
+  .research-index { max-width: 860px; margin: 0 auto; }
+  .eyebrow { font: 0.72rem var(--font-mono); letter-spacing: 0.08em; color: var(--muted); }
+  .lede { max-width: 720px; font-size: 1.08rem; line-height: 1.8; }
+  .research-notice { display: grid; gap: 0.25rem; margin: 2rem 0; padding: 1rem; border: var(--border); background: var(--paper-2); }
+  .research-notice strong { font: 0.75rem var(--font-mono); text-transform: uppercase; }
+  .research-notice span { line-height: 1.6; }
+  .research-topic { margin-top: 2.5rem; }
+  .research-topic h2 { margin-bottom: 1rem; }
+  .research-list { display: grid; gap: 0.65rem; }
+  .research-card { display: grid; grid-template-columns: 2.5rem 1fr auto; gap: 0.75rem; align-items: center; padding: 1rem; border: var(--border); color: var(--ink); text-decoration: none; background: var(--card); transition: transform 120ms ease, background 120ms ease; }
+  .research-card:hover { transform: translateX(4px); background: var(--yellow); }
+  .research-number, .research-arrow { font: 0.75rem var(--font-mono); color: var(--muted); }
+  .research-card strong, .research-card small { display: block; }
+  .research-card strong { font-size: 1rem; }
+  .research-card small { margin-top: 0.25rem; color: var(--muted); line-height: 1.5; }
+</style>

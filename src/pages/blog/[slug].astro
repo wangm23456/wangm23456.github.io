@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const research = await getCollection('research');
+const researchById = new Map(research.map((item) => [item.id.replace(/\.md$/, '').toLowerCase(), item]));
+const fmt = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article class="prose">
+    <h1>{post.data.title}</h1>
+    <div class="post-meta">
+      <time>{fmt(post.data.date)}</time>
+      <span>{post.data.author}</span>
+      {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+    </div>
+    <Content />
+    {post.data.research.length > 0 && <section class="related-research" aria-labelledby="related-research-title">
+      <h2 id="related-research-title">research</h2>
+      <p>延伸阅读：本篇文章使用的研究资料。</p>
+      <div class="related-research__list">
+        {post.data.research.map((id) => {
+          const item = researchById.get(id.replace(/\.md$/, '').toLowerCase());
+          return item && <a href={`/research/${item.id.replace(/\.md$/, '')}/`}><strong>{item.data.title}</strong><span>{item.data.description}</span></a>;
+        })}
+      </div>
+    </section>}
+  </article>
+</BaseLayout>
+
+<style>
+  .related-research { margin-top: 3rem; padding-top: 1.25rem; border-top: var(--border); }
+  .related-research p { color: var(--muted); }
+  .related-research__list { display: grid; gap: 0.6rem; }
+  .related-research__list a { display: block; padding: 0.75rem 0.9rem; border: var(--border); color: var(--ink); text-decoration: none; background: var(--paper-2); }
+  .related-research__list a:hover { background: var(--yellow); }
+  .related-research__list strong, .related-research__list span { display: block; }
+  .related-research__list span { margin-top: 0.25rem; color: var(--muted); font-size: 0.9rem; }
+</style>
