@@ -18,7 +18,7 @@ const research = defineCollection({
     title: z.string(),
     description: z.string().optional(),
     date: z.coerce.date(),
-    topic: z.enum(["muscle", "alcohol", "weight-loss-drugs"]),
+    topic: z.enum(["muscle", "alcohol", "weight-loss-drugs", "fitness-supplements"]),
   }),
 });
 

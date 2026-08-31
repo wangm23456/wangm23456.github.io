@@ -3,8 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 const notes = await getCollection('research');
-const topicOrder = ['muscle', 'alcohol', 'weight-loss-drugs'];
-const topicLabels = { muscle: '增肌、减脂与肌肉减少', alcohol: '酒精与训练恢复', 'weight-loss-drugs': '减重药物与针剂' };
+const topicOrder = ['muscle', 'alcohol', 'weight-loss-drugs', 'fitness-supplements'];
+const topicLabels = { muscle: '增肌、减脂与肌肉减少', alcohol: '酒精与训练恢复', 'weight-loss-drugs': '减重药物与针剂', 'fitness-supplements': '运动补剂、睾酮与类固醇' };
 const grouped = topicOrder.map((topic) => ({ topic, label: topicLabels[topic], notes: notes.filter((note) => note.data.topic === topic).sort((a, b) => a.id.localeCompare(b.id, 'en')) }));
 ---
 

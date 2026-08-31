@@ -31,7 +31,8 @@
           "enum": [
             "muscle",
             "alcohol",
-            "weight-loss-drugs"
+            "weight-loss-drugs",
+            "fitness-supplements"
           ]
         },
         "$schema": {
