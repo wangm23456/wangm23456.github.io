@@ -182,7 +182,9 @@ html.dark body { background-image: none; }
 
 .prose pre code { background: none; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; padding: 0px; }
 
-.prose img { max-width: 100%; border: var(--border); box-shadow: var(--shadow-sm); background: var(--card); }
+img { max-width: 100%; height: auto; }
+
+.prose img { display: block; max-width: 100%; max-height: 520px; width: auto; height: auto; margin: 1.5rem auto; border: var(--border); box-shadow: var(--shadow-sm); background: var(--card); object-fit: contain; }
 
 .prose ul, .prose ol { padding-left: 1.5rem; }
 

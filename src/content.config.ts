@@ -1,3 +1,4 @@
+/// <reference path="../.astro/types.d.ts" />
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
