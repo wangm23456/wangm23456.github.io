@@ -1,0 +1,275 @@
+---
+title: 给 Skill 加上评分，就能复刻 EvoMap 吗？
+description: 从一次代理任务出发，拆解 EvoMap 与 Skill、skills.sh、Context7 的边界，评估它真正增加了什么，以及哪些地方仍然不可靠
+date: 2026-09-07
+author: 潘勒斯
+tags:
+  - Agent
+  - EvoMap
+  - Skill
+  - Context7
+  - 技术观察
+---
+
+import Callout from '../../components/Callout.astro';
+
+我最近一直在想一个很朴素的问题。
+
+如果我自己做一个 Skill 仓库，给每个 Skill 写上触发条件、适用环境和验证命令，再给它们加一套评分，哪个 Skill 失败了就降权，下次换另一个。这样做出来的东西，和 EvoMap 还有多大差别？
+
+这个问题其实比「EvoMap 是什么」更重要。
+
+因为它逼着我们把几件经常混在一起的东西拆开。Context7 负责找最新的文档，Skill 负责规定事情怎么做，EvoMap 负责根据过去的结果选择哪种做法。它们看起来都在给 Agent 加知识，工作位置却完全不同。
+
+<Callout type="important" title="一页结论">
+EvoMap 的 Gene 不是 Skill 无法表达的新知识。它真正想标准化的是 Skill 的发现、路由、验证、反馈和跨代理复用。对大多数团队，Context7 类文档库加 Skill 仓库、执行日志和场景化评分，已经能覆盖它的大部分实用价值。
+</Callout>
+
+## 先别急着给它加上 AI 光环
+
+Context7 的官方定位很清楚，它把最新的、带版本的库文档和代码示例放进 AI 编程助手的上下文里。你问 Next.js 的中间件怎么写，它负责把对应版本的文档找出来，减少模型拿旧 API 拼代码的机会。[Context7 官方文档](https://context7.com/docs/overview)
+
+它解决的是事实问题。
+
+Skill 解决的是流程问题。一个 Skill 可以告诉代理，遇到一类任务时先检查什么，再做什么，哪些目录不能碰，最后用什么命令验证。`SKILL.md` 只是最常见的载体，里面还可以带脚本、参考资料和其他资源。
+
+[skills.sh](https://skills.sh/) 把这类能力做成了一个公开目录。官方 CLI 支持查找、安装和更新 Skill，排行榜主要根据匿名安装遥测来展示哪些 Skill 更热门。[skills.sh 文档](https://www.skills.sh/docs) [排行榜说明](https://www.skills.sh/docs/faq)
+
+安装量能说明有人把它装进了环境，不能说明它解决任务的成功率有多高。
+
+EvoMap 关心的正是这中间缺的那一段。某个策略在什么信号下被选中，改了什么，测试有没有通过，下一次还要不要继续用它。
+
+## Gene 不是一份更神秘的 Skill
+
+EvoMap 的公开 Gene Schema 要求一条 Gene 带有信号匹配规则、策略步骤、约束、验证命令和内容哈希。它看起来大概是这样。
+
+```json
+{
+  "id": "gene_repair_auth_expiry",
+  "category": "repair",
+  "signals_match": ["auth", "expired-token", "test-failure"],
+  "strategy": [
+    "检查过期时间比较",
+    "检查时区和时间单位",
+    "只做最小可回滚修改",
+    "运行认证相关测试",
+    "AVOID: 不修改 .env 和权限配置"
+  ],
+  "constraints": {
+    "max_files": 3,
+    "forbidden_paths": [".env", "secrets/"]
+  },
+  "validation": ["npm test -- auth"]
+}
+```
+
+它和一份写得很好的 Skill 有什么根本差别吗？没有那么大。
+
+真正多出来的是几张记录表。
+
+Capsule 记录这条策略过去有没有真实执行成功，改了多少文件，在哪个环境里运行，验证命令返回了什么。EvolutionEvent 再把信号、策略、Mutation、执行和结果串起来。Gene 是做法，Capsule 是证据，Event 是过程。
+
+所以 Gene 更像「带触发条件和结果记录的策略条目」。它不是程序本身，也不是模型权重。Evolver 的 README 甚至明确说，独立运行时它主要负责扫描记忆、选择资产、生成一份受 GEP 约束的提示，不直接替宿主代理修改源代码。[Evolver README](https://github.com/EvoMap/evolver) [Gene Schema](https://raw.githubusercontent.com/EvoMap/gep-sdk-js/master/schemas/gene.schema.json)
+
+这点很关键。EvoMap 不是一个更大的 Skill 文件夹。
+
+它试图在 Skill 文件夹外面再包一层选择、验证和反馈。
+
+## 一次任务到底怎么跑
+
+假设代理接到一个任务，修复过期 Token 测试失败。
+
+日志里出现了 `expected 401, received 200`。系统先把它整理成几个信号，`auth`、`expired-token`、`test-failure`。
+
+接着，路由器在本地记忆或远程 Hub 里找相似策略。它可能找到一条过去修过类似问题的 Gene，也可能找到一份成功 Capsule。选择依据不会只有关键词，还可能包括历史成功率、环境相似度、失败次数和时间衰减。
+
+然后系统创建一条 Mutation，说明这次属于修复，目标文件在哪里，预计影响多大，风险等级是什么。
+
+真正干活的仍然是宿主代理。它读取代码，调用 MCP 工具，按照 Skill 或 Gene 给出的步骤修改文件，再运行测试。GEP 只规定策略和记录的边界，不会凭空获得文件系统权限。
+
+测试通过以后，系统记录一次成功 Capsule。下次又遇到类似信号，这条策略更容易被选中。测试失败，当前策略会被降权、抑制，严重时进入禁用路径，系统再尝试别的策略或生成新的候选。
+
+```text
+错误信号
+  -> 找候选策略
+  -> 按历史结果路由
+  -> 宿主代理执行 Skill 或工具
+  -> 测试与约束验证
+  -> 记录成功或失败
+  -> 更新下一次选择
+```
+
+这才是 EvoMap 所说的进化。
+
+一次任务只是选择、执行、验证和记录。多次任务之后，系统才可能从成功轨迹里蒸馏出新 Gene，或者把稳定的做法整理成更适合人阅读的 Skill。
+
+## 自己做一个 Skill 仓库，能覆盖多少
+
+答案是，大部分团队工作都能覆盖。
+
+最小版本不需要另造一套协议。沿用 `SKILL.md`，给 frontmatter 增加一些字段，再写一个运行包装器就够了。
+
+```yaml
+name: auth-debug
+version: 1.2.0
+triggers:
+  - expired-token
+  - auth-test-failure
+constraints:
+  max_files: 3
+  forbidden_paths:
+    - .env
+validation:
+  command: npm test -- auth
+  expected_exit_code: 0
+risk: low
+```
+
+每次代理使用 Skill 时，包装器记录这些东西。
+
+```json
+{
+  "skill": "auth-debug@1.2.0",
+  "task_type": "expired-token",
+  "environment": "node-22",
+  "result": "success",
+  "validation": "passed",
+  "changed_files": 1
+}
+```
+
+接下来算一个面向场景的分数。
+
+```text
+分数
+= 触发匹配度
+× 历史成功率
+× 环境相似度
+× 新鲜度
+- 失败惩罚
+- 风险惩罚
+```
+
+这里的分数不是给 Skill 贴一个永远不变的星级。它应该回答的是，面对当前任务，这条经验值不值得再试。
+
+做到这一步，你已经复制了 EvoMap 最实用的那部分。Skill 负责流程，运行记录负责证据，路由器负责选择，验证器负责把「模型说成功了」和「任务真的通过了」分开。
+
+## EvoMap 还多了什么
+
+它多的东西主要集中在协议和网络，不在 Skill 的表达能力里。
+
+第一是资产格式。Gene、Capsule、EvolutionEvent、ValidationReport 都有公开 Schema，内容可以用 SHA-256 做身份标识。这样不同运行时至少有机会交换同一种记录。
+
+第二是生命周期。GEP 把 Detect、Select、Mutate、Hypothesize、Execute、Evaluate、Solidify 写进了一套流程。一个 Skill 仓库当然也能自己设计这条流程，只是你要自己定义字段、接口和兼容规则。[GEP Protocol](https://evomap.ai/wiki/16-gep-protocol)
+
+第三是跨代理和远程交换。GEP MCP Server 暴露了召回、记录、发布、搜索和验证等能力，Hub 负责网络侧的资产和节点。对于多个组织、多个代理运行时共享经验的场景，这套标准有意义。[GEP MCP Server](https://github.com/EvoMap/gep-mcp-server)
+
+第四是它试图把激励和声誉也放进来。ATP 文档把任务交付、Gene、Capsule 和结算放在同一套经济协议里。不过这部分仍然偏早期，远程服务、积分和声誉也带来新的中心化依赖。
+
+如果你只是给自己的 Claude Code、Codex 或内部 Agent 找一套稳定工作流，这些额外层大概率用不上。
+
+## Context7 放在哪里
+
+Context7 和 EvoMap 并不在同一层。
+
+Context7 解决的是「这个库现在怎么用」。它从源代码库和文档里整理版本化上下文，通过 MCP 或 CLI 加到提示里。它的目标是降低旧文档和幻觉 API 带来的错误。[Context7 GitHub](https://github.com/upstash/context7)
+
+Skill 解决的是「这件事按什么流程做」。
+
+EvoMap 解决的是「在当前问题和当前环境下，哪条流程过去更容易成功」。
+
+把它们放在一起，链条会更清楚。
+
+```text
+Context7
+  提供当前版本的事实和 API 文档
+        ↓
+Skill
+  组织一次具体的操作流程
+        ↓
+代理执行并运行验证
+        ↓
+Outcome Ledger
+  保存成功、失败和环境信息
+        ↓
+路由器
+  下次选择更合适的 Skill
+```
+
+Context7 可以成为 Skill 执行时的事实来源。比如 Skill 要配置 Next.js 中间件，先通过 Context7 找当前版本的 API，再按 Skill 的步骤修改和验证。
+
+但 Context7 不会告诉你哪条 Skill 在你的仓库里成功过。它提供文档，不提供任务经验。
+
+## 真正危险的地方是评分
+
+EvoMap 最容易被低估的风险，不是 Schema 怎么写，而是评分系统很容易把坏经验当成好经验。
+
+测试命令太弱，任何输出都返回零，系统就会给错误策略加分。一次任务其实是人工补完的，记录却把成功归给了 Gene，下一次路由就会继续选择它。一个策略只在某个仓库有效，被带到另一个环境，失败以后还可能污染全局权重。
+
+公开 Issue 已经出现过类似问题。有人报告单个 Gene 在循环里被反复选中，「没有错误」被当成成功，最后出现大量成功事件却没有对应 Capsule 的情况。[Evolver Issue 562](https://github.com/EvoMap/evolver/issues/562)
+
+还有上下文膨胀。另一个 Issue 报告 Gene 和 Capsule 历史太长，执行说明被截成很短的一段，代理拿到了策略，却拿不到真正该做什么的上下文。[Evolver Issue 552](https://github.com/EvoMap/evolver/issues/552)
+
+这也是为什么「给知识库加权重」远远不是全部工作。你还要回答四个问题。
+
+- 谁证明这次任务真的成功了
+- 结果应该归功于哪条 Skill 或 Gene
+- 这个结果能不能迁移到另一个环境
+- 失败以后应该降权当前策略，还是修正验证器
+
+如果这些问题答不好，评分系统只是在更快地放大错误。
+
+## 它现在值得用吗
+
+我会把答案分成两层。
+
+如果你在做内部 Agent 系统，先做 Skill 仓库、运行记录、验证器和场景化路由。你不需要为了得到一个成功率字段，就把整个项目改造成 GEP。一个本地 JSONL 或数据库，一组可靠的测试，再加一层简单的选择器，已经可以解决很多实际问题。
+
+如果你在做跨组织的 Agent 能力市场，情况不同。你会开始需要统一资产格式，需要知道一条经验是谁发布的，在哪个环境验证过，能不能撤销，其他运行时能不能读懂。到了这一步，Gene、Capsule 和 Event 这样的协议化设计才会有额外价值。
+
+但这个价值仍然要付钱。
+
+公开材料里已经能看到 Schema 版本漂移，官方 Wiki 和不同仓库出现过 `1.7.0` 与 `1.13.0` 等不一致。Evolver 也曾出现内存文件增长、验证命令和沙箱冲突、跨平台安装问题。EvoMap 的关联论文报告了 4,590 次试验和 45 个 scientific code-solving scenarios，这些数字来自项目关联研究的摘要，不能当成生产环境或跨领域有效性的证明。[项目关联论文](https://arxiv.org/abs/2604.15097)
+
+一篇项目外的研究则报告了资产网络里的低复用率和验证质量问题。它的数字值得重视，但本轮没有复现数据集，不能直接把论文结果当成平台的最终判决。[Behind EvoMap](https://arxiv.org/html/2605.25815v3)
+
+安全边界也不能靠哈希解决。Evolver 曾出现过命令注入漏洞记录，远程 Skill 和 Capsule 还可能把不可信内容放回代理上下文。哈希能证明文件没有被改过，不能证明里面的策略安全。[GitHub Advisory](https://github.com/advisories/GHSA-j5w5-568x-rq53) [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-42076)
+
+## 我的判断
+
+EvoMap 有价值，但它的价值没有宣传语那么大。
+
+它没有发明一种 Skill 完全表达不了的新知识。它做的是把 Skill 之外那圈容易被忽略的东西显式化，什么时候选，过去是否有效，谁验证过，失败后怎么处理，能不能带到另一个代理里。
+
+这层东西对重复代码修复、运维自动化、测试代理和多个 Agent 共用经验很有用。对于一次性写作、普通问答和只需要查文档的任务，它很可能只是增加成本。
+
+如果让我今天从零开始搭一个类似系统，我会这样排顺序。
+
+```text
+第一步，建 Skill 仓库
+第二步，给 Skill 写触发条件、约束和验证命令
+第三步，记录每次执行结果和环境
+第四步，按场景做路由和失败降权
+第五步，再考虑跨组织交换和 Gene 兼容
+```
+
+先把一次任务是否真的成功这件事做好，再讨论策略怎样进化。
+
+这也是 EvoMap 最值得留下的一句话，Agent 的经验不能只保存成一段越来越长的 Prompt。它需要有条件，有结果，也要允许失败。
+
+## 参考来源
+
+- [EvoMap GEP Protocol](https://evomap.ai/wiki/16-gep-protocol)
+- [EvoMap Gene Schema](https://raw.githubusercontent.com/EvoMap/gep-sdk-js/master/schemas/gene.schema.json)
+- [Evolver README](https://github.com/EvoMap/evolver)
+- [GEP MCP Server](https://github.com/EvoMap/gep-mcp-server)
+- [skills.sh](https://skills.sh/)
+- [skills.sh 文档](https://www.skills.sh/docs)
+- [Context7 官方文档](https://context7.com/docs/overview)
+- [Context7 GitHub](https://github.com/upstash/context7)
+- [From Procedural Skills to Strategy Genes](https://arxiv.org/abs/2604.15097)
+- [Behind EvoMap](https://arxiv.org/html/2605.25815v3)
+- [Evolver Issue 552](https://github.com/EvoMap/evolver/issues/552)
+- [Evolver Issue 562](https://github.com/EvoMap/evolver/issues/562)
+- [CVE-2026-42076 GitHub Advisory](https://github.com/advisories/GHSA-j5w5-568x-rq53)
+- [CVE-2026-42076 NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-42076)
