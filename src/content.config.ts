@@ -15,13 +15,18 @@ const blog = defineCollection({
 });
 
 const research = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/research" }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
     date: z.coerce.date(),
-    topic: z.enum(["muscle", "alcohol", "weight-loss-drugs", "fitness-supplements"]),
+    topic: z.enum([
+      "muscle",
+      "alcohol",
+      "weight-loss-drugs",
+      "fitness-supplements",
+    ]),
   }),
 });
 
 export const collections = { blog, research };
-
