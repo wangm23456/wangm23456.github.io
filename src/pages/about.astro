@@ -2,15 +2,28 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="关于" description="关于潘勒斯的个人博客">
+<BaseLayout title="关于我" description="关于潘勒斯、Arcana，以及站点角色波波（ZOMPOPO）。">
   <article class="prose">
-    <h1>Engineering Is Magic</h1>
-    <h2>内容方向</h2>
+    <h1>关于潘勒斯</h1>
+    <p lang="en"><em>Engineering Is Magic.</em></p>
+    <p>Arcana 是我的个人站。我在这里记录读过的论文、拆解过的系统，以及研究过程中遇到的有意思的问题。</p>
+    <h2>这里有什么</h2>
     <ul>
-      <li>技术与工程：模型、架构设计、量化与解码、开源工具</li>
-      <li>阅读与思考：技术书籍、论文精读、方法论</li>
-      <li>科学专题：以文献研究为基础的深度专题</li>
-      <li>生活随笔</li>
+      <li><a href="/blog/">写作</a>：AI 模型、架构、开源工具和科学专题。</li>
+      <li><a href="/research/">研究笔记</a>：长文背后的文献、证据和专题笔记。</li>
+      <li><a href="/space-now/">太空观测</a>：追踪火箭发射与任务动态，也可以去 <a href="/solar-watch/">Solar Watch</a> 看太阳活动。</li>
     </ul>
+    <h2>认识波波</h2>
+    <div class="mascot-note">
+      <img src="/zompopo/avatar.webp" width="128" height="130" loading="lazy" alt="波波的头像，灰色头发上绑着粉色头巾" />
+      <p>波波（ZOMPOPO）是 Arcana 的站点角色。回到<a href="/">首页</a>，可以看到波波的不同姿态。</p>
+    </div>
+    <p>订阅 <a href="/rss.xml">RSS</a>，获取原创文章更新。</p>
   </article>
 </BaseLayout>
+
+<style>
+  .mascot-note { display: flex; align-items: center; gap: 0.7rem 1rem; padding: 0.65rem 1rem; background: var(--card); border: var(--border-thin); }
+  .mascot-note img { flex: 0 0 auto; width: 4.5rem; margin: 0; padding: 0.2rem; background: #f7c4df; border: 0; border-radius: 0.4rem; box-shadow: none; }
+  .mascot-note p { margin: 0; }
+</style>

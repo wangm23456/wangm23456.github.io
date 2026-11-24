@@ -10,5 +10,6 @@ export default new Map([
 ["src/content/blog/needle-2-on-device-agent.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fneedle-2-on-device-agent.mdx&astroContentModuleFlag=true")],
 ["src/content/blog/rsi-anything-world-model-loop.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Frsi-anything-world-model-loop.mdx&astroContentModuleFlag=true")],
 ["src/content/blog/supplements-muscle-gain-efficiency.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fsupplements-muscle-gain-efficiency.mdx&astroContentModuleFlag=true")],
-["src/content/blog/weight-loss-drugs.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fweight-loss-drugs.mdx&astroContentModuleFlag=true")]]);
+["src/content/blog/weight-loss-drugs.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fweight-loss-drugs.mdx&astroContentModuleFlag=true")],
+["src/content/blog/yang-mills-millennium-openai.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fyang-mills-millennium-openai.mdx&astroContentModuleFlag=true")]]);
 		

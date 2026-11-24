@@ -1,0 +1,175 @@
+---
+title: 杨–米尔斯：一个 72 年的数学难题，与 OpenAI 的证明主张
+description: 规范场论、千禧年大奖问题、质量间隙——五个交互图，讲清 OpenAI「存在性证明」主张的来龙去脉与各方分歧
+date: 2026-10-28
+author: 潘勒斯
+tags:
+  - 理论物理
+  - 数学
+  - 千禧年问题
+  - OpenAI
+  - 交互式
+---
+
+import Callout from '../../components/Callout.astro';
+import HistoryTimeline from '../../components/ym/HistoryTimeline';
+import ConfinementPotential from '../../components/ym/ConfinementPotential';
+import WilsonLoop from '../../components/ym/WilsonLoop';
+import CorrelationDecay from '../../components/ym/CorrelationDecay';
+import RoadmapTabs from '../../components/ym/RoadmapTabs';
+
+2026 年 10 月 26 日，OpenAI 宣布其内部模型产出了一个量子场论存在性证明——这是数学物理学最深的开放问题之一，也是七大千禧年大奖问题之一。而受托验证它的五人委员会——Gross、Douglas、Jaffe、Klebanov、Nekrasov——给出了另一个态度：**先验证，再发布**。
+
+这篇文章讲三件事：杨–米尔斯理论是什么，千禧年问题难在哪，OpenAI 的证明主张到了哪一步。
+
+## 什么是杨–米尔斯理论
+
+1954 年，杨振宁和 Robert Mills 在普林斯顿做了一个思想实验：<em>如果电磁学的对称性不是在全宇宙统一，而是在每一个时空点上各自成立，会发生什么？</em>
+
+电磁学背后的对称性叫 **U(1) 规范对称**：你可以给电子场的相位整体转一个角度，物理不变。杨–Mills 把「整体转角度」升级成「**每个点各转各的**」——这叫局域规范对称。代价立刻出现：要让物理在每个点独立转动下仍不变，你必须引入新的场来「补偿」不同点之间的转动差。这个被逼出来的场，就是**规范玻色子**。
+
+电磁学里，补偿场就是光子。而如果你把对称群从 U(1) 换成更复杂的**非阿贝尔群**——比如描述强相互作用的 SU(3)——补偿场自己就会和自己相互作用。这是光子不会做的事：光子不带电，但**胶子带色荷**。
+
+$$F_{\mu\nu}^a = \partial_\mu A_\nu^a - \partial_\nu A_\mu^a + g\, f^a{}_{bc}\, A_\mu^b A_\nu^c$$
+
+第三项（$g f^a{}_{bc} A^b A^c$）是非阿贝尔的全部新意：胶子自相互作用，也是一切困难的根源。
+
+标准模型由三个规范理论拼成：SU(3)（强力，杨–米尔斯）、SU(2)×U(1)（电弱，经 Higgs 机制破缺）。也就是说，<em>整个粒子物理的大厦，就建立在杨–米尔斯理论之上</em>。它不是众多理论之一——它是粒子物理的语言本身。
+
+<Callout type="tip" title="问一个物理学家">
+既然这理论这么成功，为什么还要「证明」它？物理学家用它的方式（微扰展开 + 超级计算机格点模拟）从来没有真正<em>构造</em>过它。就像工程师天天用流体力学，但 Navier–Stokes 方程的解是否永远存在光滑，数学家至今不知道。杨–米尔斯更糟：它甚至没有一个「存在一个良定义的量子理论」的严格证明。
+</Callout>
+
+## 历史
+
+<HistoryTimeline client:visible />
+
+## 千禧年问题的两半
+
+Jaffe–Witten 题面（2000，Clay 数学研究所，100 万美元）要求**同时**证明两件事，它们互相咬合：
+
+<Callout type="important" title="第一半 · 存在性">
+构造一个<strong>良定义</strong>的四维量子杨–米尔斯理论：关联函数在短距离与渐近自由预言一致，满足 Wightman 或 Osterwalder–Schrader 公理。核心难点：<strong>重整化在所需的一般性下从未被严格化</strong>——你需要证明格距→0（连续统极限）与体积→∞（无穷体积极限）都存在。Douglas 2026 年综述 Key Point 3 原文。
+</Callout>
+
+<Callout type="important" title="第二半 · 质量间隙 Δ > 0">
+真空之上最轻的激发也有<strong>严格正的质量</strong>：哈密顿量谱在 (0, Δ) 区间为空。物理证据充足：真实 QCD 如此，格点模拟看到胶球谱。但 Douglas 综述 Key Point 4 的判断是：<strong>「广泛认为没有明确的证明路径」</strong>（no clear path is known towards proving it）。
+</Callout>
+
+### 质量间隙与夸克禁闭
+
+质量间隙有一个漂亮的物理等价表述：你拉夸克对的距离，能量**线性增长**而不是趋于常数。这就是「夸克拉不开」的数学表述。
+
+<ConfinementPotential client:visible />
+
+### 面积定律
+
+Wilson 1974 年的洞见：取一个闭合的矩形回路，沿它走一圈的规范场平均值按**面积**而非周长衰减——这只能由「弦」穿过的面积解释：
+
+<WilsonLoop client:visible />
+
+强耦合下 $\langle W \rangle \sim e^{-\sigma \cdot \mathrm{Area}}$（面积定律，禁闭），弱耦合下 $\sim e^{-\lambda \cdot \mathrm{Perimeter}}$（周长定律，无禁闭）。<em>困难所在</em>：物理需要我们停在两端之间的某个「不动点」上——那里恰好是现有严格数学全部失效的地方。
+
+### 指数聚类
+
+质量间隙 Δ 的直接后果是**指数聚类**：相距 r 的两点关联按 $e^{-\Delta r}$ 衰减。没有间隙（Δ = 0），关联衰减慢成幂律，理论「长程纠缠」：
+
+<CorrelationDecay client:visible />
+
+这就是为什么质量间隙重要。Δ > 0 意味着**物理上可分辨的粒子存在**，也意味着理论对远距离细节「健忘」（聚类）——而后者正是数学家把无穷体积极限拼起来的关键工具。Clay 题面把它写进了存在性论证本身：有限体积一致谱隙是通往无穷体积极限的工具性前提，不是事后的附加奖。
+
+## 为什么这么难：两条路线与 25 年的等待
+
+**Bałaban 纲领（1980s）。** Tadeusz Balaban 用几十篇论文的篇幅，试图把 Wilson 格点的重整化群严格化：把「场」分成小场和大场，小场区做精细估计，大场区用紧致群的有界性控制。Douglas 综述与 Chatterjee 2025 年 Clay 讲座的共识：<em>紫外稳定性这一关键性质 Balaban 证了，但连续统构造从未完成</em>。完成它「formidable」（艰巨），另辟蹊径「perhaps even more formidable」。
+
+**概率论路线（2015–）。** Parisi–Wu 1981 年的洞见：量子场论的欧氏测度可以看成一个随机偏微分方程（SPDE）的平稳分布。Hairer 的正则结构（2014 年菲尔兹奖）让数学家第一次有能力处理这类「超临界」方程。2024 年 Chandra–Chevyrev–Hairer–Shen 在 *Inventiones* 上完成了三维 YM–Higgs 的严格构造。Chatterjee 在 2025 年 10 月的 Clay 讲座上给出的判断：
+
+<Callout type="note" title="Chatterjee · Clay 千禧讲座 · 2025-10-15">
+「这个问题虽然极难，但似乎并非完全遥不可及。<strong>有可能在接下来的 10 到 15 年内被解决</strong>，但谁知道呢？」
+</Callout>
+
+注意这个讲座的时间：<em>2025 年 10 月</em>。一年后，OpenAI 的证明主张出现了。
+
+### 严格化的三条路线
+
+<RoadmapTabs client:visible />
+
+## 2026 年 10 月：AI 证明主张时间线
+
+时间线压缩成三周，每一步的验证状态各不相同。
+
+<Callout type="note" title="四个数字">
+**1147 页**：OpenAI 声称的 YM 存在性证明手稿长度 · **10,000** 并发 AI agents（Navier–Stokes 项目规模）· **1300 亿**输出 token（NS 求解消耗）· **0 页**：YM 物理结果的公开字节数（截至 10-28）
+</Callout>
+
+### 三周简史
+
+**9 月 1–8 日（前传）**，传闻触发。OpenAI 听说「两个千禧问题已被解决」，启动全部千禧问题评估。9 月 5 日，其内部模型（「显著强于 GPT-6 Astra」）在约 88 小时后产出 Navier–Stokes 反例（满足 Fefferman 题面的 C/D 选项，注意题面本来就允许外力），并附 Lean 形式化。同期 NYU 的 Buckmaster 与 Anthropic 的 Alpöge 公开了三个流体力学爆破结果，Buckmaster 随后公开指控 OpenAI 抢发——<em>双方一手文本并列记录，本文不做裁断</em>。
+
+**9 月 9 日–10 月 17 日**，同一管线转战数学。OpenAI 模型产出 YM 存在性证明（9 月 9 日）、QCD（9 月 18 日）、ETH 反例的 Lean 化（10 月 17 日）、Kakeya/局部平滑（10 月 18 日）。10 月 7 日，仓库出现一批撤稿：一篇论文的符号错误连带撤下 3 篇、修改 14 篇。这条<em>自查纠错记录</em>后来成了校准 YM 主张可信度的先验。
+
+**10 月 26 日**，公开公告。三结果、三种释放策略，见下文。数学与 CS 结果连同 Lean 证明立即公开到 GitHub；**物理结果暂缓，交给五人委员会「监护」（custody）**：David Gross（主持）、Michael Douglas、Arthur Jaffe、Igor Klebanov、Nikita Nekrasov。
+
+### 三种释放策略
+
+<Callout type="tip" title="策略 A · 全公开 — 数学（Kakeya / 局部平滑）">
+AI 自然语言证明 + Lean 形式化，公告当日开源到 GitHub。公开度 100%。
+</Callout>
+
+<Callout type="tip" title="策略 B · 公开 + 外部分组 — 计算机科学（ETH 为假）">
+材料公开，Impagliazzo–Paturi–Williams 工作组（应其要求立即公开）负责解释与检验。公开度 100% + 解释在建。
+</Callout>
+
+<Callout type="caution" title="策略 C · 押后 — 物理（YM / QCD 存在性）">
+AI 产物<strong>不公开</strong>；委员会先验证（「在确信正确之前不发布」），再由委员会自行撰写说明。公开度 0%。
+</Callout>
+
+数学/CS 两线的 Lean 产物结构完全合规：仓库含 `formalization.yaml`，176 篇论文、208 个形式化条目，自注「Catalog of papers with a formalized main result」（对 `openai/math` 仓库的一手解析）。物理线**没有任何此类产物公开**。OpenAI 自述「不知道哪种最有用」。三种策略放在一起，正好构成一组对照：同样的模型，不同的公开程度。
+
+### 同一天，AGMAI 发文反对
+
+AGMAI——数学与人工智能顾问组，IAS 主办，9 位成员（含 Gowers、Witten、Hairer），基于 600+ 份社群问卷制定 AI 数学结果的释放规范。时间线值得注意：
+
+<Callout type="important" title="10 月 25 日 · 公告前一天">
+AGMAI 发文系统反对「实验室指定数学家先行接触」模式，列出五条：<strong>接入延迟/不平等、剥夺共同体能动性、选择偏倚、借用声誉、不必要</strong>。次日 OpenAI 公告的委员会安排，恰好就是这个模式。
+</Callout>
+
+<Callout type="caution" title="10 月 26 日 · 与公告同日">
+AGMAI 点名 YM/QCD，要求立即公开 NL + Lean 输出：「OpenAI 自己说押后是为了等 Lean 形式化完成。按他们自己的说法，现在完成了——<strong>再推迟就没有科学理由了。</strong>」
+</Callout>
+
+### 委员会在验什么
+
+KITP 声明里有一句话，现在读起来像是对上一次事故的直接回应。委员会的第一步是「检查定义与问题陈述与标准表述一致、形式化与非形式化处理对齐」。
+
+这正是 10 月报道的 Navier–Stokes 事件教训。同管线的 NS 自然语言证明与 Lean 形式化**不严格对应**——Lean 编译通过，但偏离了那份自然语言证明。OpenAI 承认不匹配，承诺修正（截至 10 月 28 日，仓库最后一次提交仍停在 9 月 10 日）。
+
+### 各方现状
+
+| 声称方 | 声称内容 | 规模 | 状态（2026-10-28） |
+| --- | --- | --- | --- |
+| **OpenAI** | 4D 规范+费米子存在性（含 QCD / 标准模型统一完备理论），纯 YM 为子问题；**质量间隙未主张** | 1147 页 + Lean（声称完成） | 委员会验证中，产物未公开 |
+| **Alpöge–Sussman**（Anthropic 侧） | SU(2) YM4 存在性论证（conditional，自述「slop in progress」）；质量间隙未处理 | 2314 页，全公开 | 公开仓库，无人验证，Lean 主定理未证 |
+| **学界（Douglas 综述）** | 质量间隙：零主张、零公认路径 | — | 开放：「no clear path」 |
+
+还有一点：两家的产物规模不同——OpenAI 1147 页、Alpöge–Sussman 2314 页——但质量间隙，谁都没有碰。
+
+Clay 题面把质量间隙和存在性绑在一起。到了 2026 年 10 月，问题又多了一层：<strong>AI 一次产出上千页的手稿，谁来读，怎么确认它是对的？</strong>
+
+委员会主张先验证再发布；AGMAI 主张立即公开。两种主张各有道理，争议还会持续。
+
+<Callout type="note" title="本文的立场">
+本文学术中立：所有陈述锚定一手来源（Nature 综述页、OpenAI 公告、KITP 委员会声明、AGMAI 官网全文、双方论文 PDF、公开仓库文件）。「主张」不写成「证明」；罗生门处并列记录、不做裁断。截至 2026-10-28，OpenAI 的 YM 证明仍是<strong>主张</strong>。委员会「在确信正确之前不发布」，1147 页的审读才刚刚开始。
+</Callout>
+
+## 一手来源
+
+- Douglas, M.R. [The Yang–Mills Millennium problem](https://doi.org/10.1038/s42254-025-00909-2). *Nat Rev Phys* 8, 86–97 (2026).
+- Jaffe, A. & Witten, E. [Quantum Yang–Mills Theory](https://www.claymath.org/wp-content/uploads/2022/06/yangmills.pdf)（Clay 官方题面, 2000）
+- OpenAI. [Working with academic communities to build scientific understanding](https://openai.com/index/building-scientific-understanding-with-academic-communities/)（2026-10-26）
+- Douglas, Gross, Jaffe, Klebanov, Nekrasov. [Statement by the shepherding committee](https://www.kitp.ucsb.edu/sites/default/files/YM_working_group.pdf)（KITP, 2026-10）
+- AGMAI. [官网：10-26 即时释放建议 · 10-25 反指定模式文 · 9-29 释放指南](https://agmai.org/)（2026）
+- Chatterjee, S. [Yang–Mills existence and mass gap（Clay 讲座转录）](http://web.archive.org/web/20251208043312/https://souravchatterjee.su.domains/beam-clay-2025-trans.pdf)（2025-10-15）
+- OpenAI. [On the Navier–Stokes Millennium Prize Problem](http://web.archive.org/web/20261021192805/https://openai.com/index/navier-stokes-solution/)（2026-09-08; Wayback 快照）
+- Buckmaster, T.（与 Alpöge, L.）[公开声明](https://cims.nyu.edu/~tristanb/statement.pdf)（2026-09-07）
+- Woit, P. [Secret Unified Physics Slop](https://www.math.columbia.edu/~woit/wordpress/?p=15948). Not Even Wrong（2026-10-26）
