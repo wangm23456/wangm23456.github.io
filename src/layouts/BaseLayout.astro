@@ -1,16 +1,17 @@
 ---
-import '../styles/global.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/dark.css';
+import '../styles/legacy-widgets.css';
 import 'katex/dist/katex.min.css';
 import Logo from '../components/Logo.astro';
 
 interface Props {
   title: string;
   description?: string;
-  wide?: boolean;
-  home?: boolean;
 }
 
-const { title, description, wide = false, home = false } = Astro.props;
+const { title, description } = Astro.props;
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const nav = [
   { text: '首页', href: '/' },
@@ -32,6 +33,7 @@ const nav = [
     <link rel="alternate icon" type="image/png" href="/favicon-32.png?v=2" />
     <link rel="apple-touch-icon" href="/favicon-180.png?v=2" />
     <link rel="alternate" type="application/rss+xml" title="Arcana" href="/rss.xml" />
+    <link rel="preload" href="/fonts/chillax-500.woff2" as="font" type="font/woff2" crossorigin />
     <script is:inline>
       {
         let saved;
@@ -42,13 +44,13 @@ const nav = [
       }
     </script>
   </head>
-  <body class:list={[{ 'is-home': home }]}>
+  <body>
     <a class="skip-link" href="#main-content">跳到主要内容</a>
-    <header class="site-header arcana-header">
-      <div class="site-header__inner">
-        <a class="site-title" href="/" aria-label="Arcana 首页">
-          <Logo size={30} />
-          <span class="wordmark">ARCANA</span>
+    <header class="site-head">
+      <div class="head-inner container">
+        <a class="brand" href="/" aria-label="Arcana 首页">
+          <Logo size={28} />
+          <span class="wordmark">Arcana</span>
         </a>
         <nav class="site-nav" aria-label="主导航">
           {nav.map((item) => {
@@ -63,16 +65,74 @@ const nav = [
       </div>
     </header>
 
-    <main id="main-content" class:list={['container', { 'container--wide': wide, 'container--home': home }]}>
+    <main id="main-content">
       <slot />
     </main>
 
-    <footer class="site-footer arcana-footer">
-      <div class="footer-inner">
-        <span><strong>Arcana</strong> · 潘勒斯的个人站</span>
-        <div><a href="/about/">关于</a><a href="/rss.xml">RSS <span aria-hidden="true">↗</span></a></div>
+    <footer class="site-foot torn-top">
+      <div class="foot-inner container">
+        <p class="foot-motto" lang="en">Engineering Is Magic.</p>
+        <div class="foot-row">
+          <span class="foot-colophon">潘勒斯的个人站 · 和波波一起读 AI、工程与科学</span>
+          <nav class="foot-links" aria-label="页脚">
+            <a href="/about/">关于</a>
+            <a href="/rss.xml">RSS</a>
+          </nav>
+        </div>
       </div>
     </footer>
+
+    <script is:inline>
+      {
+        const dismissTerm = (term) => {
+          term.removeAttribute('data-tip-dismissed');
+          term.querySelector('.term__tip').classList.remove('term__tip--show');
+          term.querySelector('.term__trigger').setAttribute('aria-expanded', 'false');
+          if (term.contains(document.activeElement)) term.setAttribute('data-tip-dismissed', '');
+        };
+        const dismissTerms = (except) => {
+          document.querySelectorAll('.term').forEach((term) => {
+            if (term !== except) dismissTerm(term);
+          });
+        };
+        const positionTip = (term) => {
+          const tip = term.querySelector('.term__tip');
+          term.toggleAttribute('data-tip-below', term.getBoundingClientRect().top < 160);
+          tip.style.setProperty('--term-tip-offset', '0px');
+          const rect = tip.getBoundingClientRect();
+          const margin = 8;
+          const shift = Math.min(0, window.innerWidth - margin - rect.right) + Math.max(0, margin - rect.left);
+          tip.style.setProperty('--term-tip-offset', `${shift}px`);
+        };
+        document.addEventListener('click', (event) => {
+          const trigger = event.target.closest('.term > .term__trigger');
+          dismissTerms(trigger?.closest('.term'));
+          if (!trigger) return;
+          const term = trigger.parentElement;
+          const tip = term.querySelector('.term__tip');
+          const opening = !tip.classList.contains('term__tip--show');
+          tip.classList.toggle('term__tip--show', opening);
+          trigger.setAttribute('aria-expanded', String(opening));
+          term.toggleAttribute('data-tip-dismissed', !opening);
+          if (opening) positionTip(term);
+        });
+        document.addEventListener('focusin', (event) => {
+          const term = event.target.closest('.term');
+          dismissTerms(term);
+          if (term) {
+            term.removeAttribute('data-tip-dismissed');
+            positionTip(term);
+          }
+        });
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') dismissTerms();
+        });
+        window.addEventListener('resize', () => {
+          const term = document.querySelector('.term:has(.term__tip--show), .term:has(.term__trigger:focus)');
+          if (term) positionTip(term);
+        });
+      }
+    </script>
 
     <script is:inline>
       {
@@ -92,29 +152,55 @@ const nav = [
 </html>
 
 <style>
-  .is-home { --paper: #f8f5ef; --card: #fffdf8; --ink: #201b21; --muted: #5f555f; background-image: none; }
-  :global(html.dark) .is-home { --paper: #19151b; --card: #241f27; --ink: #faf2f8; --muted: #c2b4c0; }
-  .skip-link { position: fixed; z-index: 50; top: 0.5rem; left: 0.5rem; transform: translateY(-150%); padding: 0.5rem 0.8rem; background: var(--ink); color: var(--paper); }
-  .skip-link:focus { transform: none; }
-  .arcana-header { border-bottom: 1px solid color-mix(in srgb, var(--ink) 23%, transparent); }
-  .site-header__inner { max-width: 76rem; display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.6rem 1rem; padding: 0.65rem clamp(1rem, 3vw, 2rem); min-height: 4rem; }
-  .site-title { justify-self: start; color: var(--ink); }
-  .wordmark { font-weight: 900; font-size: 1.05rem; letter-spacing: 0.09em; line-height: 1; }
-  .site-nav { gap: 0.3rem; }
-  .arcana-header .site-nav a { padding: 0.45rem 0.65rem; border: 0; background: transparent; box-shadow: none; border-radius: 0.25rem; }
-  .arcana-header .site-nav a:hover { background: var(--card); transform: none; }
-  .arcana-header .site-nav a[aria-current='page'] { color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.37em; }
-  .arcana-header .dark-toggle { justify-self: end; width: 2.3rem; height: 2.3rem; padding: 0; border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent); border-radius: 50%; background: transparent; font-size: 1.05rem; box-shadow: none; }
-  .arcana-header .dark-toggle:hover { background: var(--card); transform: none; }
-  .container--home { max-width: 76rem; padding: clamp(1.6rem, 4vw, 3.25rem) clamp(1rem, 3vw, 2rem) 4rem; }
-  .arcana-footer { border-top: 1px solid color-mix(in srgb, var(--ink) 23%, transparent); background: var(--paper); color: var(--muted); padding: 0; text-align: left; }
-  .footer-inner { max-width: 76rem; margin: auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem 1rem; padding: 1.1rem clamp(1rem, 3vw, 2rem); }
-  .footer-inner div { display: flex; gap: 1rem; }
-  .arcana-footer a { color: var(--ink); text-underline-offset: 0.2em; }
-  @media (max-width: 625px) {
-    .site-header__inner { grid-template-columns: 1fr auto; gap: 0.2rem 0.6rem; padding-bottom: 0.35rem; }
-    .site-nav { grid-column: 1 / -1; grid-row: 2; margin-inline: -0.55rem; }
-    .arcana-header .site-nav a { padding-inline: 0.55rem; }
-    .arcana-header .dark-toggle { grid-column: 2; grid-row: 1; }
+  .site-head { position: sticky; top: 0; z-index: var(--z-sticky-nav); background: color-mix(in srgb, var(--color-paper) 88%, transparent); backdrop-filter: blur(10px); border-bottom: var(--rule-hair) solid var(--color-rule); }
+  .head-inner { display: flex; align-items: center; gap: var(--space-md); min-height: 64px; }
+  .brand { display: inline-flex; align-items: center; gap: var(--space-xs); color: var(--color-ink); text-decoration: none; }
+  .wordmark { font-weight: 600; font-size: var(--text-lg); letter-spacing: 0.02em; }
+  .site-nav { display: flex; align-items: center; gap: var(--space-3xs); margin-inline: auto; overflow-x: auto; scrollbar-width: none; }
+  .site-nav::-webkit-scrollbar { display: none; }
+  .site-nav a { min-width: 44px; padding: var(--space-2xs) var(--space-sm); border-radius: var(--radius-lab-control); color: var(--color-ink-2); font-size: var(--text-md); text-decoration: none; white-space: nowrap; transition: background var(--dur-micro) var(--ease-snap), color var(--dur-micro) var(--ease-snap); }
+  .site-nav a:hover { background: var(--color-paper-3); color: var(--color-ink); }
+  .site-nav a[aria-current='page'] { background: var(--color-ink); color: var(--color-paper); font-weight: 600; }
+  .dark-toggle { display: grid; place-items: center; width: 44px; height: 44px; margin-left: auto; border: 1px solid var(--color-edge); border-radius: var(--radius-lab); background: var(--color-card); color: var(--color-ink); font-size: var(--text-lg); cursor: pointer; box-shadow: var(--shadow-card); transition: transform var(--dur-micro) var(--ease-spring); }
+  .dark-toggle:hover { transform: rotate(20deg); }
+  .dark-toggle:active { transform: rotate(20deg) translateY(2px); }
+
+  @media (max-width: 40rem) {
+    .head-inner { display: grid; grid-template-columns: 1fr auto; gap: var(--space-2xs); padding-block: var(--space-xs); }
+    .dark-toggle { grid-column: 2; grid-row: 1; }
+    .site-nav { grid-row: 2; grid-column: 1 / -1; width: 100%; justify-content: space-between; }
+    .site-nav a { padding-inline: var(--space-2xs); }
   }
+  .site-foot { margin-top: var(--space-xl); background: var(--color-paper-2); color: var(--color-ink-2); }
+  .foot-inner { padding-block: var(--space-2xl) var(--space-xl); }
+  .foot-motto { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-size: var(--text-display-s); letter-spacing: var(--tracking-display); line-height: 1.05; max-width: 20ch; text-wrap: balance; }
+  .foot-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-sm) var(--space-lg); margin-top: var(--space-xl); padding-top: var(--space-md); border-top: var(--rule-hair) solid var(--color-rule); }
+  .foot-colophon { font-size: var(--text-sm); color: var(--color-muted); }
+  .foot-links { display: flex; gap: var(--space-md); }
+  .foot-links a { min-width: 44px; color: var(--color-ink); font-size: var(--text-md); }
+  .foot-links a:hover { color: var(--color-accent-2); }
+</style>
+
+<style is:global>
+  body { font-weight: 500; }
+  .skip-link { position: fixed; z-index: var(--z-toast); top: var(--space-xs); left: var(--space-xs); display: inline-flex; align-items: center; min-height: 44px; transform: translateY(-150%); padding: var(--space-xs) var(--space-sm); background: var(--color-ink); color: var(--color-paper); border-radius: var(--radius-input); font-weight: 600; }
+  .skip-link:focus { transform: none; }
+
+  /* Controls (design.md §Controls): card-stock press */
+  .btn { display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: 48px; padding: var(--space-xs) var(--space-lg); border: 1px solid var(--color-edge); border-radius: var(--radius-stock); font-weight: 600; font-size: var(--text-md); text-decoration: none; cursor: pointer; transition: transform var(--dur-short) var(--ease-spring), box-shadow var(--dur-short) var(--ease-spring), background var(--dur-micro) var(--ease-snap); }
+  .btn:active { transform: translateY(2px); }
+  .btn-primary { background: var(--color-accent); color: var(--color-accent-ink); border-color: transparent; box-shadow: var(--shadow-card); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 2px 4px oklch(20% 0.014 255 / 0.08), 0 16px 32px -14px oklch(20% 0.014 255 / 0.28); }
+  .btn-primary:active { transform: translateY(2px); box-shadow: var(--shadow-card); }
+  .btn-ghost { background: var(--color-paper-2); color: var(--color-ink); }
+  .btn-ghost:hover { background: var(--color-paper-3); }
+
+  /* Signature: torn-paper seams */
+  .torn-b { clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 10px), 97% calc(100% - 3px), 93.5% calc(100% - 11px), 89% calc(100% - 4px), 84.5% calc(100% - 10px), 80% calc(100% - 2px), 75.5% calc(100% - 12px), 71% calc(100% - 5px), 66% calc(100% - 11px), 61% calc(100% - 3px), 56% calc(100% - 10px), 51% calc(100% - 4px), 46% calc(100% - 12px), 41% calc(100% - 3px), 36% calc(100% - 10px), 31% calc(100% - 5px), 26% calc(100% - 11px), 21% calc(100% - 2px), 16% calc(100% - 9px), 11% calc(100% - 4px), 6% calc(100% - 12px), 3% calc(100% - 3px), 0% calc(100% - 9px)); }
+  .torn-top { clip-path: polygon(0% calc(0% + 9px), 3% calc(0% + 3px), 6% calc(0% + 12px), 11% calc(0% + 4px), 16% calc(0% + 9px), 21% calc(0% + 2px), 26% calc(0% + 11px), 31% calc(0% + 5px), 36% calc(0% + 10px), 41% calc(0% + 3px), 46% calc(0% + 12px), 51% calc(0% + 4px), 56% calc(0% + 10px), 61% calc(0% + 3px), 66% calc(0% + 11px), 71% calc(0% + 5px), 75.5% calc(0% + 12px), 80% calc(0% + 2px), 84.5% calc(0% + 10px), 89% calc(0% + 4px), 93.5% calc(0% + 11px), 97% calc(0% + 3px), 100% calc(0% + 10px), 100% 100%, 0% 100%); }
+
+  /* Paper grain overlay (Hum) */
+  .grain { position: relative; }
+  .grain::after { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: 0.09; mix-blend-mode: multiply; }
+  html.dark .grain::after { mix-blend-mode: screen; opacity: 0.07; }
 </style>

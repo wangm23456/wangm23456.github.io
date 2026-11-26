@@ -25,7 +25,7 @@ const STUDIES: Study[] = [
       "4 周 -40% 能量赤字 + 高强度抗阻 + HIIT；高蛋白组 2.4 g/kg/d vs 常规组 1.2 g/kg/d",
     result:
       "高蛋白组：瘦体重 +1.2 ± 1.0 kg，脂肪量 -5.0 ± 0.8 kg；常规组瘦体重 +0.1 ± 1.0 kg。组间差异 P<0.05。",
-    takeaway: '"赤字期增肌"的最经典人体 RCT 证据——蛋白剂量是分水岭。',
+    takeaway: '"赤字期增肌"的最经典人体 RCT 证据：蛋白剂量是分水岭。',
     refs: [
       {
         label: "PMID:26817506",
@@ -45,7 +45,7 @@ const STUDIES: Study[] = [
     intervention: "慢速减重 0.7% 体重/周 vs 快速 1.0%/周；含 6.5 周随访",
     result:
       "两组体重降幅相近（-5.6% vs -5.5%）；慢速组瘦体重 +2.0% ± 1.3%，上肢力量优势维持至随访。",
-    takeaway: "训练有素者也能在赤字下增肌——但速率要慢。",
+    takeaway: "训练有素者也能在赤字下增肌，但速率要慢。",
     refs: [
       {
         label: "PMID:21558571",
@@ -143,16 +143,17 @@ export default function EvidenceCards() {
               aria-expanded={isOpen}
               style={{
                 width: "100%",
+                minHeight: "44px",
                 textAlign: "left",
                 display: "flex",
-                alignItems: "baseline",
+                flexWrap: "wrap",
+                alignItems: "center",
                 gap: "0.6rem",
                 padding: "0.65rem 0.9rem",
                 border: "none",
                 boxShadow: "none",
-                background: isOpen ? "var(--accent-yellow)" : "transparent",
-                color: "var(--ink)",
-                cursor: "pointer",
+                background: isOpen ? "var(--color-accent)" : "transparent",
+                color: isOpen ? "var(--color-accent-ink)" : "var(--ink)",
               }}
             >
               <strong
@@ -163,9 +164,9 @@ export default function EvidenceCards() {
               <span
                 style={{
                   fontFamily: "var(--font-mono)",
-                  fontSize: "0.68rem",
-                  background: "var(--brand)",
-                  color: "var(--card)",
+                  fontSize: "0.8125rem",
+                  background: "var(--color-accent)",
+                  color: "var(--color-accent-ink)",
                   padding: "0 0.4rem",
                   border: "2px solid var(--ink)",
                 }}
@@ -182,7 +183,7 @@ export default function EvidenceCards() {
               <div
                 style={{
                   padding: "0.6rem 0.9rem 0.8rem",
-                  fontSize: "0.88rem",
+                  fontSize: "1rem",
                   borderTop: "var(--border-thin)",
                 }}
               >
@@ -204,7 +205,7 @@ export default function EvidenceCards() {
                 <p
                   style={{
                     fontFamily: "var(--font-mono)",
-                    fontSize: "0.72rem",
+                    fontSize: "0.8125rem",
                     margin: "0.4rem 0 0",
                   }}
                 >

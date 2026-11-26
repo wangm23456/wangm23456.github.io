@@ -112,20 +112,21 @@ export default function BamDynamicsVisualizer() {
       >
         {/* Voltage Sag Slider */}
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', fontFamily: 'var(--font-mono)', marginBottom: '0.2rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', marginBottom: '0.2rem' }}>
             <span>供电母线电压 (Battery Sag):</span>
-            <b style={{ color: voltage < 7.0 ? 'var(--brand)' : 'var(--ink)' }}>{voltage.toFixed(1)} V</b>
+            <b style={{ color: voltage < 7.0 ? 'var(--color-accent-2)' : 'var(--ink)' }}>{voltage.toFixed(1)} V</b>
           </div>
           <input
             type="range"
+            aria-label="供电母线电压 Battery Sag"
             min="6.4"
             max="8.4"
             step="0.1"
             value={voltage}
             onChange={(e) => setVoltage(Number(e.target.value))}
-            style={{ width: '100%', accentColor: 'var(--brand)', cursor: 'pointer' }}
+            style={{ width: '100%', accentColor: 'var(--brand)', minHeight: '44px' }}
           />
-          <div style={{ fontSize: '0.65rem', color: 'var(--muted)', display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--muted)', display: 'flex', justifyContent: 'space-between' }}>
             <span>6.4V (重载亏电)</span>
             <span>7.4V (标称)</span>
             <span>8.4V (满电)</span>
@@ -134,20 +135,21 @@ export default function BamDynamicsVisualizer() {
 
         {/* Friction Factor */}
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', fontFamily: 'var(--font-mono)', marginBottom: '0.2rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', marginBottom: '0.2rem' }}>
             <span>库伦/斯蒂贝克摩擦 (Friction):</span>
             <b>{frictionFactor.toFixed(1)}×</b>
           </div>
           <input
             type="range"
+            aria-label="库伦/斯蒂贝克摩擦 Friction"
             min="0.3"
             max="2.2"
             step="0.1"
             value={frictionFactor}
             onChange={(e) => setFrictionFactor(Number(e.target.value))}
-            style={{ width: '100%', accentColor: 'var(--yellow)', cursor: 'pointer' }}
+            style={{ width: '100%', accentColor: 'var(--color-accent-2)', minHeight: '44px' }}
           />
-          <div style={{ fontSize: '0.65rem', color: 'var(--muted)', display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--muted)', display: 'flex', justifyContent: 'space-between' }}>
             <span>0.3× (轻载顺滑)</span>
             <span>1.0× (标准)</span>
             <span>2.2× (重度咬合)</span>
@@ -156,20 +158,21 @@ export default function BamDynamicsVisualizer() {
 
         {/* Gear Backlash */}
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', fontFamily: 'var(--font-mono)', marginBottom: '0.2rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', marginBottom: '0.2rem' }}>
             <span>齿轮箱死区旷量 (Backlash):</span>
             <b>±{backlashDeg.toFixed(1)}°</b>
           </div>
           <input
             type="range"
+            aria-label="齿轮箱死区旷量 Backlash"
             min="0.0"
             max="2.0"
             step="0.1"
             value={backlashDeg}
             onChange={(e) => setBacklashDeg(Number(e.target.value))}
-            style={{ width: '100%', accentColor: 'var(--blue)', cursor: 'pointer' }}
+            style={{ width: '100%', accentColor: 'var(--blue)', minHeight: '44px' }}
           />
-          <div style={{ fontSize: '0.65rem', color: 'var(--muted)', display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--muted)', display: 'flex', justifyContent: 'space-between' }}>
             <span>0.0° (理想无隙)</span>
             <span>1.0° (实测出厂)</span>
             <span>2.0° (磨损旷量)</span>
@@ -180,31 +183,31 @@ export default function BamDynamicsVisualizer() {
       {/* Waveform Canvas View */}
       <div style={{ border: 'var(--border-thin)', background: 'var(--card)', padding: '0.6rem', position: 'relative' }}>
         {/* Legends & Toggles */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem', fontSize: '0.72rem', fontFamily: 'var(--font-mono)', marginBottom: '0.4rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem', fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', marginBottom: '0.4rem', alignItems: 'center' }}>
           <span style={{ color: 'var(--muted)', fontWeight: 700 }}>轨迹对比：</span>
-          <span style={{ color: '#888', fontWeight: 700 }}>— 目标位姿指令 (Target)</span>
-          <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+          <span style={{ color: 'var(--muted)', fontWeight: 700 }}>目标位姿指令 (Target)</span>
+          <label style={{ minHeight: '44px', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
             <input type="checkbox" checked={showRealHardware} onChange={(e) => setShowRealHardware(e.target.checked)} />
             <span style={{ color: 'var(--ink)', fontWeight: 800 }}>● 真实硬件响应 (Real HW)</span>
           </label>
-          <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+          <label style={{ minHeight: '44px', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
             <input type="checkbox" checked={showIdealPd} onChange={(e) => setShowIdealPd(e.target.checked)} />
-            <span style={{ color: 'var(--brand)', fontWeight: 700 }}>--- 理想无损 PD (Naive Sim)</span>
+            <span style={{ color: 'var(--color-accent-2)', fontWeight: 700 }}>--- 理想无损 PD (Naive Sim)</span>
           </label>
-          <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+          <label style={{ minHeight: '44px', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
             <input type="checkbox" checked={showBam} onChange={(e) => setShowBam(e.target.checked)} />
-            <span style={{ color: 'var(--blue)', fontWeight: 800 }}>— BAM M6 仿真器拟合 (BAM Sim)</span>
+            <span style={{ color: 'var(--blue)', fontWeight: 800 }}>BAM M6 仿真器拟合 (BAM Sim)</span>
           </label>
         </div>
 
-        <svg viewBox={`0 0 ${svgW} ${svgH}`} style={{ width: '100%', height: '220px', background: '#fafafa', border: '1px solid var(--ink)' }}>
+        <svg viewBox={`0 0 ${svgW} ${svgH}`} style={{ width: '100%', height: 'auto', background: 'var(--color-card)', border: '1px solid var(--ink)' }}>
           {/* Zero grid line */}
-          <line x1={padL} y1={getY(0)} x2={svgW - padR} y2={getY(0)} stroke="#ddd" strokeWidth="1.5" />
-          <line x1={padL} y1={getY(40)} x2={svgW - padR} y2={getY(40)} stroke="#eee" strokeWidth="1" strokeDasharray="3 3" />
-          <line x1={padL} y1={getY(-40)} x2={svgW - padR} y2={getY(-40)} stroke="#eee" strokeWidth="1" strokeDasharray="3 3" />
+          <line x1={padL} y1={getY(0)} x2={svgW - padR} y2={getY(0)} stroke="var(--color-muted)" strokeWidth="1.5" />
+          <line x1={padL} y1={getY(40)} x2={svgW - padR} y2={getY(40)} stroke="var(--color-rule)" strokeWidth="1" strokeDasharray="3 3" />
+          <line x1={padL} y1={getY(-40)} x2={svgW - padR} y2={getY(-40)} stroke="var(--color-rule)" strokeWidth="1" strokeDasharray="3 3" />
 
           {/* Target Trajectory */}
-          <path d={toPath(plotData.target)} fill="none" stroke="#999" strokeWidth="1.8" strokeDasharray="4 3" />
+          <path d={toPath(plotData.target)} fill="none" stroke="var(--color-muted)" strokeWidth="1.8" strokeDasharray="4 3" />
 
           {/* Naive Ideal PD */}
           {showIdealPd && (
@@ -222,46 +225,46 @@ export default function BamDynamicsVisualizer() {
           )}
 
           {/* Axis Labels */}
-          <text x={padL - 6} y={getY(60) + 4} textAnchor="end" fontSize="9" fill="var(--muted)">+60°</text>
-          <text x={padL - 6} y={getY(0) + 4} textAnchor="end" fontSize="9" fill="var(--muted)">0°</text>
-          <text x={padL - 6} y={getY(-40) + 4} textAnchor="end" fontSize="9" fill="var(--muted)">-40°</text>
+          <text x={padL - 6} y={getY(60) + 4} textAnchor="end" fontSize="13" fill="var(--muted)">+60°</text>
+          <text x={padL - 6} y={getY(0) + 4} textAnchor="end" fontSize="13" fill="var(--muted)">0°</text>
+          <text x={padL - 6} y={getY(-40) + 4} textAnchor="end" fontSize="13" fill="var(--muted)">-40°</text>
 
           {/* Time axis */}
-          <text x={padL} y={svgH - 8} fontSize="9" fill="var(--muted)">0.0 s</text>
-          <text x={padL + plotW * 0.5} y={svgH - 8} textAnchor="middle" fontSize="9" fill="var(--muted)">1.0 s (扰动阶跃)</text>
-          <text x={svgW - padR} y={svgH - 8} textAnchor="end" fontSize="9" fill="var(--muted)">2.0 s</text>
+          <text x={padL} y={svgH - 8} fontSize="13" fill="var(--muted)">0.0 s</text>
+          <text x={padL + plotW * 0.5} y={svgH - 8} textAnchor="middle" fontSize="13" fill="var(--muted)">1.0 s (扰动阶跃)</text>
+          <text x={svgW - padR} y={svgH - 8} textAnchor="end" fontSize="13" fill="var(--muted)">2.0 s</text>
         </svg>
       </div>
 
       {/* Quantitative Benchmark Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.6rem' }}>
         <div style={{ border: 'var(--border-thin)', background: 'var(--card)', padding: '0.5rem 0.7rem' }}>
-          <div style={{ fontSize: '0.68rem', color: 'var(--muted)', fontWeight: 700 }}>理想 PD 相对真机误差</div>
-          <div style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--brand)' }}>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--muted)', fontWeight: 700 }}>理想 PD 相对真机误差</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--color-accent-2)' }}>
             RMSE {pdRmse}°
           </div>
-          <div style={{ fontSize: '0.65rem', color: 'var(--muted)' }}>忽略电压跌落与静摩擦死区</div>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--muted)' }}>忽略电压跌落与静摩擦死区</div>
         </div>
 
         <div style={{ border: 'var(--border-thin)', background: 'var(--card)', padding: '0.5rem 0.7rem' }}>
-          <div style={{ fontSize: '0.68rem', color: 'var(--muted)', fontWeight: 700 }}>BAM 拟合真机误差</div>
-          <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#2a9d8f' }}>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--muted)', fontWeight: 700 }}>BAM 拟合真机误差</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--color-success)' }}>
             RMSE {bamRmse}°
           </div>
-          <div style={{ fontSize: '0.65rem', color: 'var(--muted)' }}>包含反电动势与斯蒂贝克摩擦</div>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--muted)' }}>包含反电动势与斯蒂贝克摩擦</div>
         </div>
 
-        <div style={{ border: 'var(--border-thin)', background: 'var(--yellow)', padding: '0.5rem 0.7rem' }}>
-          <div style={{ fontSize: '0.68rem', color: 'var(--ink)', fontWeight: 800 }}>Sim-to-Real 拟合提升</div>
+        <div style={{ border: 'var(--border-thin)', background: 'var(--color-accent)', color: 'var(--color-accent-ink)', padding: '0.5rem 0.7rem' }}>
+          <div style={{ fontSize: '0.8125rem', fontWeight: 800 }}>Sim-to-Real 拟合提升</div>
           <div style={{ fontSize: '1.25rem', fontWeight: 900 }}>
             {((Number(pdRmse) - Number(bamRmse)) / (Number(pdRmse) || 1) * 100).toFixed(1)}%
           </div>
-          <div style={{ fontSize: '0.65rem', color: 'var(--ink)' }}>零迁移失步摔倒率大幅降低</div>
+          <div style={{ fontSize: '0.8125rem' }}>零迁移失步摔倒率大幅降低</div>
         </div>
       </div>
 
       {/* Engineering Insight */}
-      <div style={{ fontSize: '0.76rem', background: 'var(--paper)', border: '1px dashed var(--ink)', padding: '0.6rem 0.8rem', lineHeight: '1.45' }}>
+      <div style={{ fontSize: '1rem', background: 'var(--paper)', border: '1px dashed var(--ink)', padding: '0.6rem 0.8rem', lineHeight: '1.45' }}>
         <b>为什么微型双足必须重写执行器物理？</b><br />
         800g 机器人的关节伺服（Dynamixel XL330）质量仅 18g，齿轮箱由多级微型塑料齿轮驱动。
         当电池电量从 8.4V 下跌至 6.8V 时，电机峰值输出力矩缩减达 28% 以上；如果仿真环境（如传统 MuJoCo 或 Isaac Gym 默认 PD）假设关节拥有恒定理想刚度，

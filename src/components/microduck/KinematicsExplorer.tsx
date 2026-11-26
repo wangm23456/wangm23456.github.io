@@ -151,7 +151,7 @@ export default function KinematicsExplorer() {
       >
         {/* Poses */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--muted)' }}>
+          <span style={{ fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--muted)' }}>
             姿态预设:
           </span>
           {[
@@ -167,10 +167,11 @@ export default function KinematicsExplorer() {
               onClick={() => handlePreset(btn.key as PoseMode)}
               className={pose === btn.key ? 'active' : ''}
               style={{
-                fontSize: '0.68rem',
+                fontSize: '0.8125rem',
+                minHeight: '44px',
                 padding: '0.2rem 0.5rem',
-                background: pose === btn.key ? 'var(--brand)' : 'var(--card)',
-                color: pose === btn.key ? '#fff' : 'var(--ink)',
+                background: pose === btn.key ? 'var(--color-accent)' : 'var(--card)',
+                color: pose === btn.key ? 'var(--color-accent-ink)' : 'var(--ink)',
               }}
             >
               {btn.label}
@@ -179,20 +180,20 @@ export default function KinematicsExplorer() {
         </div>
 
         {/* Layer Toggles */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', fontSize: '0.68rem', fontFamily: 'var(--font-mono)' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', cursor: 'pointer' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', fontSize: '0.8125rem', fontFamily: 'var(--font-mono)' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', minHeight: '44px' }}>
             <input type="checkbox" checked={showBusIds} onChange={(e) => setShowBusIds(e.target.checked)} />
             <span>总线 ID</span>
           </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', cursor: 'pointer' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', minHeight: '44px' }}>
             <input type="checkbox" checked={showCoM} onChange={(e) => setShowCoM(e.target.checked)} />
-            <span style={{ color: '#2563eb', fontWeight: 700 }}>质心 CoM</span>
+            <span style={{ color: 'var(--color-accent-2)', fontWeight: 700 }}>质心 CoM</span>
           </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', cursor: 'pointer' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', minHeight: '44px' }}>
             <input type="checkbox" checked={showTofBeam} onChange={(e) => setShowTofBeam(e.target.checked)} />
-            <span style={{ color: '#d97706', fontWeight: 700 }}>ToF 扫描锥</span>
+            <span style={{ color: 'var(--color-error)', fontWeight: 700 }}>ToF 扫描锥</span>
           </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', cursor: 'pointer' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', minHeight: '44px' }}>
             <input type="checkbox" checked={showAngleArcs} onChange={(e) => setShowAngleArcs(e.target.checked)} />
             <span>角度标尺</span>
           </label>
@@ -200,10 +201,11 @@ export default function KinematicsExplorer() {
       </div>
 
       {/* Main Workstation Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(340px, 1.25fr) minmax(280px, 1fr)', gap: '0.9rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))', gap: '0.9rem' }}>
         {/* Left: Precision CAD Blueprint Canvas */}
         <div
           style={{
+            minWidth: 0,
             border: 'var(--border)',
             boxShadow: 'var(--shadow-sm)',
             background: '#090d16',
@@ -218,12 +220,14 @@ export default function KinematicsExplorer() {
           <div
             style={{
               display: 'flex',
+              flexWrap: 'wrap',
+              gap: '0.4rem',
               justifyContent: 'space-between',
               alignItems: 'center',
               background: 'rgba(15, 23, 42, 0.85)',
               padding: '0.4rem 0.7rem',
               borderBottom: '1px solid rgba(255,255,255,0.12)',
-              fontSize: '0.68rem',
+              fontSize: '0.8125rem',
               fontFamily: 'var(--font-mono)',
             }}
           >
@@ -231,7 +235,7 @@ export default function KinematicsExplorer() {
               <span style={{ color: '#38bdf8', fontWeight: 800 }}>● CAD KINEMATIC MODEL</span>
               <span style={{ color: '#94a3b8' }}>SCALE 1:1</span>
             </div>
-            <div style={{ display: 'flex', gap: '0.8rem' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem 0.8rem' }}>
               <span>高度: <b style={{ color: '#38bdf8' }}>{heightCm} cm</b></span>
               <span>喙尖: <b style={{ color: '#f59e0b' }}>({beakXCm}, {beakYCm})</b></span>
               <span style={{ color: isFallen ? '#ef4444' : '#22c55e', fontWeight: 700 }}>
@@ -241,11 +245,14 @@ export default function KinematicsExplorer() {
           </div>
 
           {/* SVG Blueprint */}
+          <div style={{ overflowX: 'auto' }}>
           <svg
             viewBox="0 0 460 350"
             style={{
               width: '100%',
-              height: '320px',
+              minWidth: '460px',
+              height: 'auto',
+              display: 'block',
               background: 'radial-gradient(circle at 50% 40%, #0f172a 0%, #060911 100%)',
               userSelect: 'none',
             }}
@@ -283,7 +290,7 @@ export default function KinematicsExplorer() {
             {/* Datum Ground Plane */}
             <line x1="20" y1={groundY} x2="440" y2={groundY} stroke="#38bdf8" strokeWidth="2" />
             <line x1="20" y1={groundY + 3} x2="440" y2={groundY + 3} stroke="rgba(56,189,248,0.3)" strokeWidth="1" strokeDasharray="4 4" />
-            <text x="30" y={groundY + 16} fill="#64748b" fontSize="8" fontFamily="var(--font-mono)">
+            <text x="30" y={groundY + 16} fill="#64748b" fontSize="13" fontFamily="var(--font-mono)">
               DATUM PLANE: Z = 0.00 mm (GROUND CONTACT)
             </text>
 
@@ -292,8 +299,8 @@ export default function KinematicsExplorer() {
               <line x1="0" y1="0" x2="0" y2={groundY - 50} stroke="#475569" strokeWidth="1" />
               <line x1="-5" y1="0" x2="5" y2="0" stroke="#475569" strokeWidth="1" />
               <line x1="-5" y1={groundY - 50} x2="5" y2={groundY - 50} stroke="#475569" strokeWidth="1" />
-              <text x="8" y="12" fill="#94a3b8" fontSize="8" fontFamily="var(--font-mono)">250 mm</text>
-              <text x="8" y={groundY - 60} fill="#94a3b8" fontSize="8" fontFamily="var(--font-mono)">0 mm</text>
+              <text x="8" y="12" fill="#94a3b8" fontSize="13" fontFamily="var(--font-mono)">250 mm</text>
+              <text x="8" y={groundY - 60} fill="#94a3b8" fontSize="13" fontFamily="var(--font-mono)">0 mm</text>
             </g>
 
             {/* Support Polygon & Ground Reaction Line */}
@@ -309,7 +316,7 @@ export default function KinematicsExplorer() {
                   stroke="#3b82f6"
                   strokeWidth="1"
                 />
-                <text x={ankleX} y={groundY + 24} textAnchor="middle" fill="#3b82f6" fontSize="7.5" fontFamily="var(--font-mono)" fontWeight="700">
+                <text x={ankleX} y={groundY + 24} textAnchor="middle" fill="#3b82f6" fontSize="13" fontFamily="var(--font-mono)" fontWeight="700">
                   [ SUPPORT POLYGON / 支撑多边形 ]
                 </text>
 
@@ -331,7 +338,7 @@ export default function KinematicsExplorer() {
                   <circle cx="0" cy="0" r="8" fill="none" stroke="#3b82f6" strokeWidth="1.5" />
                   <path d="M -10 0 L 10 0 M 0 -10 L 0 10" stroke="#3b82f6" strokeWidth="1.5" />
                   <path d="M 0 0 L 6 0 A 6 6 0 0 1 0 6 Z M 0 0 L -6 0 A 6 6 0 0 1 0 -6 Z" fill="#3b82f6" opacity="0.7" />
-                  <text x="12" y="-4" fill="#60a5fa" fontSize="8.5" fontFamily="var(--font-mono)" fontWeight="800">
+                  <text x="12" y="-4" fill="#60a5fa" fontSize="13" fontFamily="var(--font-mono)" fontWeight="800">
                     CoM (质心)
                   </text>
                 </g>
@@ -365,9 +372,6 @@ export default function KinematicsExplorer() {
               <g transform="translate(-24, -54)">
                 <rect x="0" y="0" width="48" height="18" rx="3" fill="#f59e0b" stroke="#000" strokeWidth="1.5" />
                 <rect x="3" y="3" width="42" height="12" fill="#d97706" />
-                <text x="24" y="11" textAnchor="middle" fill="#000" fontSize="7" fontFamily="var(--font-mono)" fontWeight="800">
-                  NP-F550 2600mAh
-                </text>
               </g>
 
               {/* Rockchip RK3566 Mainboard PCB */}
@@ -375,17 +379,14 @@ export default function KinematicsExplorer() {
                 <rect x="0" y="0" width="48" height="32" rx="3" fill="#065f46" stroke="#047857" strokeWidth="1" />
                 {/* RK3566 SoC IC */}
                 <rect x="14" y="6" width="20" height="20" rx="2" fill="#0f172a" stroke="#10b981" strokeWidth="1" />
-                <text x="24" y="18" textAnchor="middle" fill="#34d399" fontSize="6.5" fontFamily="var(--font-mono)" fontWeight="800">
-                  RK3566
-                </text>
               </g>
 
               {/* Body IMU Coordinate Frame Indicator */}
               <g transform="translate(0, 8)">
                 <line x1="0" y1="0" x2="16" y2="0" stroke="#ef4444" strokeWidth="2" />
                 <line x1="0" y1="0" x2="0" y2="-16" stroke="#22c55e" strokeWidth="2" />
-                <text x="18" y="3" fill="#ef4444" fontSize="7" fontFamily="var(--font-mono)">X</text>
-                <text x="-2" y="-18" fill="#22c55e" fontSize="7" fontFamily="var(--font-mono)">Z</text>
+                <text x="18" y="3" fill="#ef4444" fontSize="13" fontFamily="var(--font-mono)">X</text>
+                <text x="-2" y="-18" fill="#22c55e" fontSize="13" fontFamily="var(--font-mono)">Z</text>
               </g>
             </g>
 
@@ -396,7 +397,7 @@ export default function KinematicsExplorer() {
               <circle cx="0" cy="0" r="7" fill="#1e293b" stroke="#38bdf8" strokeWidth="1.5" />
               <circle cx="0" cy="0" r="3" fill="#38bdf8" />
               {showBusIds && (
-                <text x="-22" y="4" textAnchor="end" fill="#38bdf8" fontSize="7.5" fontFamily="var(--font-mono)" fontWeight="700">
+                <text x="-22" y="4" textAnchor="end" fill="#38bdf8" fontSize="13" fontFamily="var(--font-mono)" fontWeight="700">
                   #20/21/22 HIP
                 </text>
               )}
@@ -428,12 +429,12 @@ export default function KinematicsExplorer() {
               <circle cx="0" cy="0" r="9" fill="#1e293b" stroke={selectedJoint.name.includes('knee') ? '#f59e0b' : '#38bdf8'} strokeWidth="1.5" />
               <circle cx="0" cy="0" r="3.5" fill={selectedJoint.name.includes('knee') ? '#f59e0b' : '#38bdf8'} />
               {showBusIds && (
-                <text x="18" y="4" fill="#38bdf8" fontSize="7.5" fontFamily="var(--font-mono)" fontWeight="700">
+                <text x="18" y="4" fill="#38bdf8" fontSize="13" fontFamily="var(--font-mono)" fontWeight="700">
                   #23 KNEE
                 </text>
               )}
               {showAngleArcs && (
-                <text x="16" y="-12" fill="#fbbf24" fontSize="8" fontFamily="var(--font-mono)" fontWeight="700">
+                <text x="16" y="-12" fill="#fbbf24" fontSize="13" fontFamily="var(--font-mono)" fontWeight="700">
                   θ={kneeAngle}°
                 </text>
               )}
@@ -464,7 +465,7 @@ export default function KinematicsExplorer() {
               <rect x="-10" y="-10" width="20" height="20" rx="3" fill="#020617" stroke="#38bdf8" strokeWidth="1.5" />
               <circle cx="0" cy="0" r="5" fill="#38bdf8" />
               {showBusIds && (
-                <text x="-16" y="2" textAnchor="end" fill="#38bdf8" fontSize="7.5" fontFamily="var(--font-mono)">
+                <text x="-16" y="2" textAnchor="end" fill="#38bdf8" fontSize="13" fontFamily="var(--font-mono)">
                   #24 ANKLE
                 </text>
               )}
@@ -489,7 +490,7 @@ export default function KinematicsExplorer() {
                 <circle cx={soleEndX - 8} cy="0" r="7" fill="#020617" stroke="#f59e0b" strokeWidth="2" />
                 <circle cx={soleEndX - 8} cy="0" r="2.5" fill="#f59e0b" />
                 <line x1={soleStartX - 6} y1="0" x2={soleEndX + 6} y2="0" stroke="#f59e0b" strokeWidth="1" strokeDasharray="2 2" />
-                <text x={soleEndX + 12} y="3" fill="#f59e0b" fontSize="7.5" fontFamily="var(--font-mono)" fontWeight="700">
+                <text x={soleEndX + 12} y="3" fill="#f59e0b" fontSize="13" fontFamily="var(--font-mono)" fontWeight="700">
                   PASSIVE WHEELS (0.6 m/s)
                 </text>
               </g>
@@ -507,7 +508,7 @@ export default function KinematicsExplorer() {
             />
             <circle cx={neckBaseX} cy={neckBaseY} r="7" fill="#0f172a" stroke="#38bdf8" strokeWidth="1.5" />
             {showBusIds && (
-              <text x={neckBaseX - 12} y={neckBaseY - 4} textAnchor="end" fill="#38bdf8" fontSize="7.5" fontFamily="var(--font-mono)">
+              <text x={neckBaseX - 12} y={neckBaseY - 4} textAnchor="end" fill="#38bdf8" fontSize="13" fontFamily="var(--font-mono)">
                 #30 NECK
               </text>
             )}
@@ -576,12 +577,16 @@ export default function KinematicsExplorer() {
                   strokeWidth="1"
                   strokeDasharray="3 3"
                 />
-                <text x="80" y="-35" fill="#f59e0b" fontSize="8" fontFamily="var(--font-mono)" fontWeight="700">
+                <text x="80" y="-35" fill="#f59e0b" fontSize="13" fontFamily="var(--font-mono)" fontWeight="700">
                   VL53L5 ToF 8×8 (64 深度点阵 · 15Hz)
                 </text>
               </g>
             )}
           </svg>
+          </div>
+          <p style={{ margin: 0, padding: '0.4rem 0.7rem', fontSize: '0.8125rem', color: '#94a3b8', fontFamily: 'var(--font-mono)' }}>
+            橙色电池: NP-F550 2600mAh · 绿色主板: RK3566 SoC · 红/绿轴: 机体 IMU X/Z 坐标系
+          </p>
 
           {/* Bottom Interactive Sliders for Live Angle Tweak */}
           <div
@@ -590,9 +595,9 @@ export default function KinematicsExplorer() {
               padding: '0.6rem 0.8rem',
               borderTop: '1px solid rgba(255,255,255,0.12)',
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 160px), 1fr))',
               gap: '0.6rem',
-              fontSize: '0.7rem',
+              fontSize: '0.8125rem',
               fontFamily: 'var(--font-mono)',
             }}
           >
@@ -603,11 +608,12 @@ export default function KinematicsExplorer() {
               </div>
               <input
                 type="range"
+                aria-label="髋关节俯仰 θ_hip"
                 min="-20"
                 max="85"
                 value={hipPitchAngle}
                 onChange={(e) => setHipPitchAngle(Number(e.target.value))}
-                style={{ width: '100%', accentColor: '#38bdf8', cursor: 'pointer' }}
+                style={{ width: '100%', minHeight: '44px', accentColor: '#38bdf8' }}
               />
             </div>
 
@@ -618,11 +624,12 @@ export default function KinematicsExplorer() {
               </div>
               <input
                 type="range"
+                aria-label="膝关节屈伸 θ_knee"
                 min="0"
                 max="105"
                 value={kneeAngle}
                 onChange={(e) => setKneeAngle(Number(e.target.value))}
-                style={{ width: '100%', accentColor: '#38bdf8', cursor: 'pointer' }}
+                style={{ width: '100%', minHeight: '44px', accentColor: '#38bdf8' }}
               />
             </div>
 
@@ -633,20 +640,21 @@ export default function KinematicsExplorer() {
               </div>
               <input
                 type="range"
+                aria-label="视线俯仰 θ_head"
                 min="-40"
                 max="45"
                 value={headPitchAngle}
                 onChange={(e) => setHeadPitchAngle(Number(e.target.value))}
-                style={{ width: '100%', accentColor: '#f59e0b', cursor: 'pointer' }}
+                style={{ width: '100%', minHeight: '44px', accentColor: '#f59e0b' }}
               />
             </div>
           </div>
         </div>
 
         {/* Right: Detailed Bus Spec Card & Actuator Ledger */}
-        <div style={{ border: 'var(--border-thin)', background: 'var(--card)', padding: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+        <div style={{ minWidth: 0, border: 'var(--border-thin)', background: 'var(--card)', padding: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
           <div>
-            <div style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--muted)', fontWeight: 800 }}>
+            <div style={{ fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', color: 'var(--muted)', fontWeight: 800 }}>
               15 自由度总线分配矩阵 (点击选择关节查看微观规约)
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginTop: '0.35rem' }}>
@@ -656,10 +664,11 @@ export default function KinematicsExplorer() {
                   type="button"
                   onClick={() => setSelectedJointId(j.id)}
                   style={{
-                    fontSize: '0.66rem',
+                    fontSize: '0.8125rem',
+                    minHeight: '44px',
                     padding: '0.15rem 0.35rem',
-                    background: selectedJointId === j.id ? 'var(--ink)' : 'var(--paper)',
-                    color: selectedJointId === j.id ? '#fff' : 'var(--ink)',
+                    background: selectedJointId === j.id ? 'var(--color-accent)' : 'var(--paper)',
+                    color: selectedJointId === j.id ? 'var(--color-accent-ink)' : 'var(--ink)',
                     border: '1px solid var(--ink)',
                   }}
                 >
@@ -677,9 +686,10 @@ export default function KinematicsExplorer() {
               </span>
               <span
                 style={{
-                  background: 'var(--yellow)',
+                  background: 'var(--color-accent)',
+                  color: 'var(--color-accent-ink)',
                   padding: '0.1rem 0.35rem',
-                  fontSize: '0.68rem',
+                  fontSize: '0.8125rem',
                   fontFamily: 'var(--font-mono)',
                   fontWeight: 800,
                   border: '1px solid var(--ink)',
@@ -689,36 +699,36 @@ export default function KinematicsExplorer() {
               </span>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.3rem', margin: '0.5rem 0', fontSize: '0.72rem', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.3rem', margin: '0.5rem 0', fontSize: '0.8125rem', fontFamily: 'var(--font-mono)' }}>
               <div><span style={{ color: 'var(--muted)' }}>电机型号:</span> <b>{selectedJoint.motorModel}</b></div>
               <div><span style={{ color: 'var(--muted)' }}>总线速率:</span> <b>{selectedJoint.busSpeed}</b></div>
               <div><span style={{ color: 'var(--muted)' }}>编码器分辨率:</span> <b>{selectedJoint.resolution}</b></div>
               <div><span style={{ color: 'var(--muted)' }}>限位范围:</span> <b>[{selectedJoint.rangeDeg[0]}°, {selectedJoint.rangeDeg[1]}°]</b></div>
             </div>
 
-            <div style={{ fontSize: '0.72rem', lineHeight: '1.4', background: 'var(--card)', padding: '0.45rem', border: '1px dashed var(--ink)' }}>
-              <span style={{ fontWeight: 700, color: 'var(--brand)' }}>动力学职责：</span>
+            <div style={{ fontSize: '0.8125rem', lineHeight: '1.4', background: 'var(--card)', padding: '0.45rem', border: '1px dashed var(--ink)' }}>
+              <span style={{ fontWeight: 700, color: 'var(--color-accent-2)' }}>动力学职责：</span>
               {selectedJoint.role}。在 50Hz 控制循环中，该关节由 <code>safety.apply</code> 执行硬限位夹紧 (Joint Clamp)，严防撞击注塑壳体。
             </div>
 
-            <div style={{ marginTop: '0.4rem', fontSize: '0.66rem', fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
+            <div style={{ marginTop: '0.4rem', fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', color: 'var(--muted)', overflowWrap: 'anywhere' }}>
               MJCF 物理节点：<code>&lt;joint name="{selectedJoint.name}" pos="0 0 0" axis="0 1 0" range="{selectedJoint.rangeDeg[0]} {selectedJoint.rangeDeg[1]}" /&gt;</code>
             </div>
           </div>
 
           {/* Quick Hardware Stats */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.3rem', fontSize: '0.7rem', textAlign: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 100px), 1fr))', gap: '0.3rem', fontSize: '0.8125rem', textAlign: 'center' }}>
             <div style={{ background: 'var(--paper)', border: '1px solid var(--ink)', padding: '0.35rem' }}>
-              <div style={{ color: 'var(--muted)', fontSize: '0.62rem' }}>机身净重</div>
+              <div style={{ color: 'var(--muted)', fontSize: '0.8125rem' }}>机身净重</div>
               <div style={{ fontWeight: 900, fontSize: '0.9rem' }}>&lt; 800 g</div>
             </div>
             <div style={{ background: 'var(--paper)', border: '1px solid var(--ink)', padding: '0.35rem' }}>
-              <div style={{ color: 'var(--muted)', fontSize: '0.62rem' }}>控制循环</div>
+              <div style={{ color: 'var(--muted)', fontSize: '0.8125rem' }}>控制循环</div>
               <div style={{ fontWeight: 900, fontSize: '0.9rem' }}>50.0 Hz</div>
             </div>
             <div style={{ background: 'var(--paper)', border: '1px solid var(--ink)', padding: '0.35rem' }}>
-              <div style={{ color: 'var(--muted)', fontSize: '0.62rem' }}>相机指示</div>
-              <div style={{ fontWeight: 900, fontSize: '0.9rem', color: 'var(--brand)' }}>REC 硬件灯</div>
+              <div style={{ color: 'var(--muted)', fontSize: '0.8125rem' }}>相机指示</div>
+              <div style={{ fontWeight: 900, fontSize: '0.9rem', color: 'var(--color-accent-2)' }}>REC 硬件灯</div>
             </div>
           </div>
         </div>

@@ -36,7 +36,7 @@ const SCENARIOS: Record<
   },
   drift: {
     label: "judge 真退化",
-    hint: "judge 掉 0.10，人评稳定——真回归，固定阈值会触发，自适应会触发",
+    hint: "judge 掉 0.10，人评稳定：真回归，固定阈值会触发，自适应会触发",
     weeks: [
       { label: "W1", judgeMean: 0.78, humanMean: 0.82, humanSd: 0.06 },
       { label: "W2", judgeMean: 0.77, humanMean: 0.82, humanSd: 0.06 },
@@ -47,7 +47,7 @@ const SCENARIOS: Record<
   },
   hard: {
     label: "难测周",
-    hint: "人评分歧大 + judge 同步难——固定阈值会误触发重训，自适应放行",
+    hint: "人评分歧大 + judge 同步难：固定阈值会误触发重训，自适应放行",
     weeks: [
       { label: "W1", judgeMean: 0.78, humanMean: 0.82, humanSd: 0.06 },
       { label: "W2", judgeMean: 0.79, humanMean: 0.83, humanSd: 0.07 },
@@ -58,7 +58,7 @@ const SCENARIOS: Record<
   },
   shift: {
     label: "新剧涌入（catalog shift）",
-    hint: "新剧子集上 judge 同步难——切到新剧子集视图能更快发现",
+    hint: "新剧子集上 judge 同步难，切到新剧子集视图能更快发现",
     weeks: [
       { label: "W1", judgeMean: 0.78, humanMean: 0.82, humanSd: 0.06 },
       { label: "W2", judgeMean: 0.76, humanMean: 0.79, humanSd: 0.08 },
@@ -100,7 +100,8 @@ function Row({
           w.adaptivePass ? (
             <span
               style={{
-                background: "var(--yellow)",
+                background: "var(--color-accent)",
+                color: "var(--color-accent-ink)",
                 border: "2px solid var(--ink)",
                 padding: "0 0.4rem",
               }}
@@ -111,7 +112,7 @@ function Row({
             <span
               style={{
                 background: "#ef476f",
-                color: "#fff",
+                color: "var(--color-accent-ink)",
                 border: "2px solid var(--ink)",
                 padding: "0 0.4rem",
               }}
@@ -120,27 +121,27 @@ function Row({
             </span>
           )
         ) : (
-          <span style={{ opacity: 0.4 }}>—</span>
+          <span style={{ color: "var(--muted)" }}>·</span>
         )}
       </td>
       <td>
         {fixed ? (
           w.fixedPass ? (
-            <span style={{ opacity: 0.6 }}>✓</span>
+            <span style={{ color: "var(--muted)" }}>✓</span>
           ) : (
             <span
               style={{
                 background: "#ef476f",
-                color: "#fff",
+                color: "var(--color-accent-ink)",
                 padding: "0 0.4rem",
-                fontSize: "0.7rem",
+                fontSize: "0.8125rem",
               }}
             >
               ✗ 重训
             </span>
           )
         ) : (
-          <span style={{ opacity: 0.4 }}>—</span>
+          <span style={{ color: "var(--muted)" }}>·</span>
         )}
       </td>
     </tr>
@@ -173,12 +174,12 @@ export default function DriftMonitor() {
             aria-pressed={scenario === s}
             style={{
               padding: "0.3rem 0.7rem",
+              minHeight: "44px",
               fontFamily: "var(--font-mono)",
-              fontSize: "0.72rem",
-              background: scenario === s ? "var(--brand)" : "var(--card)",
-              color: scenario === s ? "#fff" : "var(--ink)",
+              fontSize: "0.8125rem",
+              background: scenario === s ? "var(--color-accent)" : "var(--card)",
+              color: scenario === s ? "var(--color-accent-ink)" : "var(--ink)",
               border: "2px solid var(--ink)",
-              cursor: "pointer",
             }}
           >
             {SCENARIOS[s].label}
@@ -189,9 +190,9 @@ export default function DriftMonitor() {
       <p
         style={{
           fontFamily: "var(--font-mono)",
-          fontSize: "0.72rem",
+          fontSize: "0.8125rem",
           margin: "0 0 0.5rem",
-          opacity: 0.75,
+          color: "var(--muted)",
         }}
       >
         {cfg.hint}
@@ -200,13 +201,14 @@ export default function DriftMonitor() {
       <div
         style={{
           display: "flex",
+          flexWrap: "wrap",
           gap: "0.5rem",
           marginBottom: "0.5rem",
           fontFamily: "var(--font-mono)",
-          fontSize: "0.72rem",
+          fontSize: "0.8125rem",
         }}
       >
-        <label>
+        <label style={{ display: "inline-flex", alignItems: "center", minHeight: "44px" }}>
           <input
             type="checkbox"
             checked={showAdaptive}
@@ -215,7 +217,7 @@ export default function DriftMonitor() {
           />
           自适应阈值 M(J) ≥ mean(M(H)) − 2·sd(M(H))
         </label>
-        <label>
+        <label style={{ display: "inline-flex", alignItems: "center", minHeight: "44px" }}>
           <input
             type="checkbox"
             checked={showFixed}
@@ -231,20 +233,20 @@ export default function DriftMonitor() {
           style={{
             width: "100%",
             fontFamily: "var(--font-mono)",
-            fontSize: "0.78rem",
+            fontSize: "0.8125rem",
             borderCollapse: "collapse",
             border: "var(--border-thin)",
           }}
         >
           <thead>
             <tr style={{ background: "var(--ink)", color: "var(--paper)" }}>
-              <th style={{ padding: "0.3rem" }}>周</th>
-              <th style={{ padding: "0.3rem" }}>judge 均值</th>
-              <th style={{ padding: "0.3rem" }}>人评均值</th>
-              <th style={{ padding: "0.3rem" }}>人评 sd</th>
-              <th style={{ padding: "0.3rem" }}>自适应阈值</th>
-              <th style={{ padding: "0.3rem" }}>自适应判定</th>
-              <th style={{ padding: "0.3rem" }}>固定判定</th>
+              <th style={{ padding: "0.3rem", background: "var(--ink)", color: "var(--paper)" }}>周</th>
+              <th style={{ padding: "0.3rem", background: "var(--ink)", color: "var(--paper)" }}>judge 均值</th>
+              <th style={{ padding: "0.3rem", background: "var(--ink)", color: "var(--paper)" }}>人评均值</th>
+              <th style={{ padding: "0.3rem", background: "var(--ink)", color: "var(--paper)" }}>人评 sd</th>
+              <th style={{ padding: "0.3rem", background: "var(--ink)", color: "var(--paper)" }}>自适应阈值</th>
+              <th style={{ padding: "0.3rem", background: "var(--ink)", color: "var(--paper)" }}>自适应判定</th>
+              <th style={{ padding: "0.3rem", background: "var(--ink)", color: "var(--paper)" }}>固定判定</th>
             </tr>
           </thead>
           <tbody>
@@ -267,7 +269,7 @@ export default function DriftMonitor() {
           border: "var(--border-thin)",
           background: "var(--paper-2)",
           fontFamily: "var(--font-mono)",
-          fontSize: "0.76rem",
+          fontSize: "1rem",
           lineHeight: 1.55,
         }}
       >
@@ -281,8 +283,8 @@ export default function DriftMonitor() {
       <p
         style={{
           fontFamily: "var(--font-mono)",
-          fontSize: "0.66rem",
-          opacity: 0.6,
+          fontSize: "0.8125rem",
+          color: "var(--muted)",
           margin: "0.5rem 0 0",
         }}
       >

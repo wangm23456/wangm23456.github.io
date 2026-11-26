@@ -1,5 +1,5 @@
 import { useState } from "react";
-import WidgetFrame from "./WidgetFrame";
+import WidgetFrame, { ChartViewport } from "./WidgetFrame";
 
 /** Widget 1：库仑势 vs 禁闭势——质量间隙/禁闭的最小图像。 */
 export default function ConfinementPotential() {
@@ -37,98 +37,99 @@ export default function ConfinementPotential() {
           <>
             σ &gt; 0 时能量随距离
             <strong style={{ color: "var(--brand)" }}>线性增长</strong>
-            ——拉开夸克需要无穷能量，自由夸克永远看不到。格点模拟测得 σ ≈ (440
+            。拉开夸克需要无穷能量，自由夸克永远看不到。格点模拟测得 σ ≈ (440
             MeV)²。这个「线性」在数学上等价于 Wilson 圈的面积定律。
           </>
         ) : (
-          <>σ = 0 是库仑势——电子绕原子核，跑得再远也拉得住。</>
+          <>σ = 0 是库仑势：电子绕原子核，跑得再远也拉得住。</>
         )
       }
     >
-      <svg
-        viewBox={`0 0 640 260`}
-        style={{ maxWidth: "100%" }}
-        role="img"
-        aria-label="势能曲线对比图"
-      >
-        <line
-          x1={L}
-          y1={B}
-          x2={R}
-          y2={B}
-          stroke="var(--muted)"
-          strokeWidth={1.5}
-        />
-        <line
-          x1={L}
-          y1={T}
-          x2={L}
-          y2={B}
-          stroke="var(--muted)"
-          strokeWidth={1.5}
-        />
-        <text
-          x={L - 8}
-          y={T + 6}
-          fontSize="12"
-          fill="var(--muted)"
-          textAnchor="end"
+      <ChartViewport label="夸克势能图表">
+        <svg
+          viewBox={`0 0 640 260`}
+          role="img"
+          aria-label="势能曲线对比图"
         >
-          V(r)
-        </text>
-        <text
-          x={R}
-          y={B + 18}
-          fontSize="12"
-          fill="var(--muted)"
-          textAnchor="end"
-        >
-          r →
-        </text>
-        <polyline
-          points={pts("coulomb")}
-          fill="none"
-          stroke="var(--blue)"
-          strokeWidth={2.4}
-        />
-        <polyline
-          points={pts("total")}
-          fill="none"
-          stroke="var(--brand)"
-          strokeWidth={2.6}
-        />
-        <line
-          x1={R - 210}
-          y1={T + 10}
-          x2={R - 182}
-          y2={T + 10}
-          stroke="var(--blue)"
-          strokeWidth={2.4}
-        />
-        <text x={R - 176} y={T + 14} fontSize="11.5" fill="var(--blue)">
-          库仑 k/r
-        </text>
-        <line
-          x1={R - 210}
-          y1={T + 30}
-          x2={R - 182}
-          y2={T + 30}
-          stroke="var(--brand)"
-          strokeWidth={2.6}
-        />
-        <text x={R - 176} y={T + 34} fontSize="11.5" fill="var(--brand)">
-          总势（含 σr）
-        </text>
-        <text
-          x={L + 16}
-          y={B - 16}
-          fontSize="13"
-          fontWeight={700}
-          fill={sigma > 0.02 ? "var(--brand)" : "var(--muted)"}
-        >
-          {sigma > 0.02 ? "σr 主导 → 夸克拉不开" : "σ = 0：经典库仑势"}
-        </text>
-      </svg>
+          <line
+            x1={L}
+            y1={B}
+            x2={R}
+            y2={B}
+            stroke="var(--muted)"
+            strokeWidth={1.5}
+          />
+          <line
+            x1={L}
+            y1={T}
+            x2={L}
+            y2={B}
+            stroke="var(--muted)"
+            strokeWidth={1.5}
+          />
+          <text
+            x={L - 8}
+            y={T + 6}
+            fontSize="13"
+            fill="var(--muted)"
+            textAnchor="end"
+          >
+            V(r)
+          </text>
+          <text
+            x={R}
+            y={B + 18}
+            fontSize="13"
+            fill="var(--muted)"
+            textAnchor="end"
+          >
+            r →
+          </text>
+          <polyline
+            points={pts("coulomb")}
+            fill="none"
+            stroke="var(--blue)"
+            strokeWidth={2.4}
+          />
+          <polyline
+            points={pts("total")}
+            fill="none"
+            stroke="var(--brand)"
+            strokeWidth={2.6}
+          />
+          <line
+            x1={R - 210}
+            y1={T + 10}
+            x2={R - 182}
+            y2={T + 10}
+            stroke="var(--blue)"
+            strokeWidth={2.4}
+          />
+          <text x={R - 176} y={T + 14} fontSize="13" fill="var(--blue)">
+            库仑 k/r
+          </text>
+          <line
+            x1={R - 210}
+            y1={T + 30}
+            x2={R - 182}
+            y2={T + 30}
+            stroke="var(--brand)"
+            strokeWidth={2.6}
+          />
+          <text x={R - 176} y={T + 34} fontSize="13" fill="var(--brand)">
+            总势（含 σr）
+          </text>
+          <text
+            x={L + 16}
+            y={B - 16}
+            fontSize="13"
+            fontWeight={700}
+            fill={sigma > 0.02 ? "var(--brand)" : "var(--muted)"}
+          >
+            {sigma > 0.02 ? "σr 主导 → 夸克拉不开" : "σ = 0：经典库仑势"}
+          </text>
+        </svg>
+      </ChartViewport>
       <label
         style={{
           display: "flex",
@@ -140,7 +141,7 @@ export default function ConfinementPotential() {
         <span
           style={{
             fontFamily: "var(--font-mono)",
-            fontSize: "0.8rem",
+            fontSize: "0.8125rem",
             color: "var(--muted)",
           }}
         >

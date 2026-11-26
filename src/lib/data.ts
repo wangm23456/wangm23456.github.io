@@ -1,5 +1,5 @@
 export const AIHOT_URL =
-  'https://aihot.virxact.com/api/v1/items?mode=selected&window=24h&limit=8';
+  'https://aihot.news/api/v1/items?mode=selected&window=24h&limit=8';
 export const LAUNCHES_URL = 'https://ll.thespacedevs.com/2.2.0/launch/';
 
 export interface Launch {

@@ -117,26 +117,29 @@ export default function PpgrBenchmark() {
   return (
     <div style={{ padding: '1.2rem', fontFamily: 'inherit', color: 'var(--ink)' }}>
       {/* Upper: Context level & meal selector */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1rem', marginBottom: '1.2rem' }}>
         <div>
-          <div style={{ fontSize: '0.82rem', fontWeight: 800, marginBottom: '0.4rem' }}>1. 选择餐食营养场景：</div>
+          <div style={{ fontSize: '0.8125rem', fontWeight: 800, marginBottom: '0.4rem' }}>1. 选择餐食营养场景：</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
             {MEAL_OPTIONS.map((m) => (
               <button
                 key={m.id}
+                type="button"
+                aria-pressed={selectedMeal === m.id}
                 onClick={() => setSelectedMeal(m.id)}
                 style={{
                   textAlign: 'left',
                   padding: '0.45rem 0.7rem',
+                  minHeight: '44px',
                   border: 'var(--border-thin)',
-                  background: selectedMeal === m.id ? 'var(--yellow)' : 'var(--card)',
+                  background: selectedMeal === m.id ? 'var(--color-accent)' : 'var(--card)',
+                  color: selectedMeal === m.id ? 'var(--color-accent-ink)' : 'var(--ink)',
                   fontWeight: selectedMeal === m.id ? 800 : 500,
-                  fontSize: '0.82rem',
-                  cursor: 'pointer',
+                  fontSize: '0.8125rem',
                 }}
               >
-                <div><strong>{m.name}</strong> <span style={{ color: 'var(--muted)', fontSize: '0.75rem' }}>({m.type})</span></div>
-                <div style={{ fontSize: '0.72rem', color: '#555', marginTop: '0.2rem' }}>
+                <div><strong>{m.name}</strong> <span style={{ fontSize: '0.8125rem' }}>({m.type})</span></div>
+                <div style={{ fontSize: '0.8125rem', marginTop: '0.2rem' }}>
                   碳水 {m.carbs}g · 蛋白 {m.protein}g · 脂肪 {m.fat}g · 纤维 {m.fiber}g · {m.calories} kcal
                 </div>
               </button>
@@ -145,53 +148,58 @@ export default function PpgrBenchmark() {
         </div>
 
         <div>
-          <div style={{ fontSize: '0.82rem', fontWeight: 800, marginBottom: '0.4rem' }}>2. 传感器位置与前置上下文阶梯：</div>
-          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.8rem' }}>
+          <div style={{ fontSize: '0.8125rem', fontWeight: 800, marginBottom: '0.4rem' }}>2. 传感器位置与前置上下文阶梯：</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.8rem' }}>
             <button
+              type="button"
+              aria-pressed={sensorType === 'dexcom'}
               onClick={() => setSensorType('dexcom')}
               style={{
-                flex: 1,
+                flex: '1 1 180px',
                 padding: '0.35rem',
+                minHeight: '44px',
                 border: 'var(--border-thin)',
-                background: sensorType === 'dexcom' ? 'var(--blue)' : 'var(--card)',
-                color: sensorType === 'dexcom' ? '#fff' : 'inherit',
+                background: sensorType === 'dexcom' ? 'var(--color-accent)' : 'var(--card)',
+                color: sensorType === 'dexcom' ? 'var(--color-accent-ink)' : 'var(--ink)',
                 fontWeight: 700,
-                fontSize: '0.8rem',
-                cursor: 'pointer',
+                fontSize: '0.8125rem',
               }}
             >
               Dexcom G6 (腹部 · 5min)
             </button>
             <button
+              type="button"
+              aria-pressed={sensorType === 'libre'}
               onClick={() => setSensorType('libre')}
               style={{
-                flex: 1,
+                flex: '1 1 180px',
                 padding: '0.35rem',
+                minHeight: '44px',
                 border: 'var(--border-thin)',
-                background: sensorType === 'libre' ? 'var(--blue)' : 'var(--card)',
-                color: sensorType === 'libre' ? '#fff' : 'inherit',
+                background: sensorType === 'libre' ? 'var(--color-accent)' : 'var(--card)',
+                color: sensorType === 'libre' ? 'var(--color-accent-ink)' : 'var(--ink)',
                 fontWeight: 700,
-                fontSize: '0.8rem',
-                cursor: 'pointer',
+                fontSize: '0.8125rem',
               }}
             >
               FreeStyle Libre (上臂 · 15min)
             </button>
           </div>
 
-          <div style={{ fontSize: '0.78rem', marginBottom: '0.3rem', fontWeight: 700 }}>
+          <div style={{ fontSize: '0.8125rem', marginBottom: '0.3rem', fontWeight: 700 }}>
             上下文丰富度（输入模型的因果条件）：Level {contextLevel}
           </div>
           <input
             type="range"
+            aria-label="上下文丰富度 Level"
             min={1}
             max={4}
             step={1}
             value={contextLevel}
             onChange={(e) => setContextLevel(Number(e.target.value))}
-            style={{ width: '100%', marginBottom: '0.4rem' }}
+            style={{ width: '100%', minHeight: '44px', marginBottom: '0.4rem' }}
           />
-          <div style={{ fontSize: '0.75rem', color: 'var(--muted)', background: 'var(--paper-2)', padding: '0.4rem 0.6rem', border: 'var(--border-thin)' }}>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--muted)', background: 'var(--paper-2)', padding: '0.4rem 0.6rem', border: 'var(--border-thin)' }}>
             {contextLevel === 1 && 'Level 1: 仅餐前 1 小时 CGM 读数'}
             {contextLevel === 2 && 'Level 2: 餐前 1 小时 + 餐前 24 小时完整日间时序'}
             {contextLevel === 3 && 'Level 3: 前置 CGM + 五项精细宏量营养素 (碳水/蛋白/脂肪/纤维/热量)'}
@@ -203,23 +211,24 @@ export default function PpgrBenchmark() {
       {/* Simulated Postprandial Curve Visualizer */}
       <div style={{ border: 'var(--border-thin)', background: 'var(--card)', padding: '0.8rem', marginBottom: '1.2rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-          <div style={{ fontSize: '0.85rem', fontWeight: 800 }}>
+          <div style={{ fontSize: '0.8125rem', fontWeight: 800 }}>
             2小时餐后血糖轨迹 (PPGR) 预测仿真 · {sensorType === 'dexcom' ? 'Dexcom 腹部' : 'Libre 上臂'}
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--brand)', fontWeight: 700 }}>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--color-accent-2)', fontWeight: 700 }}>
             {sensorType === 'dexcom' ? 'GlucoFM 实测 MAE: 22.63 mg/dL' : 'GlucoFM 实测 MAE: 21.12 mg/dL'}
           </div>
         </div>
 
         {/* Mini SVG Chart */}
-        <svg viewBox="0 0 500 130" style={{ width: '100%', height: 'auto', display: 'block' }}>
+        <div style={{ overflowX: 'auto' }}>
+        <svg viewBox="0 0 500 130" style={{ width: '100%', minWidth: '500px', height: 'auto', display: 'block' }}>
           <rect x="30" y="10" width="455" height="95" fill="var(--paper-2)" opacity="0.4" />
-          <line x1="30" y1="105" x2="485" y2="105" stroke="#444" strokeWidth="1.5" />
-          <line x1="30" y1="10" x2="30" y2="105" stroke="#444" strokeWidth="1.5" />
+          <line x1="30" y1="105" x2="485" y2="105" stroke="var(--ink)" strokeWidth="1.5" />
+          <line x1="30" y1="10" x2="30" y2="105" stroke="var(--ink)" strokeWidth="1.5" />
 
           {/* Guide lines */}
-          <line x1="30" y1="70" x2="485" y2="70" stroke="#ccc" strokeDasharray="2 2" strokeWidth="0.8" />
-          <line x1="30" y1="35" x2="485" y2="35" stroke="#ccc" strokeDasharray="2 2" strokeWidth="0.8" />
+          <line x1="30" y1="70" x2="485" y2="70" stroke="var(--color-rule)" strokeDasharray="2 2" strokeWidth="0.8" />
+          <line x1="30" y1="35" x2="485" y2="35" stroke="var(--color-rule)" strokeDasharray="2 2" strokeWidth="0.8" />
 
           {/* Curve */}
           <path
@@ -229,7 +238,7 @@ export default function PpgrBenchmark() {
               return idx === 0 ? `M ${x.toFixed(1)} ${y.toFixed(1)}` : `L ${x.toFixed(1)} ${y.toFixed(1)}`;
             }).join(' ')}
             fill="none"
-            stroke="var(--brand)"
+            stroke="var(--color-accent-2)"
             strokeWidth="3"
           />
 
@@ -245,37 +254,38 @@ export default function PpgrBenchmark() {
           {[0, 30, 60, 90, 120].map((mins) => {
             const x = 30 + (mins / 120) * 455;
             return (
-              <text key={mins} x={x} y="122" textAnchor="middle" fontSize="9" fill="var(--muted)">
+              <text key={mins} x={x} y="122" textAnchor="middle" fontSize="13" fill="var(--muted)">
                 +{mins}m
               </text>
             );
           })}
-          <text x="15" y="105" textAnchor="middle" fontSize="9" fill="var(--muted)">50</text>
-          <text x="15" y="70" textAnchor="middle" fontSize="9" fill="var(--muted)">120</text>
-          <text x="15" y="35" textAnchor="middle" fontSize="9" fill="var(--muted)">190</text>
+          <text x="15" y="105" textAnchor="middle" fontSize="13" fill="var(--muted)">50</text>
+          <text x="15" y="70" textAnchor="middle" fontSize="13" fill="var(--muted)">120</text>
+          <text x="15" y="35" textAnchor="middle" fontSize="13" fill="var(--muted)">190</text>
         </svg>
+        </div>
 
-        <div style={{ fontSize: '0.74rem', color: 'var(--muted)', marginTop: '0.4rem', lineHeight: 1.4 }}>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--muted)', marginTop: '0.4rem', lineHeight: 1.4 }}>
           *注：CGMacros 数据显示，健康人群在腹部 Dexcom 读数比上臂 Libre 系统性高出约 <strong>58.7 mg/dL</strong>。GlucoFM 在双传感器原生采样率下分别评估，未将跨设备读数混同。
         </div>
       </div>
 
       {/* Model Benchmark Matrix */}
       <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem', textAlign: 'left' }}>
           <thead>
             <tr style={{ background: 'var(--ink)', color: 'var(--paper)' }}>
-              <th style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)' }}>模型</th>
-              <th style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)' }}>预训练范式</th>
-              <th style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)' }}>参数量</th>
-              <th style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)' }}>预训练语料</th>
-              <th style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)' }}>探针 PR-AUC</th>
-              <th style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)' }}>PPGR 轨迹 MAE</th>
+              <th style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)', background: 'var(--ink)', color: 'var(--paper)' }}>模型</th>
+              <th style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)', background: 'var(--ink)', color: 'var(--paper)' }}>预训练范式</th>
+              <th style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)', background: 'var(--ink)', color: 'var(--paper)' }}>参数量</th>
+              <th style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)', background: 'var(--ink)', color: 'var(--paper)' }}>预训练语料</th>
+              <th style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)', background: 'var(--ink)', color: 'var(--paper)' }}>探针 PR-AUC</th>
+              <th style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)', background: 'var(--ink)', color: 'var(--paper)' }}>PPGR 轨迹 MAE</th>
             </tr>
           </thead>
           <tbody>
             {COMPARISONS.map((row, idx) => (
-              <tr key={idx} style={{ background: row.highlight ? 'var(--yellow)' : idx % 2 === 0 ? 'var(--card)' : 'var(--paper-2)' }}>
+              <tr key={idx} style={{ background: row.highlight ? 'var(--color-accent)' : idx % 2 === 0 ? 'var(--card)' : 'var(--paper-2)', color: row.highlight ? 'var(--color-accent-ink)' : 'var(--ink)' }}>
                 <td style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)', fontWeight: 800 }}>{row.model}</td>
                 <td style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)' }}>{row.paradigm}</td>
                 <td style={{ padding: '0.5rem 0.6rem', border: '1px solid var(--ink)', fontFamily: 'var(--font-mono)' }}>{row.params}</td>

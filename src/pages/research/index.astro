@@ -9,34 +9,61 @@ const grouped = topicOrder.map((topic) => ({ topic, label: topicLabels[topic], n
 ---
 
 <BaseLayout title="research · 原始研究资料" description="按研究主题组织的原始研究资料与专题笔记。">
-  <article class="prose research-index">
-    <p class="eyebrow">RESEARCH MATERIALS</p>
-    <h1>原始研究资料</h1>
-    <p class="lede">按研究主题组织的资料页。每篇博客文章可以关联一组延伸研究，读者可从文章末尾进入对应主题。</p>
-    <div class="research-notice"><strong>资料说明</strong><span>这些页面保留专题研究笔记的章节结构，包含不同证据等级。需要快速结论时，先阅读博客文章。</span></div>
-    {grouped.map(({ topic, label, notes: topicNotes }) => topicNotes.length > 0 && <section class="research-topic" aria-labelledby={`topic-${topic}`}>
-      <h2 id={`topic-${topic}`}>{label}</h2>
-      <nav class="research-list" aria-label={label}>
-        {topicNotes.map((note, index) => <a class="research-card" href={`/research/${note.id.replace(/\.md$/, '')}/`}><span class="research-number">{String(index + 1).padStart(2, '0')}</span><span><strong>{note.data.title}</strong><small>{note.data.description}</small></span><span class="research-arrow" aria-hidden="true">↗</span></a>)}
-      </nav>
-    </section>)}
+  <article class="research-index container">
+    <header class="research-header">
+      <p class="research-name">RESEARCH MATERIALS</p>
+      <h1>原始研究资料</h1>
+      <p class="lede">按研究主题组织的资料页。每篇博客文章可以关联一组延伸研究，读者可从文章末尾进入对应主题。</p>
+    </header>
+    <aside class="research-notice"><strong>资料说明</strong><p>这些页面保留专题研究笔记的章节结构，包含不同证据等级。需要快速结论时，先阅读博客文章。</p></aside>
+    <div class="topics">
+      {grouped.map(({ topic, label, notes: topicNotes }) => topicNotes.length > 0 && <section class="research-topic" aria-labelledby={`topic-${topic}`}>
+        <h2 id={`topic-${topic}`}>{label}</h2>
+        <nav class="research-list" aria-label={label}>
+          {topicNotes.map((note, index) => <a class="research-card" href={`/research/${note.id.replace(/\.md$/, '')}/`}><span class="research-number">{String(index + 1).padStart(2, '0')}</span><span class="research-details"><strong>{note.data.title}</strong><span class="research-description">{note.data.description}</span></span></a>)}
+        </nav>
+      </section>)}
+    </div>
   </article>
 </BaseLayout>
 
 <style>
-  .research-index { max-width: 860px; margin: 0 auto; }
-  .eyebrow { font: 0.72rem var(--font-mono); letter-spacing: 0.08em; color: var(--muted); }
-  .lede { max-width: 720px; font-size: 1.08rem; line-height: 1.8; }
-  .research-notice { display: grid; gap: 0.25rem; margin: 2rem 0; padding: 1rem; border: var(--border); background: var(--paper-2); }
-  .research-notice strong { font: 0.75rem var(--font-mono); text-transform: uppercase; }
-  .research-notice span { line-height: 1.6; }
-  .research-topic { margin-top: 2.5rem; }
-  .research-topic h2 { margin-bottom: 1rem; }
-  .research-list { display: grid; gap: 0.65rem; }
-  .research-card { display: grid; grid-template-columns: 2.5rem 1fr auto; gap: 0.75rem; align-items: center; padding: 1rem; border: var(--border); color: var(--ink); text-decoration: none; background: var(--card); transition: transform 120ms ease, background 120ms ease; }
-  .research-card:hover { transform: translateX(4px); background: var(--yellow); }
-  .research-number, .research-arrow { font: 0.75rem var(--font-mono); color: var(--muted); }
-  .research-card strong, .research-card small { display: block; }
-  .research-card strong { font-size: 1rem; }
-  .research-card small { margin-top: 0.25rem; color: var(--muted); line-height: 1.5; }
+  /* Hallmark · shape: Index · genre: playful · theme: Hum (deal 2/3, seed zompopo-7e95·8fca6596·2026-11-24·r0) · redesign: full
+   * hero: Index (/research) · nav: chip rail · footer: mast + colophon · imagery: none · signature: card-stock press
+   * sections: introduction + notice · topic Rows
+   * axes: light/rounded-sans/chromatic-yellow · posture: Index · contrast: pass · fold: pass */
+  /* Hallmark · waivers: existing RESEARCH MATERIALS copy retained verbatim as untracked body text; 26b no form controls on page;
+   * 44c, 79 compact Index header keeps the research list near the fold; 59 topic groups use compact spacing for scanning;
+   * 77 topic size follows the actual collection, including groups with few entries; 78 modest topic headings preserve hierarchy beneath the page title. */
+  .research-index { max-width: 74rem; padding-top: var(--space-2xl); padding-bottom: var(--section-gap); }
+  .research-header { max-width: 52rem; }
+  .research-name { margin-bottom: var(--space-md); color: var(--color-ink-2); font-size: var(--text-md); font-weight: 600; }
+  .research-header h1 { text-wrap: balance; }
+  .lede { margin-top: var(--space-lg); max-width: 48rem; font-size: var(--text-lead); line-height: 1.7; color: var(--color-ink-2); text-wrap: pretty; }
+  .research-notice { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: var(--space-lg); margin-top: var(--space-xl); padding: var(--space-lg); border: 1px solid var(--color-edge); border-radius: var(--radius-card); background: var(--color-sugar); }
+  .research-notice strong { font-size: var(--text-md); }
+  .research-notice p { color: var(--color-ink-2); line-height: 1.7; text-wrap: pretty; }
+  .topics { margin-top: var(--space-2xl); }
+  .research-topic { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--space-xl); padding-block: var(--space-xl); border-top: var(--rule-hair) solid var(--color-rule); }
+  .research-topic h2 { font-size: var(--text-title); line-height: 1.3; text-wrap: balance; }
+  .research-list { min-width: 0; }
+  .research-card { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: var(--space-md); padding: var(--space-lg) var(--space-md); border-radius: var(--radius-stock); color: var(--color-ink); text-decoration: none; transition: transform var(--dur-micro) var(--ease-snap); }
+  .research-card + .research-card { border-top: var(--rule-hair) solid var(--color-rule); }
+  .research-card:hover { background: var(--color-paper-2); transform: translateX(4px); }
+  .research-card:active { transform: translateY(2px); }
+  .research-number { color: var(--color-muted); font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+  .research-details { min-width: 0; }
+  .research-details strong, .research-description { display: block; }
+  .research-details strong { font-size: var(--text-lg); line-height: 1.4; overflow-wrap: anywhere; }
+  .research-description { margin-top: var(--space-xs); color: var(--color-ink-2); font-size: var(--text-md); line-height: 1.7; text-wrap: pretty; overflow-wrap: anywhere; }
+  .research-index :is(a, button):focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    .research-index *, .research-index *::before, .research-index *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  }
+  @media (max-width: 40rem) {
+    .research-index { padding-top: var(--space-xl); }
+    .research-notice, .research-topic { grid-template-columns: minmax(0, 1fr); gap: var(--space-md); }
+    .research-topic { padding-block: var(--space-lg); }
+    .research-card { padding-inline: var(--space-xs); }
+  }
 </style>

@@ -21,7 +21,7 @@ const STATES: State_[] = [
     trigger:
       "胰岛素/IGF-1↓ → mTORC1↓ + FoxO 脱抑制；瘦素下降加剧；大赤字时皮质醇经 GR→REDD1/KLF15 加入。",
     pathway:
-      "合成抑制为主、分解升高为辅——短期赤字 MPB 变化不显著，流失主要来自 MPS 下降。",
+      "合成抑制为主、分解升高为辅：短期赤字 MPB 变化不显著，流失主要来自 MPS 下降。",
     features:
       "无防护减重时瘦体重损失占减重 15–35%；>40% 赤字触发 mTOR refractory。",
     reversible:
@@ -45,7 +45,7 @@ const STATES: State_[] = [
       "FoxO→UPS+自噬同时启动；但短期（≤4 天）人体研究显示流失几乎全部来自 MPS 下降。",
     features: "卧床、制动、失重；局部性强，与全身炎症无关。",
     reversible:
-      '较易逆转——恢复负荷后 MPS 快速回升；抗阻训练可急性"重启"mTORC1 敏感性。',
+      '较易逆转，恢复负荷后 MPS 快速回升；抗阻训练可急性"重启"mTORC1 敏感性。',
     refs: [
       {
         label: "PMC9397550",
@@ -137,7 +137,7 @@ export default function LossTabs() {
         <p
           style={{
             fontFamily: "var(--font-mono)",
-            fontSize: "0.72rem",
+            fontSize: "0.8125rem",
             margin: 0,
           }}
         >

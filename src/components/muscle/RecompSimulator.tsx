@@ -29,7 +29,7 @@ const LEVEL_STYLE: Record<Level, { bg: string; text: string; label: string }> =
       {
             good: { bg: "#57cc99", text: "#171412", label: "友好" },
             warn: { bg: "#ffd23f", text: "#171412", label: "警戒" },
-            bad: { bg: "#ef476f", text: "#fff", label: "危险" },
+            bad: { bg: "#ef476f", text: "#171412", label: "危险" },
       };
 
 interface Row {
@@ -95,7 +95,7 @@ export default function RecompSimulator() {
                   ? {
                           bg: "#ef476f",
                           title: "窗口关闭：肌肉转入净流失",
-                          body: "赤字 >40%：MPS 信号 refractory、皮质醇升高、瘦素下降。即便高蛋白+训练也难以净增肌——参考 Padilha 2017 (PMID:30242237)。",
+                          body: "赤字 >40%：MPS 信号 refractory、皮质醇升高、瘦素下降。即便高蛋白+训练也难以净增肌，参考 Padilha 2017 (PMID:30242237)。",
                     }
                   : Object.values(levels).every((l) => l === "good")
                     ? {
@@ -114,7 +114,7 @@ export default function RecompSimulator() {
                       : {
                               bg: "#ffd23f",
                               title: '窗口半开：更可能是"保持"而非"增肌"',
-                              body: '赤字温和但某些条件未拉满。~500 kcal/d 慢性赤字通常消除瘦体重增益但不削弱力量（Murphy & Koehler 2020, PMID:34623696）——"保持即胜利"。',
+                              body: '赤字温和但某些条件未拉满。~500 kcal/d 慢性赤字通常消除瘦体重增益但不削弱力量（Murphy & Koehler 2020, PMID:34623696）。"保持即胜利"。',
                         };
 
       return (
@@ -132,7 +132,7 @@ export default function RecompSimulator() {
                                                 alignItems: "baseline",
                                                 gap: "0.6rem",
                                                 fontFamily: "var(--font-mono)",
-                                                fontSize: "0.78rem",
+                                                fontSize: "0.8125rem",
                                           }}
                                     >
                                           <strong
@@ -176,6 +176,7 @@ export default function RecompSimulator() {
                                           }
                                           style={{
                                                 width: "100%",
+                                                minHeight: "44px",
                                                 accentColor: "var(--ink)",
                                           }}
                                           aria-label={row.label}
@@ -183,8 +184,8 @@ export default function RecompSimulator() {
                                     <div
                                           style={{
                                                 fontFamily: "var(--font-mono)",
-                                                fontSize: "0.68rem",
-                                                opacity: 0.65,
+                                                fontSize: "0.8125rem",
+                                                color: "var(--muted)",
                                           }}
                                     >
                                           {row.hint}
@@ -197,10 +198,7 @@ export default function RecompSimulator() {
                         style={{
                               border: "var(--border)",
                               background: verdict.bg,
-                              color:
-                                    verdict.bg === "#ef476f"
-                                          ? "#fff"
-                                          : "#171412",
+                              color: "#171412",
                               boxShadow: "var(--shadow-sm)",
                               padding: "0.7rem 0.9rem",
                               marginTop: "1rem",
@@ -209,7 +207,7 @@ export default function RecompSimulator() {
                         <strong
                               style={{
                                     fontFamily: "var(--font-mono)",
-                                    fontSize: "0.85rem",
+                                    fontSize: "0.8125rem",
                               }}
                         >
                               {verdict.title}
@@ -217,7 +215,7 @@ export default function RecompSimulator() {
                         <p
                               style={{
                                     margin: "0.4rem 0 0",
-                                    fontSize: "0.85rem",
+                                    fontSize: "1rem",
                               }}
                         >
                               {verdict.body}
@@ -226,9 +224,9 @@ export default function RecompSimulator() {
                   <p
                         style={{
                               fontFamily: "var(--font-mono)",
-                              fontSize: "0.68rem",
-                              opacity: 0.6,
+                              fontSize: "0.8125rem",
                               marginTop: "0.6rem",
+                              color: "var(--muted)",
                         }}
                   >
                         * 基于文献群体阈值的示意模型，不构成个体医学/训练建议。

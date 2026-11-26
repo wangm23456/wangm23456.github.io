@@ -8,240 +8,319 @@ const posts = (await getCollection('blog')).sort(
 );
 const [featured, ...recent] = posts.slice(0, 4);
 const formatDate = (date: Date) => date.toISOString().slice(0, 10);
-const poses = [
-  { id: 'idle', label: '待机', alt: '波波站着，手里拿着紫色哑铃和绿色小玩偶' },
-  { id: 'celebrate', label: '庆祝', alt: '波波笑着举起紫色哑铃' },
-  { id: 'rest', label: '休息', alt: '波波坐下来休息' },
-];
+
 const destinations = [
-  { number: '01', label: 'WRITING', title: '写作', description: '关于 AI、工程与科学的原创长文。', href: '/blog/', icon: 'writing' },
-  { number: '02', label: 'RESEARCH', title: '研究笔记', description: '专题文章背后的文献与证据。', href: '/research/', icon: 'research' },
-  { number: '03', label: 'OBSERVATORY', title: '太空观测', description: '查看下一次火箭发射与任务动态。', href: '/space-now/', icon: 'space' },
+  { title: '写作', description: '关于 AI、工程与科学的原创长文。', href: '/blog/', scene: 'writing', alt: '波波在书桌前写笔记' },
+  { title: '研究笔记', description: '专题文章背后的文献与证据。', href: '/research/', scene: 'research', alt: '波波在实验台前观察烧瓶' },
+  { title: '太空观测', description: '查看下一次火箭发射与任务动态。', href: '/space-now/', scene: 'space', alt: '波波在小火箭与星球旁拿着旗子' },
 ];
 ---
 
-<BaseLayout title="潘勒斯的个人主页" description="潘勒斯的个人主页。和波波一起探索 AI、工程与科学，阅读原创长文、研究笔记和太空观测。" wide home>
-  <div class="personal-home">
-    <section class="intro" aria-labelledby="intro-title">
-      <div class="intro-copy">
-        <p class="eyebrow intro-label"><span></span> ARCANA / PERSONAL SITE</p>
-        <h1 id="intro-title">你好，我是<br /><strong>潘勒斯<span>。</span></strong></h1>
-        <p class="motto" lang="en">Engineering Is Magic.</p>
-        <p class="intro-text">我在这里记录 AI、工程与科学。<br class="desktop-break" />读论文、拆系统，把好奇的问题写成文章。</p>
-        <div class="intro-actions">
-          <a class="primary-action" href="#writing">读最新文章 <span aria-hidden="true">↘</span></a>
-          <a class="plain-action" href="/about/">关于我 <span aria-hidden="true">↗</span></a>
+<BaseLayout title="潘勒斯的个人主页" description="潘勒斯的个人主页。和波波一起记录 AI、工程与科学，阅读原创长文、研究笔记和太空观测。">
+  <div class="home">
+    <section class="hero container" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <h1 id="hero-title"><span class="hero-kicker" lang="en" aria-hidden="true">Arcana / personal index</span>你好，我是<br /><strong>潘勒斯<span class="dot">。</span></strong>
+          <span class="motto" lang="en">Engineering Is Magic.</span>
+        </h1>
+        <p class="intro lead">我在这里记录 AI、工程与科学。读论文、拆系统，把好奇的问题写成文章。</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#writing">读最新文章</a>
+          <a class="btn btn-ghost" href="/about/">关于我</a>
         </div>
       </div>
 
       <figure class="mascot" data-mascot>
-        <div class="stage" aria-label="波波角色展示">
-          <span class="stage-index eyebrow" aria-hidden="true">FIG. 01 / ARCANA IP</span>
-          <div class="stage-orbit" aria-hidden="true"></div>
-          <span class="stage-word" aria-hidden="true">BOBO</span>
-          <span class="spark spark--left" aria-hidden="true">✦</span>
-          <span class="spark spark--right" aria-hidden="true">✧</span>
-          <img class="mascot-img" src="/zompopo/idle.webp" alt={poses[0].alt} width="640" height="1149" fetchpriority="high" />
-          <span class="stage-seal eyebrow" aria-hidden="true">100%<br />UNDYING</span>
+        <div class="stage grain" aria-label="波波角色展示">
+          <span class="stage-id" lang="en" aria-hidden="true">Zompopo / Unit 01</span>
+          <span class="stage-orbit" aria-hidden="true"></span>
+          <img class="mascot-img" src="/zompopo/idle.webp" alt="波波站着，手里拿着紫色哑铃和绿色小玩偶" width="640" height="1149" fetchpriority="high" />
+          <div class="mascot-player" data-mascot-player></div>
         </div>
         <figcaption class="mascot-caption">
-          <div><strong>波波</strong><span class="eyebrow">ZOMPOPO</span></div>
-          <div class="pose-controls" role="group" aria-label="切换波波的姿态" hidden>
-            {poses.map((pose, index) => (
-              <button type="button" data-pose={`/zompopo/${pose.id}.webp`} data-alt={pose.alt} aria-pressed={index === 0 ? 'true' : 'false'}>{pose.label}</button>
-            ))}
-          </div>
-          <span class="sr-only" role="status" data-pose-status></span>
+          <div class="mascot-name"><strong>波波</strong><span lang="en">ZOMPOPO</span></div>
+          <button class="mascot-toggle" type="button" data-mascot-toggle hidden>暂停动画</button>
+          <p class="mascot-line">从一篇长文开始，或看看最近的研究。</p>
         </figcaption>
       </figure>
     </section>
 
-    <nav class="directory" aria-label="探索 Arcana">
-      {destinations.map((item) => (
-        <a class="portal" href={item.href}>
-          <span class:list={['portal-icon', `portal-icon--${item.icon}`]} aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              {item.icon === 'writing' && <path d="M5 4h10l4 4v12H5z M15 4v5h4 M8 12h8 M8 16h6" />}
-              {item.icon === 'research' && <path d="M9 3h6m-5 0v7l-5 8a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-8V3M8 15h8" />}
-              {item.icon === 'space' && <><circle cx="12" cy="12" r="7" /><ellipse cx="12" cy="12" rx="11" ry="3.8" transform="rotate(-35 12 12)" /></>}
-            </svg>
-          </span>
-          <span class="portal-copy"><span class="eyebrow">{item.number} / {item.label}</span><strong>{item.title}</strong><small>{item.description}</small></span>
-          <span class="arrow" aria-hidden="true">↗</span>
-        </a>
-      ))}
-    </nav>
-
-    <section class="home-section" id="writing" aria-labelledby="writing-title">
-      <div class="section-heading">
-        <div><p class="eyebrow">01 / FIELD NOTES</p><h2 id="writing-title">最近写了什么</h2></div>
-        <a class="plain-action" href="/blog/">所有文章 <span aria-hidden="true">↗</span></a>
-      </div>
+    <section class="home-sec container" id="writing" aria-labelledby="writing-title">
+      <header class="sec-head">
+        <h2 id="writing-title">最近写了什么</h2>
+        <a class="btn btn-ghost" href="/blog/">所有文章</a>
+      </header>
       {featured ? (
-        <div class="writing-grid" class:list={[{ 'writing-grid--single': !recent.length }]}>
+        <div class="writing-grid">
           <a class="featured" href={`/blog/${featured.id}/`}>
-            <div class="featured-meta"><span class="eyebrow">LATEST / 最新文章</span><time datetime={formatDate(featured.data.date)}>{formatDate(featured.data.date)}</time></div>
+            <p class="card-label">最新一篇 · <time datetime={formatDate(featured.data.date)}>{formatDate(featured.data.date)}</time></p>
             <h3>{featured.data.title}</h3>
-            {featured.data.description && <p>{featured.data.description}</p>}
-            <div class="featured-end"><ul aria-label="文章标签">{featured.data.tags.slice(0, 3).map((tag) => <li>{tag}</li>)}</ul><span class="arrow" aria-hidden="true">↗</span></div>
+            {featured.data.description && <p class="featured-desc">{featured.data.description}</p>}
+            <ul class="tag-row" aria-label="文章标签">
+              {featured.data.tags.slice(0, 3).map((tag) => <li>{tag}</li>)}
+            </ul>
           </a>
-          {recent.length > 0 && <ul class="recent-list">
-            {recent.map((post) => (
-              <li><a href={`/blog/${post.id}/`}><div><time datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time><h3>{post.data.title}</h3></div><span class="arrow" aria-hidden="true">↗</span></a></li>
-            ))}
-          </ul>}
+          {recent.length > 0 && (
+            <ul class="recent-list">
+              {recent.map((post) => (
+                <li>
+                  <a href={`/blog/${post.id}/`}>
+                    <time datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
+                    <span class="recent-title">{post.data.title}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-      ) : <p>新的文章正在准备中。</p>}
+      ) : (
+        <p class="empty">新的文章正在准备中。</p>
+      )}
     </section>
 
-    <section class="home-section" aria-labelledby="live-title">
-      <div class="section-heading">
-        <div><p class="eyebrow">02 / THE RADAR</p><h2 id="live-title">外面的世界</h2></div>
+    <section class="home-sec container" aria-labelledby="go-title">
+      <header class="sec-head">
+        <h2 id="go-title">站点索引</h2>
+      </header>
+      <ul class="go-grid">
+        {destinations.map((item, index) => (
+          <li>
+            <a class="go-card" href={item.href}>
+              <span class="go-scene">
+                <img src={`/zompopo/scenes/${item.scene}.webp`} alt={item.alt} width="960" height="720" loading="lazy" decoding="async" />
+              </span>
+              <span class="go-label">
+                <span class="go-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                <strong>{item.title}</strong>
+                <small>{item.description}</small>
+              </span>
+              <span class="go-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8" /></svg>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="home-sec band grain" aria-labelledby="radar-title">
+      <div class="container">
+        <header class="sec-head">
+          <h2 id="radar-title">外面的世界</h2>
+        </header>
+        <div class="radar-grid">
+          <div class="radar-card">
+            <h3>太空观测站</h3>
+            <p>从地球上的发射台，到太阳表面的活动。</p>
+            <div class="radar-actions">
+              <a class="btn btn-ghost" href="/space-now/">Space Now</a>
+              <a class="btn btn-ghost" href="/solar-watch/">Solar Watch</a>
+            </div>
+          </div>
+          <div class="radar-card">
+            <h3>AI 圈现在</h3>
+            <NewsList client:visible />
+            <p class="news-attribution">数据来源：<a href="https://aihot.news" target="_blank" rel="noopener noreferrer">AI HOT</a></p>
+          </div>
+        </div>
       </div>
-      <div class="radar-grid">
-        <div class="radar-card radar-links">
-          <p class="eyebrow">OBSERVATORY</p><h3>太空观测站</h3>
-          <p>从地球上的发射台，到太阳表面的活动。</p>
-          <a href="/space-now/">Space Now <span aria-hidden="true">↗</span></a>
-          <a href="/solar-watch/">Solar Watch <span aria-hidden="true">↗</span></a>
+    </section>
+
+    <section class="home-sec container" aria-labelledby="bobo-title">
+      <div class="bobo-split">
+        <div class="bobo-copy">
+          <h2 id="bobo-title">关于这个站点</h2>
+          <p class="lead">他在每一篇文章旁边待命，也在关于页讲潘勒斯的故事。</p>
+          <a class="btn btn-primary" href="/about/">关于我</a>
         </div>
-        <div class="radar-card">
-          <p class="eyebrow">AI NEWS</p><h3>AI 圈现在</h3>
-          <NewsList client:visible />
-          <p class="news-attribution">数据来源：<a href="https://aihot.virxact.com" target="_blank" rel="noopener noreferrer">AI HOT ↗</a></p>
-        </div>
+        <figure class="bobo-fig grain" aria-hidden="true">
+          <img src="/zompopo/stickers/reading.webp" alt="" width="455" height="353" loading="lazy" decoding="async" />
+        </figure>
       </div>
     </section>
   </div>
 </BaseLayout>
 
 <script>
-  const mascot = document.querySelector('[data-mascot]');
-  const image = mascot?.querySelector('img');
-  const controls = mascot?.querySelector<HTMLElement>('.pose-controls');
-  const status = mascot?.querySelector('[data-pose-status]');
-  if (image && controls && status) {
-    controls.hidden = false;
-    let request = 0;
-    controls.addEventListener('click', async (event) => {
-      if (!(event.target instanceof Element)) return;
-      const button = event.target.closest<HTMLButtonElement>('button[data-pose]');
-      if (!button?.dataset.pose) return;
-      const current = ++request;
-      if (button.getAttribute('aria-pressed') === 'true') {
-        status.textContent = '';
+  import type { MaskoHandle } from '@masko/player';
+
+  const mascot = document.querySelector<HTMLElement>('[data-mascot]');
+  const host = mascot?.querySelector<HTMLElement>('[data-mascot-player]');
+  const toggle = mascot?.querySelector<HTMLButtonElement>('[data-mascot-toggle]');
+
+  if (mascot && host && toggle) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let player: MaskoHandle | undefined;
+    let paused = false;
+
+    const showPoster = () => {
+      player?.destroy();
+      player = undefined;
+      paused = false;
+      mascot.removeAttribute('data-clip-visible');
+      toggle.hidden = true;
+      toggle.textContent = '暂停动画';
+    };
+
+    const syncMotion = async () => {
+      if (reducedMotion.matches) {
+        showPoster();
         return;
       }
-      const next = new Image();
-      next.src = button.dataset.pose;
       try {
-        await next.decode();
+        const { mountMascot } = await import('@masko/player');
+        if (reducedMotion.matches || player) return;
+        player = mountMascot(host, {
+          clip: { webm: '/zompopo/one-last-rep.webm', hevc: '/zompopo/one-last-rep.mov' },
+          sound: false,
+        });
+        player.on('clip', () => {
+          mascot.setAttribute('data-clip-visible', '');
+          toggle.hidden = false;
+        });
+        player.on('error', showPoster);
       } catch {
-        if (current === request) status.textContent = '图片加载失败，请重试。';
-        return;
+        showPoster();
       }
-      if (current !== request) return;
-      image.src = next.src;
-      image.alt = button.dataset.alt ?? '';
-      controls.querySelector('[aria-pressed="true"]')?.setAttribute('aria-pressed', 'false');
-      button.setAttribute('aria-pressed', 'true');
-      status.textContent = image.alt;
+    };
+
+    toggle.addEventListener('click', () => {
+      if (!player) return;
+      paused = !paused;
+      if (paused) player.pause();
+      else player.play();
+      toggle.textContent = paused ? '继续播放' : '暂停动画';
     });
+    reducedMotion.addEventListener('change', syncMotion);
+    void syncMotion();
   }
 </script>
 
 <style>
-  .personal-home { --rule: color-mix(in srgb, var(--ink) 23%, transparent); --accent: #a3185d; --rose: #f7c4df; --rose-ink: #321529; }
-  :global(html.dark) .personal-home { --accent: #ff9bc9; }
-  .eyebrow, time { margin: 0; font: 700 0.69rem/1.5 var(--font-mono); letter-spacing: 0.09em; }
-  .intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
-  .intro-label { color: var(--accent); display: flex; align-items: center; gap: 0.65rem; }
-  .intro-label span { width: 0.52rem; height: 0.52rem; border-radius: 50%; background: currentColor; }
-  h1 { margin: 1.45rem 0 0; font-size: clamp(2.8rem, 6vw, 5.8rem); font-weight: 850; letter-spacing: -0.085em; line-height: 1.02; }
-  h1 strong { display: inline-block; margin-top: 0.18em; font-weight: 950; }
-  h1 strong span { color: var(--accent); }
-  .motto { margin: 1.1rem 0 0; font: italic 700 clamp(1.15rem, 2.4vw, 1.85rem)/1.3 Georgia, serif; }
-  .intro-text { margin: 1.15rem 0 0; color: var(--muted); line-height: 1.8; }
-  .intro-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin-top: 1.65rem; }
-  .primary-action, .plain-action { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--ink); font-weight: 800; font-size: 0.85rem; text-decoration: none; }
-  .primary-action { background: var(--ink); color: var(--paper); padding: 0.68rem 1rem; border-radius: 0.25rem; }
-  .primary-action:hover { background: var(--accent); }
-  :global(html.dark) .primary-action:hover { color: #22121d; }
-  .plain-action { padding-block: 0.45rem; text-decoration: underline; text-underline-offset: 0.28em; }
-  .plain-action:hover { color: var(--accent); }
-  .mascot { min-width: 0; margin: 0; border: 1px solid var(--rule); border-radius: 0.5rem; overflow: hidden; background: var(--card); }
-  .stage { position: relative; isolation: isolate; display: grid; place-items: center; height: clamp(21rem, 39vw, 32rem); overflow: hidden; background: radial-gradient(ellipse at 49% 40%, #fff2f8 0%, var(--rose) 67%, #e9a3ca 100%); color: var(--rose-ink); }
-  .stage::before { content: ''; position: absolute; inset: 0; background: radial-gradient(#713453 0.7px, transparent 0.7px); background-size: 8px 8px; opacity: 0.2; z-index: -1; }
-  .stage::after { content: ''; position: absolute; width: 44%; height: 8%; bottom: 9%; border-radius: 50%; background: #874466; opacity: 0.18; filter: blur(10px); z-index: -1; }
-  .stage-index { position: absolute; top: 1rem; left: 1rem; }
-  .stage-word { position: absolute; top: 50%; left: 49%; transform: translate(-50%, -50%); z-index: -1; white-space: nowrap; font: 950 clamp(5.2rem, 13vw, 11rem)/1 var(--font-serif); letter-spacing: -0.09em; color: #fff1f8; }
-  .stage-orbit { position: absolute; width: 91%; height: 44%; border: 1px solid #9a547e80; border-radius: 50%; transform: rotate(-20deg); z-index: -1; }
-  .mascot-img { position: absolute; top: 8.5%; left: 14%; display: block; width: 72%; height: 83%; object-fit: contain; filter: drop-shadow(0 0.8rem 0.8rem #541b4233); }
-  .spark { position: absolute; font-size: clamp(1.7rem, 4vw, 3.25rem); line-height: 1; }
-  .spark--left { left: 12%; top: 30%; }
-  .spark--right { right: 11%; bottom: 29%; }
-  .stage-seal { position: absolute; right: 1rem; bottom: 1rem; display: grid; place-content: center; width: 4.1rem; aspect-ratio: 1; border: 1px solid; border-radius: 50%; text-align: center; transform: rotate(10deg); font-size: 0.57rem; }
-  .mascot-caption { border-top: 1px solid var(--rule); padding: 0.65rem 0.9rem; min-height: 3.55rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem 0.75rem; }
-  .mascot-caption > div:first-child { display: flex; align-items: baseline; gap: 0.55rem; }
-  .mascot-caption .eyebrow { color: var(--muted); }
-  .pose-controls:not([hidden]) { display: flex; gap: 0.25rem; }
-  .pose-controls button { min-height: 2.1rem; padding: 0.2rem 0.55rem; border: 1px solid var(--rule); border-radius: 2rem; background: transparent; color: var(--ink); font: 700 0.72rem var(--font-serif); cursor: pointer; }
-  .pose-controls button:hover { border-color: var(--accent); }
-  .pose-controls button[aria-pressed='true'] { background: var(--rose); color: var(--rose-ink); border-color: transparent; }
-  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .directory { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; margin-top: clamp(1.5rem, 4vw, 2.5rem); }
-  .portal { min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: 0.75rem; padding: 1rem 0.9rem; border: 1px solid var(--rule); border-radius: 0.4rem; background: var(--card); color: var(--ink); text-decoration: none; }
-  .portal:hover, .featured:hover { border-color: var(--accent); }
-  .portal-icon { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 0.3rem; background: var(--rose); color: var(--rose-ink); }
-  .portal-icon svg { width: 1.25rem; height: 1.25rem; }
-  .portal-icon--research { background: #dcd2fa; color: #2e2355; }
-  .portal-icon--space { background: #d8e9b6; color: #2c401e; }
-  .portal-copy > * { display: block; }
-  .portal-copy .eyebrow { color: var(--muted); }
-  .portal-copy strong { font-size: 1.15rem; margin-top: 0.15rem; line-height: 1.25; }
-  .portal-copy small { color: var(--muted); line-height: 1.5; margin-top: 0.35rem; }
-  .arrow { font: 700 1.15rem/1.2 var(--font-mono); }
-  .home-section { margin-top: clamp(2.7rem, 6vw, 5rem); scroll-margin-top: 1rem; }
-  .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 0.5rem 1rem; padding-bottom: 0.85rem; margin-bottom: 1rem; border-bottom: 1px solid var(--rule); }
-  .section-heading .eyebrow { color: var(--accent); }
-  .section-heading h2 { margin: 0.25rem 0 0; font-size: clamp(1.55rem, 4vw, 2.65rem); letter-spacing: -0.065em; line-height: 1.12; }
-  .section-heading .plain-action { white-space: nowrap; }
-  .writing-grid, .radar-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 1rem; }
-  .writing-grid--single { grid-template-columns: 1fr; }
-  .featured, .radar-card { border-radius: 0.4rem; border: 1px solid var(--rule); padding: clamp(1rem, 3vw, 1.6rem); }
-  .featured { display: flex; flex-direction: column; background: var(--rose); color: var(--rose-ink); text-decoration: none; }
-  .featured-meta, .featured-end { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; }
-  .featured h3 { font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1.25; margin: 1rem 0 0; text-wrap: pretty; }
-  .featured p { margin: 0.55rem 0 1.25rem; font-size: 0.9rem; }
-  .featured-end { margin-top: auto; padding-top: 0.65rem; }
-  .featured-end ul, .recent-list { list-style: none; margin: 0; padding: 0; }
-  .featured-end ul { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-  .featured-end li { border: 1px solid #9a547e80; padding: 0.08rem 0.5rem; border-radius: 2rem; font: 700 0.68rem/1.5 var(--font-mono); }
-  .recent-list a { display: flex; align-items: center; justify-content: space-between; gap: 0.7rem; min-height: 4.4rem; padding: 0.7rem 0.25rem; border-bottom: 1px solid var(--rule); color: var(--ink); text-decoration: none; }
-  .recent-list a:hover { color: var(--accent); }
-  .recent-list time { color: var(--muted); }
-  .recent-list h3 { margin: 0.2rem 0 0; font-size: 0.98rem; line-height: 1.45; }
-  .radar-card { background: var(--card); min-width: 0; }
-  .radar-card .eyebrow { color: var(--accent); }
-  .radar-card h3 { margin: 0.25rem 0 0.75rem; font-size: 1.35rem; }
-  .radar-links { background: color-mix(in srgb, var(--card) 89%, #a6b97a); }
-  .radar-links > a { display: flex; justify-content: space-between; padding: 0.55rem 0; border-bottom: 1px solid var(--rule); color: var(--ink); font-weight: 750; text-decoration: none; }
-  .radar-links > a:hover { color: var(--accent); }
-  .personal-home :is(a, button):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-  @media (max-width: 860px) {
-    .intro { gap: 1.5rem; }
-    .portal { gap: 0.45rem; padding: 0.75rem 0.6rem; }
-    .portal-icon { width: 2rem; height: 2rem; }
+  /* Hallmark · shape: Workbench · genre: playful · theme: Hum base + Lab homepage (direction C, user-chosen 2026-11-24) · redesign: full
+   * hero: Stage (/) · nav: squared chip rail · footer: mast + colophon · imagery: character art + scene modules
+   * signature: dark character bay + technical grid + numbered modules + square controls · axes: light/grotesque/green-lime · posture: full palette
+   * contrast: pass · fold: pass · v2.1.0 · hero-review: fix · 3 findings · 3 resolved (grain+torn texture, all five nav links visible in a second row ≤40rem, seal repositioned clear of companion)
+   * finish-review: fix · 5 findings · 5 resolved (solar feed provenance, scientific chart font floor, solar labels, research heading hierarchy, footer spacing)
+   * lab pass: C production with light/dark tokens, reserved stage label on mobile, bordered mobile index rows */
+  /* Hallmark · waivers: 26b no form controls on page · 44c/79 fold heuristic measures text blocks, stage visual extends to the caption · kept: 4 writing-grid headings moved off the homepage to the full /blog/ list (links 63/63 intact) · kept figures 03:23/06:53 are live countdown reads · kept ids intro-title/live-title superseded by #writing/#radar section anchors */
+
+  .home { background: var(--color-lab-paper); }
+  .hero { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-lg); align-items: stretch; min-height: calc(100svh - 64px); padding-top: var(--space-xl); padding-bottom: var(--space-xl); }
+  .hero-copy { align-self: center; }
+  .hero-copy h1 { margin: 0; font-family: var(--font-lab-display); font-weight: 700; font-size: clamp(3.7rem, 6vw, 6.2rem); line-height: 1.08; letter-spacing: -0.065em; text-wrap: balance; }
+  .hero-copy strong { font-weight: 700; }
+  .hero-kicker { display: block; margin-bottom: var(--space-lg); font-family: var(--font-outlier); font-size: var(--text-xs); font-weight: 500; line-height: 1.4; color: var(--color-lab-signal); }
+  .dot { color: var(--color-lab-signal); }
+  .motto { display: block; margin-top: var(--space-sm); font-family: var(--font-outlier); font-weight: 500; font-size: var(--text-md); letter-spacing: 0.02em; text-transform: uppercase; color: var(--color-lab-signal); }
+  .intro { max-width: 34rem; margin: var(--space-md) 0 0; color: var(--color-ink-2); line-height: 1.65; }
+  .actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-lg); }
+  .home .btn { border-radius: var(--radius-lab-control); }
+  .home .btn-primary { background: var(--color-lab-accent); border-color: transparent; color: var(--color-lab-panel); box-shadow: var(--shadow-card); }
+  .home .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-card), var(--shadow-lift); }
+  .home .btn-primary:active { transform: translateY(2px); box-shadow: var(--shadow-card); }
+  .home .btn-ghost { border-color: var(--color-ink); background: transparent; color: var(--color-ink); }
+  .home .btn-ghost:hover { background: var(--color-lab-wash); color: var(--color-ink); }
+
+  .mascot { min-width: 0; margin: 0; display: flex; flex-direction: column; overflow: hidden; background: var(--color-lab-panel); border: 1px solid var(--color-lab-panel); border-radius: var(--radius-lab); filter: var(--shadow-lab); }
+  .stage { position: relative; isolation: isolate; display: grid; place-items: center; flex: 1; min-height: clamp(24rem, 52vh, 36rem); overflow: hidden; border-radius: var(--radius-lab) var(--radius-lab) 0 0; background-color: var(--color-lab-panel); background-image: linear-gradient(color-mix(in oklab, var(--color-lab-accent) 7%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--color-lab-accent) 7%, transparent) 1px, transparent 1px); background-size: var(--grid-lab) var(--grid-lab); }
+  .stage-id { position: absolute; top: var(--space-lg); left: var(--space-lg); z-index: 2; font-family: var(--font-outlier); font-size: var(--text-xs); line-height: 1.4; color: var(--color-lab-accent); }
+  .stage-orbit { position: absolute; width: 82%; height: 42%; border: var(--rule-hair) dashed color-mix(in oklab, var(--color-lab-accent) 50%, transparent); border-radius: 50%; transform: rotate(-14deg); z-index: 0; }
+  .mascot-img { position: absolute; bottom: 4%; left: 50%; transform: translateX(-50%); z-index: 1; width: min(58%, 24rem); height: auto; max-height: 88%; object-fit: contain; filter: var(--shadow-lift); }
+  .mascot-player { position: absolute; inset: 0; z-index: 1; }
+  [data-clip-visible] .mascot-img { opacity: 0; }
+  .mascot-line { flex-basis: 100%; margin: 0; padding-top: var(--space-2xs); border-top: var(--rule-hair) dashed var(--color-lab-line); color: var(--color-lab-ink-2); font-size: var(--text-body); min-block-size: calc(1lh + var(--space-2xs) + 1px); }
+  .mascot-caption { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2xs) var(--space-sm); padding: var(--space-sm) var(--space-md); background: var(--color-lab-panel); border-top: var(--rule-hair) solid var(--color-lab-line); border-radius: 0 0 var(--radius-lab) var(--radius-lab); }
+  .mascot-name { display: flex; align-items: center; gap: var(--space-2xs); min-height: 44px; }
+  .mascot-name strong { font-weight: 600; font-size: var(--text-md); color: var(--color-lab-ink); }
+  .mascot-name span { font-size: var(--text-xs); color: var(--color-lab-ink-2); }
+  .mascot-toggle { min-height: 44px; padding: var(--space-3xs) var(--space-sm); border: 1px solid color-mix(in oklab, var(--color-lab-ink-2) 60%, transparent); border-radius: var(--radius-lab-control); background: transparent; color: var(--color-lab-ink); font-size: var(--text-xs); font-weight: 600; transition: transform var(--dur-micro) var(--ease-spring), background var(--dur-micro) var(--ease-snap); }
+  .mascot-toggle:hover { background: var(--color-lab-panel-2); transform: translateY(-1px); }
+  .mascot-toggle:active { transform: translateY(1px); }
+
+  /* ---- sections ---- */
+  .home-sec { margin-top: var(--section-gap); }
+  .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-md); margin-bottom: var(--space-xl); }
+  .sec-head h2 { margin: 0; font-family: var(--font-lab-display); font-size: var(--text-section); font-weight: 700; letter-spacing: -0.04em; }
+  .band { margin-top: calc(var(--section-gap) + var(--space-2xl)); background: var(--color-lab-wash-2); padding: var(--space-3xl) 0 var(--space-2xl); }
+
+  .writing-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gap-columns); align-items: start; }
+  .featured { position: relative; display: block; text-decoration: none; background: var(--color-lab-wash); border: 1px solid var(--color-edge); border-radius: var(--radius-lab); padding: var(--space-xl); box-shadow: var(--shadow-card); transition: transform var(--dur-short) var(--ease-spring), box-shadow var(--dur-short) var(--ease-snap); }
+  .featured:hover { transform: translateY(-2px); box-shadow: var(--shadow-card), var(--shadow-lift); }
+  .card-label { margin: 0; font-size: var(--text-xs); color: var(--color-ink-2); }
+  .card-label time { font-family: var(--font-outlier); }
+  .featured h3 { margin: var(--space-sm) 0 0; font-size: var(--text-display-s); letter-spacing: var(--tracking-display); text-wrap: balance; }
+  .featured-desc { margin: var(--space-md) 0 0; font-size: var(--text-lead); line-height: 1.65; color: var(--color-ink-2); text-wrap: pretty; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: var(--space-3xs); margin: var(--space-lg) 0 0; padding: 0; list-style: none; }
+  .tag-row li { padding: var(--space-3xs) var(--space-sm); border: 1px solid var(--color-edge); border-radius: var(--radius-lab-control); background: var(--color-card); font-size: var(--text-xs); color: var(--color-ink-2); }
+  .recent-list { margin: 0; padding: 0; list-style: none; }
+  .recent-list li + li { border-top: var(--rule-hair) solid var(--color-rule); }
+  .recent-list a { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: var(--space-md); align-items: baseline; padding: var(--space-md) var(--space-3xs); text-decoration: none; }
+  .recent-list time { font-family: var(--font-outlier); font-size: var(--text-xs); color: var(--color-muted); }
+  .recent-title { font-weight: 600; line-height: 1.5; text-wrap: pretty; transition: transform var(--dur-micro) var(--ease-snap), color var(--dur-micro) var(--ease-snap); }
+  .recent-list a:hover .recent-title { transform: translateX(4px); color: var(--color-lab-signal); }
+  .empty { color: var(--color-muted); }
+
+  .go-grid { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: hidden; border: var(--rule-hair) solid var(--color-ink); border-radius: var(--radius-lab); background: var(--color-card); list-style: none; }
+  .go-grid li + li { border-left: var(--rule-hair) solid var(--color-ink); }
+  .go-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto 1fr; align-items: center; gap: 0; height: 100%; padding: 0; border: 0; color: var(--color-ink); text-decoration: none; transition: background-color var(--dur-micro) var(--ease-snap); }
+  .go-card:hover { background: var(--color-lab-wash); }
+  .go-scene { display: block; grid-column: 1 / -1; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 0; background: var(--color-paper-2); }
+  .go-scene img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .go-label { display: grid; align-self: start; gap: var(--space-3xs); padding: var(--space-lg); }
+  .go-index { font-family: var(--font-outlier); font-size: var(--text-xs); color: var(--color-lab-signal); }
+  .go-card strong { font-family: var(--font-lab-display); font-size: var(--text-title); font-weight: 700; letter-spacing: var(--tracking-display); transition: color var(--dur-micro) var(--ease-snap); }
+  .go-card small { display: block; font-size: var(--text-body); line-height: 1.6; color: var(--color-ink-2); text-wrap: pretty; }
+  .go-arrow { display: grid; place-items: center; align-self: end; width: 2.75rem; height: 2.75rem; margin: 0 var(--space-lg) var(--space-lg) 0; border: 1px solid var(--color-ink); border-radius: var(--radius-lab-control); background: transparent; color: var(--color-ink); transition: transform var(--dur-micro) var(--ease-spring), background-color var(--dur-micro) var(--ease-snap), color var(--dur-micro) var(--ease-snap); }
+  .go-arrow svg { width: 1.1rem; height: 1.1rem; }
+  .go-card:hover strong { color: var(--color-lab-signal); }
+  .go-card:hover .go-arrow { transform: translate(2px, -2px) rotate(45deg); background: var(--color-ink); color: var(--color-lab-on-ink); }
+  .go-card:active .go-arrow { transform: translate(0, 0) rotate(45deg); }
+
+  .band .container { position: relative; z-index: 1; }
+  .radar-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); align-items: start; }
+  .radar-card { background: var(--color-card); border: 1px solid var(--color-edge); border-radius: var(--radius-lab); padding: var(--space-xl); box-shadow: var(--shadow-card); }
+  .radar-card h3 { margin: 0; font-size: var(--text-title); font-weight: 600; letter-spacing: var(--tracking-display); }
+  .radar-card > p { margin: var(--space-sm) 0 0; color: var(--color-ink-2); }
+  .radar-actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-lg); }
+  .news-attribution { margin: var(--space-md) 0 0; font-size: var(--text-xs); color: var(--color-muted); }
+
+  .bobo-split { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gap-columns); align-items: center; }
+  .bobo-copy h2 { margin: 0; font-family: var(--font-lab-display); font-size: var(--text-section); font-weight: 700; letter-spacing: -0.04em; }
+  .bobo-copy .lead { margin: var(--space-md) 0 0; color: var(--color-ink-2); }
+  .bobo-copy .btn { margin-top: var(--space-lg); }
+  .bobo-fig { position: relative; min-width: 0; margin: 0; display: grid; place-items: center; justify-self: center; width: min(100%, 22rem); aspect-ratio: 4 / 3; background: var(--color-lab-wash); border: 1px solid var(--color-edge); border-radius: var(--radius-lab); overflow: hidden; }
+  .bobo-fig img { width: min(78%, 17rem); height: auto; filter: var(--shadow-lift); }
+
+  .home :is(a, button):focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  .mascot button:focus-visible { outline-color: var(--color-lab-accent); }
+  @media (prefers-reduced-motion: reduce) {
+    .home *, .home *::before, .home *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
   }
-  @media (max-width: 660px) {
-    .intro, .directory, .writing-grid, .radar-grid { grid-template-columns: minmax(0, 1fr); }
-    .intro { gap: 1.65rem; }
-    .intro-copy { padding-top: 0.3rem; }
-    .intro-text { margin-top: 0.85rem; }
-    .desktop-break { display: none; }
-    .stage { height: clamp(18rem, 86vw, 27rem); }
-    .stage-word { font-size: clamp(5rem, 23vw, 8.5rem); }
-    .directory { gap: 0.55rem; }
-    .portal { gap: 0.75rem; padding: 0.75rem; }
+
+  @media (max-width: 60rem) {
+    .hero { grid-template-columns: minmax(0, 1fr); padding-top: var(--space-lg); padding-bottom: var(--space-xl); }
+    .stage { min-height: clamp(20rem, 64vw, 30rem); }
+    .mascot-img { bottom: 3%; max-height: 84%; }
+    .writing-grid, .radar-grid, .bobo-split { grid-template-columns: minmax(0, 1fr); }
+    .bobo-fig { justify-self: center; width: min(100%, 22rem); }
+    .band { margin-top: calc(var(--section-gap) + var(--space-xl)); }
+    .go-grid { display: block; }
+    .go-grid li + li { border-top: var(--rule-hair) solid var(--color-ink); border-left: 0; }
+    .go-card { grid-template-columns: 6rem minmax(0, 1fr) auto; grid-template-rows: 1fr; gap: var(--space-md); padding: var(--space-lg); }
+    .go-scene { grid-column: auto; width: 6rem; aspect-ratio: 1; }
+    .go-label { padding: 0; }
+    .go-arrow { margin: 0; }
+  }
+  @media (max-width: 40rem) {
+    .hero-kicker { margin-bottom: var(--space-md); }
+    .stage-id { top: var(--space-md); left: var(--space-md); }
+    .go-card { grid-template-columns: 5rem minmax(0, 1fr) auto; gap: var(--space-sm); padding: var(--space-md); }
+    .go-scene { width: 5rem; }
+    .go-arrow { width: 2.5rem; height: 2.5rem; }
+    .sec-head { flex-direction: column; align-items: flex-start; }
+    .featured, .radar-card { padding: var(--space-lg); }
+    .featured h3 { font-size: var(--text-2xl); }
+    .recent-list a { grid-template-columns: minmax(0, 1fr); gap: var(--space-3xs); padding-inline: 0; }
   }
 </style>

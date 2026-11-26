@@ -27,33 +27,35 @@ export default function WasmSimulatorEmbed() {
         <div
           style={{
             display: 'flex',
+            flexWrap: 'wrap',
+            gap: '0.5rem',
             justifyContent: 'space-between',
             alignItems: 'center',
-            background: 'var(--ink)',
-            color: '#fff',
+            background: 'var(--color-lab-panel)',
+            color: 'var(--color-lab-ink)',
             padding: '0.4rem 0.8rem',
-            fontSize: '0.75rem',
+            fontSize: '0.8125rem',
             fontFamily: 'var(--font-mono)',
             borderBottom: '2px solid rgba(255,255,255,0.15)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <span style={{ color: 'var(--yellow)', fontWeight: 800 }}>● MUJOCO WASM + ONNX 50Hz</span>
-            <span style={{ opacity: 0.6 }}>|</span>
-            <span style={{ fontSize: '0.68rem', color: '#4ade80' }}>纯浏览器端 0 延迟计算 · 无服务器依赖</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.6rem', minWidth: 0 }}>
+            <span style={{ color: 'var(--color-accent)', fontWeight: 800 }}>● MUJOCO WASM + ONNX 50Hz</span>
+            <span style={{ color: 'var(--color-lab-ink-2)' }}>|</span>
+            <span style={{ fontSize: '0.8125rem', color: '#4ade80' }}>纯浏览器端 0 延迟计算 · 无服务器依赖</span>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.4rem' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
             <button
               type="button"
               onClick={() => setLoadSim((v) => !v)}
               style={{
-                fontSize: '0.68rem',
+                fontSize: '0.8125rem',
+                minHeight: '44px',
                 padding: '0.15rem 0.45rem',
                 background: '#222',
                 color: '#fff',
                 border: '1px solid #444',
-                cursor: 'pointer',
               }}
             >
               {loadSim ? '重置沙盒' : '重新加载'}
@@ -62,13 +64,13 @@ export default function WasmSimulatorEmbed() {
               type="button"
               onClick={() => setIsFullscreen((v) => !v)}
               style={{
-                fontSize: '0.68rem',
+                fontSize: '0.8125rem',
+                minHeight: '44px',
                 padding: '0.15rem 0.45rem',
-                background: isFullscreen ? 'var(--brand)' : 'var(--yellow)',
-                color: isFullscreen ? '#fff' : 'var(--ink)',
+                background: isFullscreen ? 'var(--color-accent-3)' : 'var(--color-accent)',
+                color: 'var(--color-accent-ink)',
                 border: '1px solid #111',
                 fontWeight: 700,
-                cursor: 'pointer',
               }}
             >
               {isFullscreen ? '退出全屏 (ESC)' : '全屏体验 ↗'}
@@ -78,7 +80,8 @@ export default function WasmSimulatorEmbed() {
               target="_blank"
               rel="noreferrer"
               style={{
-                fontSize: '0.68rem',
+                fontSize: '0.8125rem',
+                minHeight: '44px',
                 padding: '0.15rem 0.45rem',
                 background: '#2f5fe0',
                 color: '#fff',
@@ -133,11 +136,11 @@ export default function WasmSimulatorEmbed() {
           background: 'var(--card)',
           border: 'var(--border-thin)',
           padding: '0.8rem',
-          fontSize: '0.74rem',
+          fontSize: '0.8125rem',
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-          <div style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--brand)' }}>
+          <div style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--color-accent-2)' }}>
             [ 基础移动与转弯 ]
           </div>
           <div><code>W / A / S / D</code> 或 <code>↑ ↓ ← →</code>：前后移动与差速转向</div>
@@ -155,7 +158,7 @@ export default function WasmSimulatorEmbed() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-          <div style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#b45309' }}>
+          <div style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--color-success)' }}>
             [ 视角与拟人交互 ]
           </div>
           <div><code>鼠标左键拖拽</code>：360° 自由旋转视角 (Orbit)</div>
@@ -170,7 +173,7 @@ export default function WasmSimulatorEmbed() {
           background: 'var(--paper)',
           border: '1px dashed var(--ink)',
           padding: '0.7rem 0.9rem',
-          fontSize: '0.73rem',
+          fontSize: '1rem',
           lineHeight: '1.45',
         }}
       >

@@ -76,22 +76,22 @@ const DAEMONS: DaemonSpec[] = [
 ];
 
 function getStatusBannerBg(f: FaultState): string {
-  if (f === 'kill_robotd') return '#ffebee';
-  if (f === 'fall_detected') return '#fff8e1';
-  if (f === 'bad_onnx_shape') return '#f3e5f5';
-  if (f === 'ota_updating') return '#e8f5e9';
+  if (f === 'kill_robotd') return 'color-mix(in oklab, var(--color-accent-3) 16%, var(--color-card))';
+  if (f === 'fall_detected') return 'color-mix(in oklab, var(--color-accent) 30%, var(--color-card))';
+  if (f === 'bad_onnx_shape') return 'color-mix(in oklab, var(--color-accent-2) 16%, var(--color-card))';
+  if (f === 'ota_updating') return 'color-mix(in oklab, var(--color-mint) 30%, var(--color-card))';
   return 'var(--paper-2)';
 }
 
 function getDaemonBadgeColors(alive: boolean, isRecovery: boolean): { bg: string; color: string } {
-  if (!alive) return { bg: 'var(--brand)', color: '#fff' };
-  if (isRecovery) return { bg: 'var(--yellow)', color: 'var(--ink)' };
+  if (!alive) return { bg: 'var(--color-accent-3)', color: 'var(--color-accent-ink)' };
+  if (isRecovery) return { bg: 'var(--color-accent)', color: 'var(--color-accent-ink)' };
   return { bg: '#2f5fe0', color: '#fff' };
 }
 
 function getOtaStepBg(done: boolean, current: boolean): string {
   if (done) return '#2f5fe0';
-  if (current) return 'var(--yellow)';
+  if (current) return 'var(--color-accent)';
   return 'var(--card)';
 }
 
@@ -130,7 +130,7 @@ export default function DaemonArchitectureSimulator() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       {/* Fault Injection Bar */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
-        <span style={{ fontSize: '0.78rem', fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--muted)' }}>
+        <span style={{ fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--muted)' }}>
           故障与场景注入控制台:
         </span>
         {[
@@ -146,8 +146,8 @@ export default function DaemonArchitectureSimulator() {
             onClick={() => setFault(btn.key as FaultState)}
             className={fault === btn.key ? 'active' : ''}
             style={{
-              background: fault === btn.key ? 'var(--brand)' : 'var(--card)',
-              color: fault === btn.key ? '#fff' : 'var(--ink)',
+              background: fault === btn.key ? 'var(--color-accent)' : 'var(--card)',
+              color: fault === btn.key ? 'var(--color-accent-ink)' : 'var(--ink)',
             }}
           >
             {btn.label}
@@ -161,7 +161,7 @@ export default function DaemonArchitectureSimulator() {
           border: 'var(--border-thin)',
           background: getStatusBannerBg(fault),
           padding: '0.6rem 0.8rem',
-          fontSize: '0.78rem',
+          fontSize: '0.8125rem',
           lineHeight: '1.4',
         }}
       >
@@ -174,7 +174,7 @@ export default function DaemonArchitectureSimulator() {
         )}
         {fault === 'kill_robotd' && (
           <div>
-            <b style={{ color: 'var(--brand)' }}>恢复路径（Recovery Path）保全验证：</b>
+            <b style={{ color: 'var(--color-accent-2)' }}>恢复路径（Recovery Path）保全验证：</b>
             控制循环已中断，伺服失电。<b>注意下方绿色常驻服务：</b>
             <code>configd</code>、<code>updaterd</code>、<code>btd</code> 拥有完全独立的 systemd
             单元且不依赖 <code>robotd</code>。这意味着<b>机器人绝不会变砖</b>
@@ -183,7 +183,7 @@ export default function DaemonArchitectureSimulator() {
         )}
         {fault === 'fall_detected' && (
           <div>
-            <b style={{ color: '#d97706' }}>IMU 跌倒保护触发：</b>
+            <b style={{ color: 'var(--color-error)' }}>IMU 跌倒保护触发：</b>
             身体 IMU 测得投影重力向量严重偏离标准站立基准 <code>[0, 0, -1]</code>。
             安全层（Safety Layer）介入，强制触发 <code>fall -&gt; limp</code>，14
             个伺服力矩全部卸掉。防止电机堵转过热或暴力扫齿！
@@ -191,14 +191,14 @@ export default function DaemonArchitectureSimulator() {
         )}
         {fault === 'bad_onnx_shape' && (
           <div>
-            <b style={{ color: '#7b1fa2' }}>形状门（Shape Gate）拦截非法策略：</b>
+            <b style={{ color: 'var(--color-accent-2)' }}>形状门（Shape Gate）拦截非法策略：</b>
             加载的模型输入为 <code>[1, 32]</code>，未满足统一观测契约 <code>[1, 61]</code>。
             安全层在加载期直接拒绝注入，防止未对齐的异常张量破坏 14 个关节的物理限位！
           </div>
         )}
         {fault === 'ota_updating' && (
           <div>
-            <b style={{ color: '#2e7d32' }}>7 步原子 OTA 升级演练中（进度 Step {otaStep}/6）：</b>
+            <b style={{ color: 'var(--color-success)' }}>7 步原子 OTA 升级演练中（进度 Step {otaStep}/6）：</b>
             minisign 验签 → 写入 <code>releases/0.9.2/</code> → 切换 <code>current</code> 符号链接 → 重启服务 → 探测 <code>robot.health</code> 探针！
           </div>
         )}
@@ -215,12 +215,11 @@ export default function DaemonArchitectureSimulator() {
               key={d.name}
               style={{
                 border: 'var(--border-thin)',
-                background: alive ? 'var(--card)' : '#fff0f0',
+                background: alive ? 'var(--card)' : 'color-mix(in oklab, var(--color-accent-3) 14%, var(--color-card))',
                 padding: '0.7rem',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '0.4rem',
-                opacity: alive ? 1 : 0.65,
                 position: 'relative',
               }}
             >
@@ -231,7 +230,7 @@ export default function DaemonArchitectureSimulator() {
                 </span>
                 <span
                   style={{
-                    fontSize: '0.68rem',
+                    fontSize: '0.8125rem',
                     fontFamily: 'var(--font-mono)',
                     padding: '0.1rem 0.4rem',
                     background: getDaemonBadgeColors(alive, isRecovery).bg,
@@ -243,7 +242,7 @@ export default function DaemonArchitectureSimulator() {
               </div>
 
               {/* Description */}
-              <div style={{ fontSize: '0.74rem', color: 'var(--ink)', lineHeight: '1.35' }}>{d.role}</div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--ink)', lineHeight: '1.35' }}>{d.role}</div>
 
               {/* Metadata */}
               <div
@@ -251,7 +250,7 @@ export default function DaemonArchitectureSimulator() {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  fontSize: '0.68rem',
+                  fontSize: '0.8125rem',
                   fontFamily: 'var(--font-mono)',
                   color: 'var(--muted)',
                   borderTop: '1px dashed var(--ink)',
@@ -261,7 +260,7 @@ export default function DaemonArchitectureSimulator() {
               >
                 <span>接口: {d.socket}</span>
                 {isRecovery && (
-                  <span style={{ color: '#b45309', fontWeight: 700 }}>[RECOVERY PATH]</span>
+                  <span style={{ color: 'var(--color-success)', fontWeight: 700 }}>[RECOVERY PATH]</span>
                 )}
               </div>
             </div>
@@ -272,10 +271,10 @@ export default function DaemonArchitectureSimulator() {
       {/* OTA Stepper Visualizer (shows if ota_updating selected) */}
       {fault === 'ota_updating' && (
         <div style={{ border: '2px solid var(--ink)', background: 'var(--paper)', padding: '0.8rem' }}>
-          <div style={{ fontSize: '0.8rem', fontWeight: 800, fontFamily: 'var(--font-mono)', marginBottom: '0.5rem' }}>
+          <div style={{ fontSize: '0.8125rem', fontWeight: 800, fontFamily: 'var(--font-mono)', marginBottom: '0.5rem' }}>
             OTA 原子发布流水线状态 (Atomic Release Pipeline)
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '0.3rem', textAlign: 'center', fontSize: '0.7rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: '0.3rem', textAlign: 'center', fontSize: '0.8125rem' }}>
             {[
               { title: '1. Minisign 验签', desc: 'Ed25519 流式验签' },
               { title: '2. 解压归档', desc: 'zstd+tar 至 release 目录' },
@@ -291,12 +290,13 @@ export default function DaemonArchitectureSimulator() {
                   key={st.title}
                   style={{
                     background: getOtaStepBg(done, current),
+                    color: done ? '#fff' : current ? 'var(--color-accent-ink)' : 'var(--ink)',
                     padding: '0.4rem 0.2rem',
                     fontWeight: 700,
                   }}
                 >
                   <div>{st.title}</div>
-                  <div style={{ fontSize: '0.62rem', fontWeight: 500, opacity: 0.85 }}>{st.desc}</div>
+                  <div style={{ fontSize: '0.8125rem', fontWeight: 500, opacity: 0.85 }}>{st.desc}</div>
                 </div>
               );
             })}
@@ -312,7 +312,7 @@ export default function DaemonArchitectureSimulator() {
           color: '#e0e0e0',
           padding: '0.6rem 0.8rem',
           fontFamily: 'var(--font-mono)',
-          fontSize: '0.7rem',
+          fontSize: '0.8125rem',
           lineHeight: '1.45',
           borderRadius: '2px',
         }}

@@ -10,19 +10,52 @@ const fmt = (d: Date) =>
 ---
 
 <BaseLayout title="博客文章" description="Arcana 文章目录">
-  <article class="prose">
-    <h1>博客文章</h1>
-    {posts.map((post) => (
-      <section>
-        <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
-        <blockquote>
-          <p>
-            <strong>{fmt(post.data.date)}</strong>
-            {post.data.tags.length > 0 && <> · {post.data.tags.join(' · ')}</>}
-          </p>
-          {post.data.description && <p>{post.data.description}</p>}
-        </blockquote>
-      </section>
-    ))}
+  <article class="blog-index container">
+    <header class="index-head">
+      <h1>博客文章</h1>
+    </header>
+    <ul class="post-list">
+      {posts.map((post) => (
+        <li>
+          <article class="post-row">
+            <time datetime={fmt(post.data.date)}>{fmt(post.data.date)}</time>
+            <div class="post-content">
+              <h2><a href={`/blog/${post.id}/`}>{post.data.title}</a></h2>
+              {post.data.tags.length > 0 && <p class="post-tags">· {post.data.tags.join(' · ')}</p>}
+              {post.data.description && <p class="post-description">{post.data.description}</p>}
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
   </article>
 </BaseLayout>
+
+<style>
+  /* Hallmark · shape: Index · genre: playful · theme: Hum (deal 2/3, seed zompopo-7e95·8fca6596·2026-11-24·r0) · redesign: full
+   * hero: Index (/blog) · nav: chip rail · footer: mast + colophon · imagery: none · signature: torn-paper seam + card-stock press
+   * sections: article index Rows · axes: light/rounded-sans/chromatic-yellow · posture: Index · contrast: pass · fold: pass */
+  /* Hallmark · waivers: 63 existing tag separators retained to preserve all copy · 26b no form controls on page · 79 Index heading precedes the article rows, not an empty hero · 77 a single continuous listing is the requested Index posture */
+  .blog-index { padding-top: var(--space-3xl); padding-bottom: var(--section-gap); }
+  .index-head { padding-bottom: var(--space-xl); border-bottom: var(--rule-hair) solid var(--color-rule); }
+  .index-head h1 { text-wrap: balance; }
+  .post-list { margin: 0; padding: 0; list-style: none; }
+  .post-list > li + li { border-top: var(--rule-hair) solid var(--color-rule); }
+  .post-row { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: var(--space-md); padding: var(--space-lg) var(--space-3xs); }
+  .post-row time { padding-top: var(--space-3xs); font-family: var(--font-outlier); font-size: var(--text-xs); font-variant-numeric: tabular-nums; color: var(--color-muted); }
+  .post-content { min-width: 0; }
+  .post-content h2 { max-width: none; font-size: var(--text-title); font-weight: 600; line-height: 1.4; text-wrap: balance; }
+  .post-content h2 a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; transition: transform var(--dur-micro) var(--ease-snap), color var(--dur-micro) var(--ease-snap); }
+  .post-content h2 a:hover { transform: translateX(4px); color: var(--color-accent-2); }
+  .post-content h2 a:active { transform: translateX(2px); }
+  .post-tags { margin-top: var(--space-xs); font-size: var(--text-sm); color: var(--color-muted); text-wrap: pretty; }
+  .post-description { max-width: 70ch; margin-top: var(--space-xs); font-size: var(--text-md); line-height: 1.65; color: var(--color-ink-2); text-wrap: pretty; }
+  .blog-index :is(a, button):focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    .blog-index *, .blog-index *::before, .blog-index *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  }
+  @media (max-width: 40rem) {
+    .blog-index { padding-top: var(--space-xl); }
+    .post-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); padding-inline: 0; }
+  }
+</style>

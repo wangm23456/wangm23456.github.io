@@ -70,7 +70,7 @@ const NODES: Node[] = [
     h: 40,
     side: "ana",
     states: { fed: "on", deficit: "dim", severe: "dim" },
-    desc: "IGF-1→PI3K→Akt→TSC1/2→Rheb 激活 mTORC1，同时磷酸化 FoxO 使其出核失活——Akt 是连接合成与分解两侧的总阀门。赤字/饥饿时该信号减弱，FoxO 脱抑制。",
+    desc: "IGF-1→PI3K→Akt→TSC1/2→Rheb 激活 mTORC1，同时磷酸化 FoxO 使其出核失活。Akt 是连接合成与分解两侧的总阀门。赤字/饥饿时该信号减弱，FoxO 脱抑制。",
     refs: [{ label: "PMID:15125842", url: P + "15125842/" }],
   },
   {
@@ -94,7 +94,7 @@ const NODES: Node[] = [
     h: 46,
     side: "ana",
     states: { fed: "on", deficit: "on", severe: "refractory" },
-    desc: '合成总枢纽：下游 p70S6K 与 4E-BP1 磷酸化驱动翻译起始。rapamycin 人体试验证明其对收缩诱导 MPS 不可替代。严重赤字（>40%）时 mTOR-S6K1 对蛋白补给呈"不应"（refractory）——重组窗口关闭的核心机制。',
+    desc: '合成总枢纽：下游 p70S6K 与 4E-BP1 磷酸化驱动翻译起始。rapamycin 人体试验证明其对收缩诱导 MPS 不可替代。严重赤字（>40%）时 mTOR-S6K1 对蛋白补给呈"不应"（refractory），这是重组窗口关闭的核心机制。',
     refs: [
       {
         label: "PMC2678224",
@@ -209,7 +209,7 @@ const NODES: Node[] = [
     h: 40,
     side: "cat",
     states: { fed: "dim", deficit: "dim", severe: "danger" },
-    desc: "皮质醇经 GR→KLF15 + REDD1 双靶点：REDD1 抑制 mTORC1，KLF15 协同 FoxO 上调 atrogene。REDD1 敲除完全预防激素性萎缩——长期大赤字（皮质醇升高）绕过了营养/训练能修复的通路。",
+    desc: "皮质醇经 GR→KLF15 + REDD1 双靶点：REDD1 抑制 mTORC1，KLF15 协同 FoxO 上调 atrogene。REDD1 敲除完全预防激素性萎缩：长期大赤字（皮质醇升高）绕过了营养/训练能修复的通路。",
     refs: [{ label: "PMID:25315696", url: P + "25315696/" }],
   },
   {
@@ -248,7 +248,7 @@ const NODES: Node[] = [
     h: 40,
     side: "cat",
     states: { fed: "dim", deficit: "on", severe: "danger" },
-    desc: "LC3/Bnip3/Cathepsin L 介导的自噬-溶酶体通路。基础自噬是肌稳态必需（Atg5/7 缺陷鼠自发性萎缩），过度激活则驱动萎缩——双向作用。",
+    desc: "LC3/Bnip3/Cathepsin L 介导的自噬-溶酶体通路。基础自噬是肌稳态必需（Atg5/7 缺陷鼠自发性萎缩），过度激活则驱动萎缩，双向作用。",
     refs: [{ label: "PMID:19945408", url: P + "19945408/" }],
   },
   {
@@ -287,17 +287,17 @@ const MODES: { id: Mode; label: string; hint: string }[] = [
   {
     id: "fed",
     label: "进食 / 合成状态",
-    hint: "mTORC1 全开，FoxO 被 Akt 压制——净合成。",
+    hint: "mTORC1 全开，FoxO 被 Akt 压制：净合成。",
   },
   {
     id: "deficit",
     label: "温和赤字 ≤25%（重组窗口）",
-    hint: "训练+高蛋白顶住 mTORC1，FoxO 部分激活——增肌减脂可同时发生。",
+    hint: "训练+高蛋白顶住 mTORC1，FoxO 部分激活，增肌减脂可同时发生。",
   },
   {
     id: "severe",
     label: "严重赤字 >40%（窗口关闭）",
-    hint: 'mTORC1 对蛋白补给"不应"，糖皮质激素轴加入——肌肉转入净流失。',
+    hint: 'mTORC1 对蛋白补给"不应"，糖皮质激素轴加入，肌肉转入净流失。',
   },
 ];
 
@@ -342,6 +342,7 @@ export default function PathwayMap() {
             type="button"
             aria-pressed={mode === m.id}
             onClick={() => setMode(m.id)}
+            style={{ minHeight: "44px", fontSize: "0.8125rem" }}
           >
             {m.label}
           </button>
@@ -350,16 +351,18 @@ export default function PathwayMap() {
       <p
         style={{
           fontFamily: "var(--font-mono)",
-          fontSize: "0.75rem",
+          fontSize: "0.8125rem",
           margin: "0 0 0.8rem",
+          color: "var(--muted)",
         }}
       >
         {MODES.find((m) => m.id === mode)!.hint}
       </p>
 
+      <div style={{ overflowX: "auto" }}>
       <svg
         viewBox="0 0 700 452"
-        style={{ width: "100%", height: "auto", display: "block" }}
+        style={{ width: "100%", minWidth: "700px", height: "auto", display: "block" }}
         role="img"
         aria-label="肌肉蛋白平衡信号通路图"
       >
@@ -429,9 +432,26 @@ export default function PathwayMap() {
             <g
               key={n.id}
               onClick={() => setSelected(n)}
-              style={{ cursor: "pointer" }}
-              opacity={st === "dim" ? 0.45 : 1}
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter" || ev.key === " ") {
+                  ev.preventDefault();
+                  setSelected(n);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              aria-label={`${n.label}：查看机制与文献`}
+              opacity={st === "dim" ? 0.75 : 1}
             >
+              <rect
+                x={n.x}
+                y={n.y - (44 - n.h) / 2}
+                width={n.w}
+                height={44}
+                fill="transparent"
+                stroke="none"
+                pointerEvents="all"
+              />
               <rect
                 x={n.x}
                 y={n.y}
@@ -446,7 +466,7 @@ export default function PathwayMap() {
                   x={n.x + n.w / 2}
                   y={n.y + n.h / 2 - 8}
                   textAnchor="middle"
-                  fontSize="10"
+                  fontSize="13"
                   fontFamily="var(--font-mono)"
                   fontWeight="700"
                 >
@@ -457,7 +477,7 @@ export default function PathwayMap() {
                 x={n.x + n.w / 2}
                 y={n.y + n.h / 2 + (st === "refractory" ? 10 : 4)}
                 textAnchor="middle"
-                fontSize="11.5"
+                fontSize="13"
                 fontWeight="700"
                 fontFamily="var(--font-mono)"
                 fill={
@@ -475,24 +495,25 @@ export default function PathwayMap() {
         <text
           x="24"
           y="224"
-          fontSize="12"
+          fontSize="13"
           fontWeight="900"
           fontFamily="var(--font-mono)"
-          fill="#2a7a4f"
+          fill="var(--color-success)"
         >
           合成侧 ANABOLIC
         </text>
         <text
           x="24"
           y="252"
-          fontSize="12"
+          fontSize="13"
           fontWeight="900"
           fontFamily="var(--font-mono)"
-          fill="#b03050"
+          fill="var(--color-error)"
         >
           分解侧 CATABOLIC
         </text>
       </svg>
+      </div>
 
       {selected && (
         <div
@@ -511,17 +532,17 @@ export default function PathwayMap() {
             }}
           >
             <strong>{selected.label}</strong>
-            <button type="button" onClick={() => setSelected(null)}>
+            <button type="button" onClick={() => setSelected(null)} style={{ minHeight: "44px", fontSize: "0.8125rem" }}>
               关闭 ✕
             </button>
           </div>
-          <p style={{ fontSize: "0.88rem", margin: "0.5rem 0" }}>
+          <p style={{ fontSize: "1rem", margin: "0.5rem 0" }}>
             {selected.desc}
           </p>
           <p
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: "0.72rem",
+              fontSize: "0.8125rem",
               margin: 0,
             }}
           >
@@ -544,9 +565,9 @@ export default function PathwayMap() {
         <p
           style={{
             fontFamily: "var(--font-mono)",
-            fontSize: "0.72rem",
+            fontSize: "0.8125rem",
             margin: "0.6rem 0 0",
-            opacity: 0.7,
+            color: "var(--muted)",
           }}
         >
           ▲ 点击任意节点查看机制与文献

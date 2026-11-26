@@ -286,14 +286,17 @@ export default function DualStreamSimulator() {
           return (
             <button
               key={key}
+              type="button"
+              aria-pressed={isSelected}
               onClick={() => setSelectedScenario(key)}
               style={{
                 padding: '0.35rem 0.75rem',
+                minHeight: '44px',
                 border: 'var(--border-thin)',
-                background: isSelected ? 'var(--yellow)' : 'var(--card)',
+                background: isSelected ? 'var(--color-accent)' : 'var(--card)',
+                color: isSelected ? 'var(--color-accent-ink)' : 'var(--ink)',
                 fontWeight: isSelected ? 800 : 600,
-                fontSize: '0.85rem',
-                cursor: 'pointer',
+                fontSize: '0.8125rem',
                 boxShadow: isSelected ? 'var(--shadow-sm)' : 'none',
                 transform: isSelected ? 'translate(-1px, -1px)' : 'none',
               }}
@@ -304,34 +307,34 @@ export default function DualStreamSimulator() {
         })}
       </div>
 
-      <div style={{ fontSize: '0.86rem', color: 'var(--muted)', marginBottom: '1rem', lineHeight: 1.5 }}>
+      <div style={{ fontSize: '1rem', color: 'var(--muted)', marginBottom: '1rem', lineHeight: 1.5 }}>
         {scenario.desc}
       </div>
 
       {/* Stream Display Toggles */}
-      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '0.8rem', fontSize: '0.82rem', fontWeight: 700 }}>
+      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '0.8rem', fontSize: '0.8125rem', fontWeight: 700 }}>
         <span>图层控制：</span>
-        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}>
+        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', minHeight: '44px' }}>
           <input type="checkbox" checked={showRaw} onChange={(e) => setShowRaw(e.target.checked)} />
-          <span style={{ color: '#888' }}>● 原始 CGM 观测 (288步)</span>
+          <span style={{ color: 'var(--muted)' }}>● 原始 CGM 观测 (288步)</span>
         </label>
-        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}>
+        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', minHeight: '44px' }}>
           <input type="checkbox" checked={showState} onChange={(e) => setShowState(e.target.checked)} />
           <span style={{ color: 'var(--blue)' }}>● 慢变 State 流 (因果滤波)</span>
         </label>
-        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}>
+        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', minHeight: '44px' }}>
           <input type="checkbox" checked={showEvent} onChange={(e) => setShowEvent(e.target.checked)} />
-          <span style={{ color: 'var(--brand)' }}>● 快变 Event 流 (残差脉冲)</span>
+          <span style={{ color: 'var(--color-accent-2)' }}>● 快变 Event 流 (残差脉冲)</span>
         </label>
-        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}>
+        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', minHeight: '44px' }}>
           <input type="checkbox" checked={showMask} onChange={(e) => setShowMask(e.target.checked)} />
-          <span style={{ color: '#b58900' }}>■ JEPA 55% 掩码 Patch</span>
+          <span style={{ color: 'var(--color-error)' }}>■ JEPA 55% 掩码 Patch</span>
         </label>
       </div>
 
       {/* SVG Canvas */}
       <div style={{ position: 'relative', border: 'var(--border-thin)', background: 'var(--card)', padding: '0.5rem', overflowX: 'auto' }}>
-        <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} style={{ width: '100%', height: 'auto', display: 'block' }}>
+        <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} style={{ width: '100%', minWidth: '640px', height: 'auto', display: 'block' }}>
           {/* Target Glycemic Range 70-180 mg/dL */}
           <rect
             x={padLeft}
@@ -341,9 +344,9 @@ export default function DualStreamSimulator() {
             fill="var(--yellow)"
             opacity={0.15}
           />
-          <line x1={padLeft} y1={getY(180)} x2={padLeft + plotW} y2={getY(180)} stroke="#666" strokeDasharray="3 3" strokeWidth={1} />
-          <line x1={padLeft} y1={getY(70)} x2={padLeft + plotW} y2={getY(70)} stroke="#666" strokeDasharray="3 3" strokeWidth={1} />
-          <line x1={padLeft} y1={getY(100)} x2={padLeft + plotW} y2={getY(100)} stroke="#aaa" strokeDasharray="2 2" strokeWidth={0.8} />
+          <line x1={padLeft} y1={getY(180)} x2={padLeft + plotW} y2={getY(180)} stroke="var(--muted)" strokeDasharray="3 3" strokeWidth={1} />
+          <line x1={padLeft} y1={getY(70)} x2={padLeft + plotW} y2={getY(70)} stroke="var(--muted)" strokeDasharray="3 3" strokeWidth={1} />
+          <line x1={padLeft} y1={getY(100)} x2={padLeft + plotW} y2={getY(100)} stroke="var(--color-rule)" strokeDasharray="2 2" strokeWidth={0.8} />
 
           {/* Patch Grid Lines & Mask Overlays */}
           {patches.map((p) => {
@@ -354,7 +357,7 @@ export default function DualStreamSimulator() {
 
             return (
               <g key={p} onMouseEnter={() => setActivePatch(p)} onMouseLeave={() => setActivePatch(null)} style={{ cursor: 'pointer' }}>
-                <line x1={px} y1={padTop} x2={px} y2={padTop + plotH} stroke="#ddd" strokeWidth={0.5} />
+                <line x1={px} y1={padTop} x2={px} y2={padTop + plotH} stroke="var(--color-rule)" strokeWidth={0.5} />
                 {isMasked && (
                   <rect
                     x={px}
@@ -388,25 +391,25 @@ export default function DualStreamSimulator() {
           })}
 
           {/* Raw Glucose Trajectory */}
-          {showRaw && <path d={rawPath} fill="none" stroke="#888" strokeWidth={1.8} opacity={0.65} />}
+          {showRaw && <path d={rawPath} fill="none" stroke="var(--muted)" strokeWidth={1.8} opacity={0.65} />}
 
           {/* State Stream (Slow Baseline) */}
           {showState && <path d={statePath} fill="none" stroke="var(--blue)" strokeWidth={2.8} />}
 
           {/* Event Stream (High Frequency Spikes) */}
-          {showEvent && <path d={eventPath} fill="none" stroke="var(--brand)" strokeWidth={2} strokeDasharray="4 2" />}
+          {showEvent && <path d={eventPath} fill="none" stroke="var(--color-accent-2)" strokeWidth={2} strokeDasharray="4 2" />}
 
           {/* Y Axis Labels */}
-          <text x={padLeft - 6} y={getY(180) + 4} textAnchor="end" fontSize="10" fill="var(--muted)">180</text>
-          <text x={padLeft - 6} y={getY(100) + 4} textAnchor="end" fontSize="10" fill="var(--muted)">100</text>
-          <text x={padLeft - 6} y={getY(70) + 4} textAnchor="end" fontSize="10" fill="var(--muted)">70</text>
-          <text x={padLeft - 6} y={padTop + 10} textAnchor="end" fontSize="9" fill="var(--muted)">mg/dL</text>
+          <text x={padLeft - 6} y={getY(180) + 4} textAnchor="end" fontSize="13" fill="var(--muted)">180</text>
+          <text x={padLeft - 6} y={getY(100) + 4} textAnchor="end" fontSize="13" fill="var(--muted)">100</text>
+          <text x={padLeft - 6} y={getY(70) + 4} textAnchor="end" fontSize="13" fill="var(--muted)">70</text>
+          <text x={padLeft - 6} y={padTop + 10} textAnchor="end" fontSize="13" fill="var(--muted)">mg/dL</text>
 
           {/* X Axis Time Labels */}
           {[0, 6, 12, 18, 24].map((hr) => {
             const x = getX((hr / 24) * 287);
             return (
-              <text key={hr} x={x} y={padTop + plotH + 18} textAnchor="middle" fontSize="10" fill="var(--muted)">
+              <text key={hr} x={x} y={padTop + plotH + 18} textAnchor="middle" fontSize="13" fill="var(--muted)">
                 {hr === 24 ? '24:00' : `${String(hr).padStart(2, '0')}:00`}
               </text>
             );
@@ -414,7 +417,7 @@ export default function DualStreamSimulator() {
         </svg>
 
         {showMask && (
-          <div style={{ position: 'absolute', top: '10px', right: '15px', background: 'var(--card)', border: 'var(--border-thin)', padding: '0.2rem 0.5rem', fontSize: '0.75rem', fontWeight: 700 }}>
+          <div style={{ position: 'absolute', top: '10px', right: '15px', background: 'var(--card)', border: 'var(--border-thin)', padding: '0.2rem 0.5rem', fontSize: '0.8125rem', fontWeight: 700 }}>
             红色阴影 = 被 JEPA 遮蔽的 Patch（在表征空间由可见上下文预测）
           </div>
         )}
@@ -423,27 +426,27 @@ export default function DualStreamSimulator() {
       {/* Metrics & Statistical Comparison Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.6rem', marginTop: '0.8rem' }}>
         <div style={{ border: 'var(--border-thin)', background: 'var(--card)', padding: '0.5rem 0.7rem' }}>
-          <div style={{ fontSize: '0.7rem', color: 'var(--muted)', fontWeight: 700 }}>平均血糖 (MBG)</div>
-          <div style={{ fontSize: '1.2rem', fontWeight: 900 }}>{scenario.meanGlucose} <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>mg/dL</span></div>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--muted)', fontWeight: 700 }}>平均血糖 (MBG)</div>
+          <div style={{ fontSize: '1.2rem', fontWeight: 900 }}>{scenario.meanGlucose} <span style={{ fontSize: '0.8125rem', fontWeight: 600 }}>mg/dL</span></div>
         </div>
         <div style={{ border: 'var(--border-thin)', background: 'var(--card)', padding: '0.5rem 0.7rem' }}>
-          <div style={{ fontSize: '0.7rem', color: 'var(--muted)', fontWeight: 700 }}>目标范围内时间 (TIR)</div>
-          <div style={{ fontSize: '1.2rem', fontWeight: 900, color: scenario.tir >= 70 ? '#2a9d8f' : 'var(--brand)' }}>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--muted)', fontWeight: 700 }}>目标范围内时间 (TIR)</div>
+          <div style={{ fontSize: '1.2rem', fontWeight: 900, color: scenario.tir >= 70 ? 'var(--color-mint-deep)' : 'var(--color-accent-2)' }}>
             {scenario.tir}%
           </div>
         </div>
         <div style={{ border: 'var(--border-thin)', background: 'var(--card)', padding: '0.5rem 0.7rem' }}>
-          <div style={{ fontSize: '0.7rem', color: 'var(--muted)', fontWeight: 700 }}>变异系数 (CV)</div>
-          <div style={{ fontSize: '1.2rem', fontWeight: 900, color: scenario.cv <= 36 ? '#2a9d8f' : 'var(--brand)' }}>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--muted)', fontWeight: 700 }}>变异系数 (CV)</div>
+          <div style={{ fontSize: '1.2rem', fontWeight: 900, color: scenario.cv <= 36 ? 'var(--color-mint-deep)' : 'var(--color-accent-2)' }}>
             {scenario.cv}%
           </div>
         </div>
-        <div style={{ border: 'var(--border-thin)', background: 'var(--yellow)', padding: '0.5rem 0.7rem' }}>
-          <div style={{ fontSize: '0.7rem', color: '#49433b', fontWeight: 800 }}>State 流解释力</div>
+        <div style={{ border: 'var(--border-thin)', background: 'var(--color-accent)', color: 'var(--color-accent-ink)', padding: '0.5rem 0.7rem' }}>
+          <div style={{ fontSize: '0.8125rem', fontWeight: 800 }}>State 流解释力</div>
           <div style={{ fontSize: '1.2rem', fontWeight: 900 }}>R² = 0.962</div>
         </div>
-        <div style={{ border: 'var(--border-thin)', background: '#ffe3e0', padding: '0.5rem 0.7rem' }}>
-          <div style={{ fontSize: '0.7rem', color: '#801815', fontWeight: 800 }}>Event 流解释力</div>
+        <div style={{ border: 'var(--border-thin)', background: 'color-mix(in srgb, var(--color-error) 14%, var(--color-card))', padding: '0.5rem 0.7rem' }}>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--color-error)', fontWeight: 800 }}>Event 流解释力</div>
           <div style={{ fontSize: '1.2rem', fontWeight: 900 }}>R² = 0.888</div>
         </div>
       </div>

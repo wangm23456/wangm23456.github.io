@@ -48,7 +48,7 @@ function NewsListContent() {
   if (query.isError) {
     return (
       <p className="news-status">
-        新闻接口暂时不可用 —— 直接访问 <a href="https://aihot.virxact.com">AI HOT</a> 查看当前热点。
+        新闻接口暂时不可用：直接访问{' '}<a href="https://aihot.news" target="_blank" rel="noopener noreferrer">AI HOT</a> 查看当前热点。
       </p>
     );
   }
@@ -64,7 +64,7 @@ function NewsListContent() {
         const time = timelineOf(item);
         return (
           <li className="news-item" key={item.id}>
-            <a href={item.links?.aihot ?? 'https://aihot.virxact.com'} target="_blank" rel="noopener">
+            <a href={item.links?.aihot ?? 'https://aihot.news'} target="_blank" rel="noopener">
               {item.title}
             </a>
             {item.summary && <p className="news-item__summary">{item.summary}</p>}

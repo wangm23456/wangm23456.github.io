@@ -8,27 +8,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   wide
 >
   <div class="solar-page">
-    <header class="solar-intro">
+    <header class="solar-intro container">
       <div>
         <p class="solar-kicker">NASA / DONKI / 07-DAY WINDOW</p>
         <h1>Solar Watch</h1>
-        <p class="solar-intro__dek">把太阳活动做成一张可读的观测卡。主图表达状态，数据负责说明发生了什么。</p>
+        <p class="solar-intro__dek">查看过去 7 天的太阳耀斑与日冕物质抛射记录，数据来自 NASA DONKI。</p>
       </div>
       <div class="solar-status" aria-live="polite">
         <span class="solar-status__label">FEED STATUS</span>
         <strong id="feed-status">CONNECTING</strong>
-        <time id="feed-updated">—</time>
+        <time id="feed-updated">·</time>
       </div>
     </header>
 
     <section class="solar-dashboard" aria-label="Solar Watch dashboard">
-      <div class="solar-visual-card" id="solar-visual-card" data-level="quiet">
+      <div class="solar-band grain torn-b">
+      <div class="solar-visual-card container" id="solar-visual-card" data-level="quiet">
         <div class="solar-card-head">
           <span>SOLAR ACTIVITY / VISUAL INDEX</span>
           <span id="activity-label">QUIET</span>
         </div>
-        <div class="solar-visual" role="img" aria-label="太阳活动可视化：中央太阳与活动等级">
-          <svg viewBox="0 0 640 430" aria-hidden="true" focusable="false">
+        <div class="solar-visual">
+          <p class="solar-visual-label">SUN-EARTH OBSERVATORY</p>
+          <svg viewBox="0 24 640 382" role="img" aria-label="太阳活动可视化：中央太阳与活动等级" focusable="false">
             <path class="solar-orbit solar-orbit--outer" d="M86 215C86 103 210 32 335 32s249 71 249 183-124 183-249 183S86 327 86 215Z" />
             <path class="solar-orbit solar-orbit--inner" d="M143 215c0-76 86-133 192-133s192 57 192 133-86 133-192 133-192-57-192-133Z" />
             <path class="solar-scanline" d="M92 215h456" />
@@ -55,9 +57,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <path d="M-34-5h15v10h-15ZM19-5h15v10H19Z" />
               <circle cx="0" cy="0" r="5" />
             </g>
-            <text class="solar-svg-label solar-svg-label--top" x="320" y="18" text-anchor="middle">SUN-EARTH OBSERVATORY</text>
-            <text class="solar-svg-label solar-svg-label--bottom" x="320" y="415" text-anchor="middle" id="solar-svg-summary">MONITORING THE STAR</text>
           </svg>
+          <p class="solar-visual-label" id="solar-svg-summary">MONITORING THE STAR</p>
         </div>
         <div class="solar-scale" aria-label="太阳耀斑等级">
           <span>LOW</span>
@@ -65,33 +66,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <span>HIGH</span>
         </div>
       </div>
+      </div>
 
-      <aside class="solar-data-card">
+      <aside class="solar-data-card container">
         <div class="solar-card-head">
           <span>TELEMETRY / 07 DAYS</span>
-          <span class="solar-live-dot">LIVE</span>
+          <span class="solar-live-dot" id="telemetry-mode">CONNECTING</span>
         </div>
         <div class="solar-primary-stat">
-          <strong id="flare-count">—</strong>
+          <strong id="flare-count">·</strong>
           <span>flares recorded</span>
         </div>
         <dl class="solar-metrics">
           <div>
             <dt>PEAK CLASS</dt>
-            <dd id="peak-class">—</dd>
+            <dd id="peak-class">·</dd>
           </div>
           <div>
             <dt>CMEs</dt>
-            <dd id="cme-count">—</dd>
+            <dd id="cme-count">·</dd>
           </div>
           <div>
             <dt>WINDOW</dt>
-            <dd id="window-label">—</dd>
+            <dd id="window-label">·</dd>
           </div>
         </dl>
         <div class="solar-events-head">
           <span>RECENT EVENTS</span>
-          <span id="event-count">—</span>
+          <span id="event-count">·</span>
         </div>
         <ol class="solar-event-list" id="event-list" aria-live="polite">
           <li class="solar-event solar-event--loading">Reading NASA DONKI…</li>
@@ -99,7 +101,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </aside>
     </section>
 
-    <footer class="solar-source">
+    <footer class="solar-source container">
       <span>SOURCE: <a href="https://ccmc.gsfc.nasa.gov/tools/DONKI/" target="_blank" rel="noopener">NASA DONKI</a></span>
       <span>NEAR-REAL-TIME · NOT A FORECAST</span>
     </footer>
@@ -110,6 +112,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   const API = 'https://api.nasa.gov/DONKI';
   const card = document.querySelector('#solar-visual-card');
   const status = document.querySelector('#feed-status');
+  const telemetryMode = document.querySelector('#telemetry-mode');
   const updated = document.querySelector('#feed-updated');
   const activityLabel = document.querySelector('#activity-label');
   const svgSummary = document.querySelector('#solar-svg-summary');
@@ -146,7 +149,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   function formatUtc(value) {
-    if (!value) return '—';
+    if (!value) return '·';
     return new Intl.DateTimeFormat('en-GB', {
       timeZone: 'UTC',
       month: 'short',
@@ -157,13 +160,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }).format(new Date(value));
   }
 
-  function eventMarkup(event) {
-    const classType = event.classType || '—';
+  function appendEvent(list, event) {
+    const classType = event.classType || '·';
     const level = levelFor(classScore(classType));
-    return `<li class="solar-event solar-event--${level}">
-      <div><strong>${classType}</strong><span>${event.sourceLocation || 'SOLAR SURFACE'}</span></div>
-      <time>${formatUtc(event.peakTime || event.beginTime)} UTC</time>
-    </li>`;
+    const item = document.createElement('li');
+    item.className = `solar-event solar-event--${level}`;
+    const detail = document.createElement('div');
+    const peak = document.createElement('strong');
+    peak.textContent = classType;
+    const location = document.createElement('span');
+    location.textContent = event.sourceLocation || 'SOLAR SURFACE';
+    detail.append(peak, location);
+    const time = document.createElement('time');
+    time.textContent = `${formatUtc(event.peakTime || event.beginTime)} UTC`;
+    item.append(detail, time);
+    list.appendChild(item);
+  }
+
+  function appendEmptyEvent(list) {
+    const item = document.createElement('li');
+    item.className = 'solar-event solar-event--loading';
+    item.textContent = 'No flares in this window.';
+    list.appendChild(item);
   }
 
   function fallbackData() {
@@ -180,7 +198,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   async function loadSolarData() {
     const range = dateRange();
-    windowLabel && (windowLabel.textContent = `${range.start.slice(5)} — ${range.end.slice(5)}`);
+    windowLabel && (windowLabel.textContent = `${range.start.slice(5)} 到 ${range.end.slice(5)}`);
     const fetchJson = async (url) => {
       const controller = new AbortController();
       const timeout = window.setTimeout(() => controller.abort(), 8000);
@@ -211,25 +229,91 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   async function renderSolarData() {
     const data = await loadSolarData();
     const flares = data.flares.filter((event) => event.classType);
-    const peak = flares.reduce((best, event) => classScore(event.classType) > classScore(best.classType) ? event : best, flares[0] || { classType: '—' });
+    const peak = flares.reduce((best, event) => classScore(event.classType) > classScore(best.classType) ? event : best, flares[0] || { classType: '·' });
     const level = levelFor(classScore(peak.classType));
     const levelText = { quiet: 'QUIET', active: 'ACTIVE', high: 'HIGH', extreme: 'EXTREME' }[level];
 
     card?.setAttribute('data-level', level);
     status && (status.textContent = data.fallback ? 'DEMO DATA' : 'ONLINE');
+    telemetryMode && (telemetryMode.textContent = data.fallback ? 'DEMO' : 'LIVE');
     updated && (updated.textContent = `UPDATED ${formatUtc(new Date().toISOString())} UTC`);
     activityLabel && (activityLabel.textContent = levelText);
     svgSummary && (svgSummary.textContent = data.fallback ? 'DEMO TELEMETRY' : 'MONITORING THE STAR');
     flareCount && (flareCount.textContent = String(flares.length));
-    peakClass && (peakClass.textContent = peak.classType || '—');
+    peakClass && (peakClass.textContent = peak.classType || '·');
     cmeCount && (cmeCount.textContent = String(data.cmes.length));
     eventCount && (eventCount.textContent = `${Math.min(flares.length, 4)} SHOWN`);
     if (eventList) {
-      eventList.innerHTML = flares.length
-        ? flares.slice().sort((a, b) => new Date(b.peakTime || b.beginTime || 0).getTime() - new Date(a.peakTime || a.beginTime || 0).getTime()).slice(0, 4).map(eventMarkup).join('')
-        : '<li class="solar-event solar-event--loading">No flares in this window.</li>';
+      eventList.replaceChildren();
+      const recent = flares.slice().sort((a, b) => new Date(b.peakTime || b.beginTime || 0).getTime() - new Date(a.peakTime || a.beginTime || 0).getTime()).slice(0, 4);
+      if (recent.length) recent.forEach((event) => appendEvent(eventList, event));
+      else appendEmptyEvent(eventList);
     }
   }
 
   renderSolarData();
 </script>
+
+<style>
+  /* Hallmark · shape: Workbench · genre: playful · theme: Hum (deal 2/3, seed zompopo-7e95·8fca6596·2026-11-24·r0) · redesign: full
+   * hero: Band (/solar-watch) · nav: chip rail · footer: mast + colophon · imagery: existing solar illustration · signature: torn-paper seam + card-stock
+   * sections: solar Band · telemetry Rows · source colophon
+   * axes: light/rounded-sans/chromatic-yellow · posture: full-palette · contrast: token-derived · v2.1.0 */
+  /* Hallmark · waivers: 44c, 79 hero detection excludes the full-width solar band immediately following the intro; 77 the existing observation page has a deliberately compact scope; existing uppercase copy preserved verbatim as requested. */
+  .solar-page { padding-bottom: var(--section-gap-s); }
+  .solar-intro { display: flex; align-items: end; justify-content: space-between; gap: var(--space-xl); padding-top: var(--space-2xl); padding-bottom: var(--space-xl); }
+  .solar-intro h1 { text-wrap: balance; }
+  .solar-kicker { margin-bottom: var(--space-sm); color: var(--color-ink-2); font-size: var(--text-sm); }
+  .solar-intro__dek { max-width: 48ch; margin-top: var(--space-md); color: var(--color-ink-2); font-size: var(--text-lead); line-height: 1.65; text-wrap: pretty; }
+  .solar-status { display: grid; gap: var(--space-3xs); flex: 0 0 auto; padding-left: var(--space-md); border-left: 2px solid var(--color-accent-deep); }
+  .solar-status__label, .solar-status time { color: var(--color-ink-2); font-size: var(--text-xs); }
+  .solar-status strong { font-size: var(--text-md); }
+  .solar-status time { font-family: var(--font-mono, var(--font-outlier)); }
+  .solar-band { position: relative; background: var(--color-paper-2); padding: var(--space-xl) 0 calc(var(--space-xl) + var(--space-md)); }
+  .solar-visual-card { position: relative; z-index: 1; }
+  .solar-card-head { display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-sm); color: var(--color-ink-2); font-size: var(--text-sm); font-weight: 600; }
+  .solar-visual { display: grid; place-items: center; margin-top: var(--space-md); overflow: hidden; border: 1px solid var(--color-edge); border-radius: var(--radius-card); background: var(--color-card); box-shadow: var(--shadow-card); }
+  .solar-visual svg { display: block; width: min(100%, 47rem); height: auto; }
+  .solar-orbit { fill: none; stroke: var(--color-edge); stroke-width: 1.5; }
+  .solar-scanline { fill: none; stroke: var(--color-rule); stroke-width: 1; }
+  .solar-rays { fill: var(--color-accent-deep); }
+  .solar-sun-shadow { fill: var(--color-sand); }
+  .solar-sun { fill: var(--color-accent); }
+  .solar-sun-cut { fill: var(--color-fringe); opacity: .55; }
+  .solar-flare { fill: var(--color-accent-3); }
+  .solar-spark--red { fill: var(--color-accent-3); }
+  .solar-spark--blue { fill: var(--color-accent-2); }
+  .solar-spark--ink { fill: var(--color-accent-ink); }
+  .solar-satellite { fill: var(--color-paper-3); stroke: var(--color-ink); stroke-width: 2; }
+  .solar-visual-label { margin: var(--space-sm) var(--space-xs); color: var(--color-ink-2); font-size: var(--text-sm); font-weight: 600; text-align: center; }
+  .solar-scale { display: flex; align-items: center; gap: var(--space-sm); max-width: 30rem; margin: var(--space-md) auto 0; color: var(--color-ink-2); font-size: var(--text-xs); font-weight: 600; }
+  .solar-scale__bar { display: flex; flex: 1; gap: var(--space-3xs); }
+  .solar-scale__bar i { display: block; flex: 1; height: .5rem; border-radius: var(--radius-pill); background: var(--color-edge); }
+  .solar-scale__bar i:first-child, [data-level='active'] .solar-scale__bar i:nth-child(-n+2), [data-level='high'] .solar-scale__bar i:nth-child(-n+3), [data-level='extreme'] .solar-scale__bar i { background: var(--color-accent-deep); }
+  .solar-data-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-lg) var(--gap-columns); padding-top: var(--space-2xl); }
+  .solar-data-card > .solar-card-head { grid-column: 1 / -1; padding-bottom: var(--space-sm); border-bottom: 1px solid var(--color-rule); }
+  .solar-primary-stat { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xs); }
+  .solar-primary-stat strong { font-family: var(--font-mono, var(--font-outlier)); font-size: var(--text-display); line-height: 1; font-variant-numeric: tabular-nums; }
+  .solar-primary-stat span { color: var(--color-ink-2); font-size: var(--text-md); }
+  .solar-metrics { margin: 0; }
+  .solar-metrics > div { display: flex; justify-content: space-between; gap: var(--space-md); padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-rule); }
+  .solar-metrics dt { color: var(--color-ink-2); font-size: var(--text-sm); }
+  .solar-metrics dd { margin: 0; font-family: var(--font-mono, var(--font-outlier)); font-size: var(--text-md); font-variant-numeric: tabular-nums; text-align: right; }
+  .solar-events-head { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: var(--space-sm); margin-top: var(--space-lg); padding-bottom: var(--space-sm); border-bottom: 1px solid var(--color-rule); color: var(--color-ink-2); font-size: var(--text-sm); font-weight: 600; }
+  .solar-event-list { grid-column: 1 / -1; margin: calc(-1 * var(--space-lg)) 0 0; padding: 0; list-style: none; }
+  :global(.solar-event) { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-md); padding: var(--space-md) 0; border-bottom: 1px solid var(--color-rule); }
+  :global(.solar-event div) { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-lg); }
+  :global(.solar-event strong), :global(.solar-event time) { font-family: var(--font-mono, var(--font-outlier)); font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+  :global(.solar-event span), :global(.solar-event time), :global(.solar-event--loading) { color: var(--color-ink-2); font-size: var(--text-sm); }
+  .solar-source { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-sm); margin-top: var(--space-2xl); color: var(--color-ink-2); font-size: var(--text-sm); }
+  .solar-source a:active { transform: translateY(2px); }
+  .solar-page :is(a, button):focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    .solar-page *, .solar-page *::before, .solar-page *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  }
+  @media (max-width: 40rem) {
+    .solar-intro { flex-direction: column; align-items: flex-start; gap: var(--space-lg); padding-top: var(--space-xl); }
+    .solar-data-card { grid-template-columns: minmax(0, 1fr); padding-top: var(--space-xl); }
+    :global(.solar-event) { flex-wrap: wrap; }
+  }
+</style>

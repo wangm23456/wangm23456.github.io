@@ -1,5 +1,5 @@
 import { useState } from "react";
-import WidgetFrame from "./WidgetFrame";
+import WidgetFrame, { ChartViewport } from "./WidgetFrame";
 
 type Road = {
   title: string;
@@ -19,7 +19,7 @@ const ROADS: Record<string, Road> = {
       { name: "4D 连续统极限", detail: "OpenAI 声称完成" },
       { name: "质量间隙", detail: "无人到达" },
     ],
-    note: "Bałaban 证得紫外稳定性（1987），但连续统构造未完成。2026 年 OpenAI 声称的证明正是把这条线「走完」——声称已完成至第 4 站。第 5 站尚无人到达。",
+    note: "Bałaban 证得紫外稳定性（1987），但连续统构造未完成。2026 年 OpenAI 声称的证明正是把这条线「走完」，声称已完成至第 4 站。第 5 站尚无人到达。",
   },
   spde: {
     title: "随机量子化路线",
@@ -83,106 +83,106 @@ export default function RoadmapTabs() {
             onClick={() => setCur(k)}
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: "0.75rem",
-              letterSpacing: "0.1em",
-              padding: "0.35rem 0.9rem",
+              fontSize: "0.8125rem",
+              padding: "0.45rem 1.1rem",
               cursor: "pointer",
-              border: "var(--border-thin)",
-              borderRadius: 2,
+              border: "1px solid var(--color-rule)",
+              borderRadius: "var(--radius-stock)",
               background: cur === k ? "var(--brand)" : "transparent",
               color: cur === k ? "var(--card)" : "var(--ink)",
-              boxShadow: cur === k ? "none" : "2px 2px 0 var(--ink)",
+              boxShadow: "none",
             }}
           >
             {ROADS[k].title}
           </button>
         ))}
       </div>
-      <svg
-        viewBox="0 0 640 190"
-        style={{ maxWidth: "100%" }}
-        role="img"
-        aria-label={road.title + " 路线图"}
-      >
-        <text x={x0} y={26} fontSize="14" fontWeight={700} fill="var(--ink)">
-          {road.title}
-        </text>
-        <text x={x0} y={46} fontSize="11" fill="var(--muted)">
-          ● 已完成　◎ 当前前沿　○ 未到达
-        </text>
-        <line
-          x1={x0}
-          y1={y}
-          x2={x0 + gap * (road.stages.length - 1)}
-          y2={y}
-          stroke="var(--muted)"
-          strokeWidth={2}
-          strokeDasharray="3 5"
-        />
-        {road.stages.map((s, i) => {
-          const x = x0 + gap * i;
-          const done = i < road.reached;
-          const here = i === road.reached;
-          const color = done
-            ? "var(--brand)"
-            : here
+      <ChartViewport label="研究路线图表">
+        <svg
+          viewBox="0 0 640 190"
+          role="img"
+          aria-label={road.title + " 路线图"}
+        >
+          <text x={x0} y={26} fontSize="14" fontWeight={700} fill="var(--ink)">
+            {road.title}
+          </text>
+          <text x={x0} y={46} fontSize="13" fill="var(--muted)">
+            ● 已完成　◎ 当前前沿　○ 未到达
+          </text>
+          <line
+            x1={x0}
+            y1={y}
+            x2={x0 + gap * (road.stages.length - 1)}
+            y2={y}
+            stroke="var(--muted)"
+            strokeWidth={2}
+            strokeDasharray="3 5"
+          />
+          {road.stages.map((s, i) => {
+            const x = x0 + gap * i;
+            const done = i < road.reached;
+            const here = i === road.reached;
+            const color = done
               ? "var(--brand)"
-              : "var(--muted)";
-          return (
-            <g key={s.name}>
-              {here && (
+              : here
+                ? "var(--brand)"
+                : "var(--muted)";
+            return (
+              <g key={s.name}>
+                {here && (
+                  <circle
+                    cx={x}
+                    cy={y}
+                    r={17}
+                    fill="none"
+                    stroke="var(--brand)"
+                    strokeWidth={1}
+                    strokeDasharray="2 3"
+                  />
+                )}
                 <circle
                   cx={x}
                   cy={y}
-                  r={17}
-                  fill="none"
-                  stroke="var(--brand)"
-                  strokeWidth={1}
-                  strokeDasharray="2 3"
+                  r={done || here ? 11 : 8}
+                  fill={done ? "var(--brand)" : "var(--card)"}
+                  stroke={color}
+                  strokeWidth={here ? 3 : 2}
                 />
-              )}
-              <circle
-                cx={x}
-                cy={y}
-                r={done || here ? 11 : 8}
-                fill={done ? "var(--brand)" : "var(--card)"}
-                stroke={color}
-                strokeWidth={here ? 3 : 2}
-              />
-              <text
-                x={x}
-                y={y + 38}
-                fontSize="11"
-                textAnchor="middle"
-                fill={done || here ? "var(--ink)" : "var(--muted)"}
-              >
-                {s.name}
-              </text>
-              <text
-                x={x}
-                y={y + 54}
-                fontSize="10"
-                textAnchor="middle"
-                fill="var(--muted)"
-              >
-                {s.detail}
-              </text>
-              {i < road.stages.length - 1 && (
-                <line
-                  x1={x + 16}
-                  y1={y}
-                  x2={x + gap - 16}
-                  y2={y}
-                  stroke={
-                    i < road.reached - 1 ? "var(--brand)" : "var(--muted)"
-                  }
-                  strokeWidth={i < road.reached - 1 ? 3 : 2}
-                />
-              )}
-            </g>
-          );
-        })}
-      </svg>
+                <text
+                  x={x}
+                  y={y + 38}
+                  fontSize="13"
+                  textAnchor="middle"
+                  fill={done || here ? "var(--ink)" : "var(--muted)"}
+                >
+                  {s.name}
+                </text>
+                <text
+                  x={x}
+                  y={y + 54}
+                  fontSize="13"
+                  textAnchor="middle"
+                  fill="var(--muted)"
+                >
+                  {s.detail}
+                </text>
+                {i < road.stages.length - 1 && (
+                  <line
+                    x1={x + 16}
+                    y1={y}
+                    x2={x + gap - 16}
+                    y2={y}
+                    stroke={
+                      i < road.reached - 1 ? "var(--brand)" : "var(--muted)"
+                    }
+                    strokeWidth={i < road.reached - 1 ? 3 : 2}
+                  />
+                )}
+              </g>
+            );
+          })}
+        </svg>
+      </ChartViewport>
     </WidgetFrame>
   );
 }

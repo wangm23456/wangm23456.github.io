@@ -1,0 +1,41 @@
+/* Hallmark · dark mode — Hum derived (never inverted), warm cocoa ground, same hue families as light.
+ * Gates: every text/background pair ≥ 4.5:1 · body ≥ 16px · labels ≥ 13px · Chinese body weight ≥ 500 (set on body in BaseLayout). */
+html.dark {
+  color-scheme: dark;
+  --color-paper: oklch(21% 0.02 85);
+  --color-paper-2: oklch(24.5% 0.022 85);
+  --color-paper-3: oklch(28% 0.024 85);
+  --color-ink: oklch(93% 0.012 95);
+  --color-ink-2: oklch(84% 0.014 95);
+  --color-muted: oklch(74% 0.018 95);
+  --color-rule: oklch(33% 0.018 85);
+  --color-accent: oklch(87% 0.175 96);
+  --color-accent-deep: oklch(80% 0.14 92);
+  --color-accent-ink: oklch(20% 0.014 255);
+  --color-accent-2: oklch(70% 0.13 250);
+  --color-accent-3: oklch(76% 0.15 22);
+  --color-mint: oklch(72% 0.12 152);
+  --color-mint-deep: oklch(84% 0.1 152);
+  --color-error: oklch(72% 0.155 25);
+  --color-success: oklch(74% 0.11 152);
+  --color-focus: oklch(78% 0.12 250);
+  --color-card: oklch(26% 0.022 85);
+  --color-edge: oklch(35% 0.04 88);
+  --color-fringe: oklch(30% 0.018 95);
+  --color-kraft: oklch(72% 0.07 62);
+  --color-sand: oklch(38% 0.06 76);
+  --color-sugar: oklch(32% 0.03 236);
+  --color-hill-1: oklch(27% 0.03 118);
+  --color-hill-2: oklch(29% 0.04 135);
+  --color-leaf: oklch(72% 0.13 150);
+  --shadow-card: 0 1px 2px oklch(0% 0 0 / 0.5), 0 12px 28px -14px oklch(0% 0 0 / 0.55);
+  --shadow-lift: drop-shadow(0 14px 18px oklch(0% 0 0 / 0.45));
+  --shadow-paper: drop-shadow(0 0 0.6px oklch(0% 0 0 / 0.6)) drop-shadow(1.5px 2.5px 1.5px oklch(0% 0 0 / 0.3)) drop-shadow(6px 14px 16px oklch(0% 0 0 / 0.4));
+  --color-lab-paper: oklch(21% 0.02 85); --color-lab-panel: oklch(23% 0.02 150); --color-lab-panel-2: oklch(28% 0.02 150);
+  --color-lab-ink: oklch(94% 0.01 145); --color-lab-ink-2: oklch(84% 0.012 145); --color-lab-line: oklch(42% 0.016 150);
+  --color-lab-on-ink: var(--color-lab-panel); --color-lab-signal: oklch(86% 0.15 130);
+  --color-lab-wash: oklch(27% 0.025 140); --color-lab-wash-2: oklch(24.5% 0.02 140);
+  --shadow-lab: drop-shadow(0 18px 30px oklch(0% 0 0 / 0.45));
+}
+html.dark { scrollbar-color: var(--color-muted) var(--color-paper); }
+html.dark ::selection { background: color-mix(in oklab, var(--color-accent) 30%, transparent); color: var(--color-ink); }

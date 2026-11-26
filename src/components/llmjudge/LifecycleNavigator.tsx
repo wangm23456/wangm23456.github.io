@@ -22,12 +22,12 @@ const PHASES: Phase[] = [
     label: "I. Birth",
     code: "基准构建",
     purpose:
-      "用专家对抗样本 + 人造边界 + 上线前生产采样，造一份领域基准。公域 JudgeBench/RewardBench 对推荐解释这种「项目特异、上下文敏感、文本极短」的任务覆盖不足——必须自造。",
+      "用专家对抗样本 + 人造边界 + 上线前生产采样，造一份领域基准。公域 JudgeBench/RewardBench 对推荐解释这种「项目特异、上下文敏感、文本极短」的任务覆盖不足，必须自造。",
     outputs: [
       {
         label: "专家手写对抗样本",
         detail:
-          "每条带 pass/fail 标签 + 已知失败模式 + 人写的失败理由——RART 的燃料",
+          "每条带 pass/fail 标签 + 已知失败模式 + 人写的失败理由：RART 的燃料",
       },
       {
         label: "人造 + 人评边界样本",
@@ -79,7 +79,7 @@ const PHASES: Phase[] = [
     label: "III. Deployment",
     code: "Gate + Critic 双角色",
     purpose:
-      "同一个 judge 身兼两职：质量门 + 修订评论家。每条解释按 must-have 逐一过闸，任一 fail 即入修订循环——reason 拼回生成 prompt，K=3 次兜底。",
+      "同一个 judge 身兼两职：质量门 + 修订评论家。每条解释按 must-have 逐一过闸，任一 fail 即入修订循环，reason 拼回生成 prompt，K=3 次兜底。",
     outputs: [
       {
         label: "Gate",
@@ -106,7 +106,7 @@ const PHASES: Phase[] = [
     label: "IV. Monitoring",
     code: "漂移检测 + 闭环",
     purpose:
-      "每周 ≈300 条样本分层采样 + 多人众数（≥3 人）。通过条件：M(J) ≥ mean(M(H)) − 2·sd(M(H))。跌破即触发 Phase II 在增广基准上重训——老 rubric 留作回滚。",
+      "每周 ≈300 条样本分层采样 + 多人众数（≥3 人）。通过条件：M(J) ≥ mean(M(H)) − 2·sd(M(H))。跌破即触发 Phase II 在增广基准上重训，老 rubric 留作回滚。",
     outputs: [
       {
         label: "分层采样",
@@ -148,7 +148,7 @@ export default function LifecycleNavigator() {
               className="tabs__btn"
               onClick={() => setActive(p.id)}
             >
-              <span style={{ opacity: 0.6, marginRight: "0.4rem" }}>
+              <span style={{ marginRight: "0.4rem" }}>
                 {String(i + 1).padStart(2, "0")}
               </span>
               {p.label.split(". ")[1]}
@@ -169,7 +169,7 @@ export default function LifecycleNavigator() {
             <span
               style={{
                 fontFamily: "var(--font-mono)",
-                fontSize: "0.7rem",
+                fontSize: "0.8125rem",
                 background: "var(--ink)",
                 color: "var(--paper)",
                 padding: "0.05rem 0.4rem",
@@ -179,7 +179,7 @@ export default function LifecycleNavigator() {
               {phase.code}
             </span>
           </div>
-          <p style={{ margin: "0.4rem 0", fontSize: "0.92rem" }}>
+          <p style={{ margin: "0.4rem 0", fontSize: "1rem" }}>
             {phase.purpose}
           </p>
 
@@ -194,7 +194,7 @@ export default function LifecycleNavigator() {
             <strong
               style={{
                 fontFamily: "var(--font-mono)",
-                fontSize: "0.72rem",
+                fontSize: "0.8125rem",
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
               }}
@@ -204,8 +204,8 @@ export default function LifecycleNavigator() {
             <ul style={{ margin: "0.3rem 0 0", paddingLeft: "1.2rem" }}>
               {phase.outputs.map((o) => (
                 <li key={o.label} style={{ margin: "0.25rem 0" }}>
-                  <strong>{o.label}</strong> —{" "}
-                  <span style={{ fontSize: "0.88rem" }}>{o.detail}</span>
+                  <strong>{o.label}</strong>：{" "}
+                  <span style={{ fontSize: "1rem" }}>{o.detail}</span>
                 </li>
               ))}
             </ul>
@@ -218,7 +218,8 @@ export default function LifecycleNavigator() {
                 alignItems: "baseline",
                 gap: "0.6rem",
                 padding: "0.4rem 0.7rem",
-                background: "var(--yellow)",
+                background: "var(--color-accent)",
+                color: "var(--color-accent-ink)",
                 border: "var(--border-thin)",
                 margin: "0.5rem 0",
                 fontFamily: "var(--font-mono)",
@@ -229,16 +230,16 @@ export default function LifecycleNavigator() {
               <span style={{ fontWeight: 900, fontSize: "0.95rem" }}>
                 {phase.keyMetric.value}
               </span>
-              <span style={{ opacity: 0.75 }}>— {phase.keyMetric.note}</span>
+              <span>（{phase.keyMetric.note}）</span>
             </div>
           )}
 
           <p
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: "0.74rem",
+              fontSize: "0.8125rem",
               margin: "0.6rem 0 0",
-              color: "var(--brand)",
+              color: "var(--color-accent-2)",
               fontWeight: 700,
             }}
           >
@@ -253,21 +254,23 @@ export default function LifecycleNavigator() {
           justifyContent: "space-between",
           marginTop: "0.5rem",
           fontFamily: "var(--font-mono)",
-          fontSize: "0.7rem",
+          fontSize: "0.8125rem",
         }}
       >
         <button
+          type="button"
           onClick={() => setActive(PHASES[(idx - 1 + 4) % 4].id)}
           disabled={idx === 0}
-          style={{ opacity: idx === 0 ? 0.4 : 1 }}
+          style={{ opacity: 1, background: "var(--card)", border: "var(--border-thin)", color: idx === 0 ? "var(--muted)" : "var(--ink)", minHeight: "44px", fontSize: "0.8125rem" }}
         >
           ← 上一阶段
         </button>
-        <span style={{ alignSelf: "center", opacity: 0.6 }}>{idx + 1} / 4</span>
+        <span style={{ alignSelf: "center", color: "var(--muted)" }}>{idx + 1} / 4</span>
         <button
+          type="button"
           onClick={() => setActive(PHASES[(idx + 1) % 4].id)}
           disabled={idx === 3}
-          style={{ opacity: idx === 3 ? 0.4 : 1 }}
+          style={{ opacity: 1, background: "var(--card)", border: "var(--border-thin)", color: idx === 3 ? "var(--muted)" : "var(--ink)", minHeight: "44px", fontSize: "0.8125rem" }}
         >
           下一阶段 →
         </button>

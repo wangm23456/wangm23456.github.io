@@ -9,9 +9,9 @@ interface Props {
 }
 
 function formatUtc(value?: string | number | Date | null): string {
-  if (!value) return '—';
+  if (!value) return '·';
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
+  if (Number.isNaN(date.getTime())) return '·';
   return new Intl.DateTimeFormat('en-GB', {
     timeZone: 'UTC',
     day: '2-digit',
@@ -113,14 +113,14 @@ function LaunchCard({
             </div>
             <div>
               <dt>PAD / SITE</dt>
-              <dd>{launch ? padName(launch) : '—'}</dd>
+              <dd>{launch ? padName(launch) : '·'}</dd>
             </div>
             <div>
               <dt>VEHICLE</dt>
-              <dd>{launch ? vehicleName(launch) : '—'}</dd>
+              <dd>{launch ? vehicleName(launch) : '·'}</dd>
             </div>
           </dl>
-          <div className="space-countdown" aria-live="polite">
+          <div className="space-countdown">
             <span>COUNTDOWN</span>
             <strong>{countdown}</strong>
             <small>{countdownLabel}</small>

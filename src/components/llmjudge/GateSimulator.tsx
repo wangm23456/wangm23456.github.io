@@ -131,7 +131,14 @@ function runGate(
   model: ModelProfile,
   enabledCriteria: Set<string>,
   K: number,
+  seed: number,
 ): { history: Verdict[]; finalPass: boolean; passAt: number | null } {
+  // Seeded PRNG: identical server/client first render, reseeded by user actions.
+  let rngState = (seed + 0x9e3779b9) >>> 0;
+  const nextRandom = () => {
+    rngState = (Math.imul(rngState, 1664525) + 1013904223) >>> 0;
+    return rngState / 2 ** 32;
+  };
   const history: Verdict[] = [];
   let passAt: number | null = null;
   for (let i = 0; i <= K; i++) {
@@ -142,7 +149,7 @@ function runGate(
     for (const c of CRITERIA) {
       if (!enabledCriteria.has(c.id)) continue;
       const p = Math.min(0.99, model.basePass[c.id] + boost);
-      if (Math.random() > p) {
+      if (nextRandom() > p) {
         pass = false;
         firstFail = firstFail || `${c.label} 未达`;
       }
@@ -173,7 +180,7 @@ export default function GateSimulator() {
   const [seed, setSeed] = useState(0);
 
   const model = MODELS.find((m) => m.name === modelId)!;
-  const result = runGate(model, enabled, K);
+  const result = runGate(model, enabled, K, seed);
 
   const toggle = (id: string) => {
     const next = new Set(enabled);
@@ -188,12 +195,12 @@ export default function GateSimulator() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
           gap: "0.8rem",
           marginBottom: "0.8rem",
         }}
       >
-        <label style={{ fontFamily: "var(--font-mono)", fontSize: "0.78rem" }}>
+        <label style={{ fontFamily: "var(--font-mono)", fontSize: "0.8125rem" }}>
           生成器模型
           <select
             value={modelId}
@@ -203,12 +210,14 @@ export default function GateSimulator() {
             }}
             style={{
               width: "100%",
+              minHeight: "44px",
               padding: "0.3rem",
               border: "2px solid var(--ink)",
               fontFamily: "var(--font-mono)",
-              fontSize: "0.78rem",
+              fontSize: "0.8125rem",
               marginTop: "0.2rem",
               background: "var(--card)",
+              color: "var(--ink)",
             }}
           >
             {MODELS.map((m) => (
@@ -218,10 +227,11 @@ export default function GateSimulator() {
             ))}
           </select>
         </label>
-        <label style={{ fontFamily: "var(--font-mono)", fontSize: "0.78rem" }}>
+        <label style={{ fontFamily: "var(--font-mono)", fontSize: "0.8125rem" }}>
           重试上限 K = <strong>{K}</strong>
           <input
             type="range"
+            aria-label="重试上限 K"
             min={0}
             max={12}
             step={1}
@@ -232,6 +242,7 @@ export default function GateSimulator() {
             }}
             style={{
               width: "100%",
+              minHeight: "44px",
               accentColor: "var(--ink)",
               marginTop: "0.2rem",
             }}
@@ -243,7 +254,7 @@ export default function GateSimulator() {
         <div
           style={{
             fontFamily: "var(--font-mono)",
-            fontSize: "0.74rem",
+            fontSize: "0.8125rem",
             fontWeight: 700,
             textTransform: "uppercase",
             marginBottom: "0.3rem",
@@ -269,16 +280,16 @@ export default function GateSimulator() {
                 title={c.detail}
                 style={{
                   padding: "0.25rem 0.55rem",
+                  minHeight: "44px",
                   fontFamily: "var(--font-mono)",
-                  fontSize: "0.72rem",
+                  fontSize: "0.8125rem",
                   background: on
                     ? c.severity === "must"
-                      ? "var(--brand)"
-                      : "var(--yellow)"
+                      ? "var(--color-accent)"
+                      : "var(--color-mint)"
                     : "var(--card)",
-                  color: on && c.severity === "must" ? "#fff" : "var(--ink)",
+                  color: on ? "var(--color-accent-ink)" : "var(--ink)",
                   border: "2px solid var(--ink)",
-                  cursor: "pointer",
                 }}
               >
                 {c.severity === "must" ? "must" : "☆"} {c.label}
@@ -295,7 +306,7 @@ export default function GateSimulator() {
           padding: "0.6rem 0.8rem",
           marginBottom: "0.7rem",
           fontFamily: "var(--font-mono)",
-          fontSize: "0.78rem",
+          fontSize: "0.8125rem",
         }}
       >
         <div style={{ fontWeight: 700, marginBottom: "0.3rem" }}>
@@ -304,7 +315,7 @@ export default function GateSimulator() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: `repeat(${K + 1}, 1fr)`,
+            gridTemplateColumns: "repeat(auto-fit, minmax(64px, 1fr))",
             gap: "0.2rem",
           }}
         >
@@ -314,11 +325,11 @@ export default function GateSimulator() {
               style={{
                 border: "2px solid var(--ink)",
                 background: v.pass
-                  ? "var(--yellow)"
+                  ? "var(--color-accent)"
                   : i === K
                     ? "#ef476f"
                     : "var(--card)",
-                color: v.pass ? "var(--ink)" : i === K ? "#fff" : "var(--ink)",
+                color: v.pass || i === K ? "var(--color-accent-ink)" : "var(--ink)",
                 padding: "0.3rem 0.4rem",
                 textAlign: "center",
               }}
@@ -326,28 +337,28 @@ export default function GateSimulator() {
               <div style={{ fontWeight: 900, fontSize: "0.9rem" }}>
                 {v.pass ? "✓" : "✗"} k={i}
               </div>
-              <div style={{ fontSize: "0.62rem", marginTop: "0.15rem" }}>
+              <div style={{ fontSize: "0.8125rem", marginTop: "0.15rem" }}>
                 {v.pass ? "上屏" : i === K ? "drop" : "重写"}
               </div>
             </div>
           ))}
         </div>
-        <div style={{ marginTop: "0.4rem", fontSize: "0.72rem" }}>
+        <div style={{ marginTop: "0.4rem", fontSize: "0.8125rem" }}>
           最终：
           {result.finalPass ? (
-            <span style={{ color: "var(--brand)", fontWeight: 900 }}>
+            <span style={{ color: "var(--color-accent-2)", fontWeight: 900 }}>
               ✓ 第 {result.passAt} 轮通过
             </span>
           ) : (
             <span
               style={{
-                color: "#fff",
+                color: "var(--color-accent-ink)",
                 background: "#ef476f",
                 padding: "0.05rem 0.4rem",
                 fontWeight: 900,
               }}
             >
-              ✗ drop — K 次仍未通过
+              ✗ drop：K 次仍未通过
             </span>
           )}
         </div>
@@ -356,21 +367,21 @@ export default function GateSimulator() {
       <div
         style={{
           border: "var(--border)",
-          background: "var(--ink)",
-          color: "var(--paper)",
+          background: "var(--color-lab-panel)",
+          color: "var(--color-lab-ink)",
           padding: "0.55rem 0.8rem",
           fontFamily: "var(--font-mono)",
-          fontSize: "0.78rem",
+          fontSize: "0.8125rem",
           lineHeight: 1.6,
         }}
       >
-        <strong style={{ color: "var(--yellow)" }}>Critic 在做什么？</strong>
+        <strong style={{ color: "var(--color-accent)" }}>Critic 在做什么？</strong>
         每轮 gate 失败时，把{" "}
         <code
           style={{
             background: "transparent",
             border: "none",
-            color: "var(--paper)",
+            color: "var(--color-lab-ink)",
           }}
         >
           judge.reason
@@ -383,8 +394,8 @@ export default function GateSimulator() {
       <p
         style={{
           fontFamily: "var(--font-mono)",
-          fontSize: "0.66rem",
-          opacity: 0.6,
+          fontSize: "0.8125rem",
+          color: "var(--muted)",
           margin: "0.5rem 0 0",
         }}
       >

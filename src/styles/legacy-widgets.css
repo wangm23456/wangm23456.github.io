@@ -1,0 +1,147 @@
+:root {
+  --ink: var(--color-ink);
+  --paper: var(--color-paper);
+  --paper-2: var(--color-paper-2);
+  --card: var(--color-card);
+  --muted: var(--color-muted);
+  --brand: #b8320b;
+  --blue: var(--color-accent-2);
+  --yellow: var(--color-accent);
+  --accent-yellow: var(--color-accent);
+  --border: 2px solid var(--color-edge);
+  --border-thin: var(--rule-hair) solid var(--color-rule);
+  --shadow: var(--shadow-card);
+  --shadow-sm: var(--shadow-card);
+  --font-mono: var(--font-outlier);
+  --font-serif: var(--font-body);
+  --line: var(--color-rule);
+  --space-orange: var(--color-accent-3);
+  --content-width: 65ch;
+  --wide-width: var(--container);
+}
+
+:root.dark {
+  --brand: #ff8057;
+}
+
+.term {
+  display: inline-block;
+  position: relative;
+  max-inline-size: 100%;
+  font-style: normal;
+}
+
+.term__trigger {
+  min-inline-size: 44px;
+  border: 0;
+  padding: 0;
+  /* Keep the 44px hit area without making every glossary term a tall prose line. */
+  margin-block: -0.5rem;
+  vertical-align: middle;
+  background: none;
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline dotted var(--brand) 2px;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+}
+
+.term__trigger:hover,
+.term__trigger:active,
+.term__trigger[aria-expanded="true"] {
+  text-decoration-style: solid;
+}
+
+.term__tip {
+  visibility: hidden;
+  position: absolute;
+  z-index: var(--z-dropdown);
+  inset-block-end: 100%;
+  inset-inline-start: var(--term-tip-offset, 50%);
+  translate: -50% 0;
+  display: grid;
+  gap: var(--space-2xs);
+  inline-size: min(17.5rem, calc(100vw - 2 * var(--space-xs)));
+  max-inline-size: calc(100vw - 2 * var(--space-xs));
+  padding: var(--space-xs) var(--space-sm);
+  border: var(--rule-hair) solid var(--color-edge);
+  border-radius: var(--radius-lab);
+  background: var(--color-card);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-card);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  text-align: start;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.term[data-tip-below] > .term__tip {
+  inset-block: 100% auto;
+}
+
+.term__tip--show,
+.term:not([data-tip-dismissed]):has(> .term__trigger:focus-visible) > .term__tip {
+  visibility: visible;
+}
+
+@media (hover: hover) {
+  .term:not([data-tip-dismissed]):hover > .term__tip { visibility: visible; }
+}
+
+.term__cn {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.legacy-drawer-trigger,
+.legacy-drawer {
+  font-size: var(--text-sm);
+}
+
+.legacy-drawer-trigger,
+.legacy-drawer button {
+  min-block-size: 2.75rem;
+}
+
+.legacy-drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  margin: 0;
+  inline-size: min(var(--drawer-width), 100%);
+  max-inline-size: none;
+  max-block-size: none;
+  padding: 0;
+  border: 0;
+  border-inline-start: var(--border);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.legacy-drawer[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.legacy-drawer::backdrop {
+  background: rgb(0 0 0 / 0.35);
+}
+
+.legacy-drawer :focus-visible {
+  outline-offset: -2px;
+}
+
+.legacy-drawer :is(button, a):hover {
+  text-decoration: underline;
+}
+
+.legacy-drawer :is(button, a):active,
+.legacy-drawer-trigger:active {
+  translate: 0 1px;
+}

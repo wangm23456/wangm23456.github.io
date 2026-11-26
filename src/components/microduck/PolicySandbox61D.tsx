@@ -157,7 +157,7 @@ export default function PolicySandbox61D() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       {/* Policy Selection Row */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-        <div style={{ fontSize: '0.78rem', fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--muted)' }}>
+        <div style={{ fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--muted)' }}>
           出厂与强化学习策略热插拔池 (点击即刻切换当前加载模型):
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
@@ -169,10 +169,11 @@ export default function PolicySandbox61D() {
                 type="button"
                 onClick={() => setSelectedPolicyId(p.id)}
                 style={{
-                  background: active ? 'var(--brand)' : 'var(--card)',
-                  color: active ? '#fff' : 'var(--ink)',
+                  background: active ? 'var(--color-accent)' : 'var(--card)',
+                  color: active ? 'var(--color-accent-ink)' : 'var(--ink)',
                   border: 'var(--border-thin)',
-                  fontSize: '0.72rem',
+                  fontSize: '0.8125rem',
+                  minHeight: '44px',
                   padding: '0.3rem 0.6rem',
                 }}
               >
@@ -190,19 +191,19 @@ export default function PolicySandbox61D() {
           background: 'var(--paper-2)',
           padding: '0.8rem',
           display: 'grid',
-          gridTemplateColumns: 'minmax(240px, 1.3fr) minmax(200px, 1fr)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
           gap: '0.8rem',
         }}
       >
-        <div>
+        <div style={{ minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
             <span style={{ fontSize: '1.05rem', fontWeight: 900 }}>{policy.cnName}</span>
             <span
               style={{
-                fontSize: '0.65rem',
+                fontSize: '0.8125rem',
                 fontFamily: 'var(--font-mono)',
-                background: policy.mode === 'rollers' ? 'var(--yellow)' : 'var(--blue)',
-                color: policy.mode === 'rollers' ? 'var(--ink)' : '#fff',
+                background: policy.mode === 'rollers' ? 'var(--color-accent)' : 'var(--color-mint)',
+                color: 'var(--color-accent-ink)',
                 padding: '0.1rem 0.4rem',
                 fontWeight: 800,
               }}
@@ -210,15 +211,15 @@ export default function PolicySandbox61D() {
               {policy.mode === 'rollers' ? 'ROLLER VARIANT' : 'BIPED LEG'}
             </span>
           </div>
-          <div style={{ fontSize: '0.75rem', lineHeight: '1.4', marginBottom: '0.4rem' }}>{policy.description}</div>
-          <div style={{ fontSize: '0.7rem', fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
+          <div style={{ fontSize: '0.8125rem', lineHeight: '1.4', marginBottom: '0.4rem' }}>{policy.description}</div>
+          <div style={{ fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', color: 'var(--muted)', overflowWrap: 'anywhere' }}>
             <b>ONNX 固件文件：</b><code>/opt/robot/daemon/current/policies/{policy.onnxFile}</code>
           </div>
         </div>
 
-        <div style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', display: 'flex', flexDirection: 'column', gap: '0.3rem', borderLeft: '1px dashed var(--ink)', paddingLeft: '0.8rem' }}>
+        <div style={{ fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', display: 'flex', flexDirection: 'column', gap: '0.3rem', borderLeft: '1px dashed var(--ink)', paddingLeft: '0.8rem', minWidth: 0, overflowWrap: 'anywhere' }}>
           <div><span style={{ color: 'var(--muted)' }}>任务注册 ID:</span> <b>{policy.name}</b></div>
-          <div><span style={{ color: 'var(--muted)' }}>手柄映射指令:</span> <b style={{ color: 'var(--brand)' }}>{policy.keybind}</b></div>
+          <div><span style={{ color: 'var(--muted)' }}>手柄映射指令:</span> <b style={{ color: 'var(--color-accent-2)' }}>{policy.keybind}</b></div>
           <div><span style={{ color: 'var(--muted)' }}>主要驱动关节:</span> <b>{policy.actionFocus}</b></div>
           <div><span style={{ color: 'var(--muted)' }}>输入/输出契约:</span> <b>obs [1, 61] -&gt; action [1, 14]</b></div>
         </div>
@@ -226,72 +227,76 @@ export default function PolicySandbox61D() {
 
       {/* Interactive Command Cockpit (Virtual Gamepad Input) */}
       <div style={{ border: 'var(--border-thin)', background: 'var(--card)', padding: '0.8rem' }}>
-        <div style={{ fontSize: '0.78rem', fontWeight: 800, fontFamily: 'var(--font-mono)', marginBottom: '0.6rem' }}>
+        <div style={{ fontSize: '0.8125rem', fontWeight: 800, fontFamily: 'var(--font-mono)', marginBottom: '0.6rem' }}>
           虚拟遥控摇杆 (修改 13 维指令插槽，观察 61 维观测向量的实时波动)
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.8rem' }}>
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', fontFamily: 'var(--font-mono)' }}>
               <span>前进/后退速度 twist.vx:</span>
               <b>{speedX.toFixed(2)} m/s</b>
             </div>
             <input
               type="range"
+              aria-label="前进/后退速度 twist.vx"
               min="-0.3"
               max="0.8"
               step="0.05"
               value={speedX}
               onChange={(e) => setSpeedX(Number(e.target.value))}
-              style={{ width: '100%', accentColor: 'var(--brand)', cursor: 'pointer' }}
+              style={{ width: '100%', accentColor: 'var(--brand)', minHeight: '44px' }}
             />
           </div>
 
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', fontFamily: 'var(--font-mono)' }}>
               <span>转向航向角速度 twist.yaw:</span>
               <b>{yawRate.toFixed(2)} rad/s</b>
             </div>
             <input
               type="range"
+              aria-label="转向航向角速度 twist.yaw"
               min="-1.5"
               max="1.5"
               step="0.1"
               value={yawRate}
               onChange={(e) => setYawRate(Number(e.target.value))}
-              style={{ width: '100%', accentColor: 'var(--yellow)', cursor: 'pointer' }}
+              style={{ width: '100%', accentColor: 'var(--color-accent-2)', minHeight: '44px' }}
             />
           </div>
 
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', fontFamily: 'var(--font-mono)' }}>
               <span>头部俯仰凝视 head.pitch:</span>
               <b>{headTilt.toFixed(2)} rad</b>
             </div>
             <input
               type="range"
+              aria-label="头部俯仰凝视 head.pitch"
               min="-0.5"
               max="0.5"
               step="0.05"
               value={headTilt}
               onChange={(e) => setHeadTilt(Number(e.target.value))}
-              style={{ width: '100%', accentColor: 'var(--blue)', cursor: 'pointer' }}
+              style={{ width: '100%', accentColor: 'var(--blue)', minHeight: '44px' }}
             />
           </div>
 
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', fontFamily: 'var(--font-mono)' }}>
               <span>姿态蹲伏比例 body.crouch:</span>
               <b>{crouchHeight.toFixed(2)}</b>
             </div>
             <input
               type="range"
+              aria-label="姿态蹲伏比例 body.crouch"
               min="0.0"
               max="0.9"
               step="0.05"
               value={crouchHeight}
               onChange={(e) => setCrouchHeight(Number(e.target.value))}
-              style={{ width: '100%', accentColor: 'var(--ink)', cursor: 'pointer' }}
+              style={{ width: '100%', accentColor: 'var(--ink)', minHeight: '44px' }}
             />
           </div>
         </div>
@@ -299,17 +304,17 @@ export default function PolicySandbox61D() {
 
       {/* 61D Vector Visual Heatmap Grid */}
       <div style={{ border: 'var(--border-thin)', background: '#141414', color: '#eee', padding: '0.8rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-          <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', fontWeight: 700, color: '#4ade80' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+          <span style={{ fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', fontWeight: 700, color: '#4ade80' }}>
             // 实时 61 维策略观测张量 (Observation Tensor [1, 61])
           </span>
-          <span style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', color: '#888' }}>
+          <span style={{ fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', color: '#a3a3a3' }}>
             50 Hz 周期更新 · 跨所有策略 100% 格式冻结
           </span>
         </div>
 
         {/* Categories breakdown */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', fontSize: '0.65rem', fontFamily: 'var(--font-mono)', marginBottom: '0.6rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', fontSize: '0.8125rem', fontFamily: 'var(--font-mono)', marginBottom: '0.6rem' }}>
           <span style={{ background: '#1e3a8a', padding: '0.1rem 0.3rem' }}>0..2 角速度陀螺 (3)</span>
           <span style={{ background: '#1e40af', padding: '0.1rem 0.3rem' }}>3..5 投影重力 (3)</span>
           <span style={{ background: '#065f46', padding: '0.1rem 0.3rem' }}>6..19 关节位置 qpos (14)</span>
@@ -323,7 +328,7 @@ export default function PolicySandbox61D() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(38px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(64px, 1fr))',
             gap: '3px',
             background: '#222',
             padding: '4px',
@@ -346,7 +351,7 @@ export default function PolicySandbox61D() {
                 style={{
                   background: cellBg,
                   padding: '2px 3px',
-                  fontSize: '0.62rem',
+                  fontSize: '0.8125rem',
                   fontFamily: 'var(--font-mono)',
                   textAlign: 'center',
                   borderRadius: '1px',
@@ -354,7 +359,7 @@ export default function PolicySandbox61D() {
                 }}
                 title={`obs[${idx}]: ${val}`}
               >
-                <div style={{ color: '#aaa', fontSize: '0.52rem' }}>#{idx}</div>
+                <div style={{ color: '#f4f4f5', fontSize: '0.8125rem' }}>#{idx}</div>
                 <div style={{ fontWeight: 700, color: '#fff' }}>{val}</div>
               </div>
             );
@@ -362,7 +367,7 @@ export default function PolicySandbox61D() {
         </div>
 
         {/* Hot Swap Technical Explanation */}
-        <div style={{ marginTop: '0.8rem', fontSize: '0.72rem', color: '#bbb', lineHeight: '1.45', borderTop: '1px solid #333', paddingTop: '0.6rem' }}>
+        <div style={{ marginTop: '0.8rem', fontSize: '1rem', color: '#e4e4e7', lineHeight: '1.45', borderTop: '1px solid #333', paddingTop: '0.6rem' }}>
           <b style={{ color: '#60a5fa' }}>为什么能够实现零重启热插拔（Zero-Restart Policy Hot-Swapping）？</b><br />
           在传统机器人架构中，每个技能往往定义不同的观测状态空间（例如走的时候需要速度，抓的时候需要手部坐标，翻滚的时候需要俯仰角），导致技能切换必须重启环境或重新分配张量内存。
           Microduck 的工程团队通过在 <code>microduck_rl</code> 中建立严格的 <b>61 维统一观测契约</b>：

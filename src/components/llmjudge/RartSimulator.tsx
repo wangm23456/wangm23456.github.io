@@ -26,12 +26,15 @@ const VANILLA = (iters: number, space: number): Curve => {
   let s = 0.62,
     r = 0.85,
     a = 0.45;
+  // Use the same bounded jitter on the server and on the first client render.
+  let seed = 0x52415254;
   for (let i = 0; i < iters; i++) {
     if (space > 0.4) {
+      seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
       // 改进空间够：Spec 抬升，Rec 略降，RA_neg 几乎不动
       s = Math.min(0.92, s + 0.06);
       r = Math.max(0.55, r - 0.04);
-      a = a + (Math.random() - 0.5) * 0.05;
+      a += (seed / 2 ** 32 - 0.5) * 0.05;
     } else {
       // 改进空间用尽：rubric 漂向「恰好不犯」，Spec/RA_neg 同步塌
       s = Math.max(0.5, s - 0.04);
@@ -92,17 +95,22 @@ function Chart({
           display: "flex",
           justifyContent: "space-between",
           fontFamily: "var(--font-mono)",
-          fontSize: "0.7rem",
+          fontSize: "0.8125rem",
           marginBottom: "0.15rem",
         }}
       >
         <span style={{ color, fontWeight: 700 }}>{label}</span>
-        <span style={{ opacity: 0.7 }}>末值 {last.toFixed(3)}</span>
+        <span style={{ color: "var(--muted)" }}>末值 {last.toFixed(3)}</span>
       </div>
       <svg
         width={W}
         height={H}
-        style={{ background: "var(--paper-2)", border: "2px solid var(--ink)" }}
+        style={{
+          maxWidth: "100%",
+          display: "block",
+          background: "var(--paper-2)",
+          border: "2px solid var(--ink)",
+        }}
       >
         <polyline
           fill="none"
@@ -141,51 +149,66 @@ export default function RartSimulator() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
           gap: "0.8rem",
           marginBottom: "0.9rem",
         }}
       >
-        <label style={{ fontFamily: "var(--font-mono)", fontSize: "0.78rem" }}>
+        <label
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.8125rem",
+            minWidth: 0,
+          }}
+        >
           迭代轮数 <strong>{itersN}</strong>
           <input
             type="range"
+            aria-label="迭代轮数"
             min={2}
             max={10}
             step={1}
             value={itersN}
             onChange={(e) => setItersN(Number(e.target.value))}
-            style={{ width: "100%", accentColor: "var(--ink)" }}
-          />
-        </label>
-        <label style={{ fontFamily: "var(--font-mono)", fontSize: "0.78rem" }}>
-          改进空间 <strong>{(space * 100).toFixed(0)}%</strong>
-          <input
-            type="range"
-            min={0}
-            max={1}
-            step={0.05}
-            value={space}
-            onChange={(e) => setSpace(Number(e.target.value))}
-            style={{ width: "100%", accentColor: "var(--ink)" }}
+            style={{ width: "100%", minHeight: "44px", accentColor: "var(--ink)" }}
           />
         </label>
         <label
           style={{
             fontFamily: "var(--font-mono)",
-            fontSize: "0.78rem",
+            fontSize: "0.8125rem",
+            minWidth: 0,
+          }}
+        >
+          改进空间 <strong>{(space * 100).toFixed(0)}%</strong>
+          <input
+            type="range"
+            aria-label="改进空间"
+            min={0}
+            max={1}
+            step={0.05}
+            value={space}
+            onChange={(e) => setSpace(Number(e.target.value))}
+            style={{ width: "100%", minHeight: "44px", accentColor: "var(--ink)" }}
+          />
+        </label>
+        <label
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.8125rem",
             gridColumn: "1 / -1",
           }}
         >
           初始理由一致率 <strong>{(agree * 100).toFixed(0)}%</strong>
           <input
             type="range"
+            aria-label="初始理由一致率"
             min={0}
             max={1}
             step={0.05}
             value={agree}
             onChange={(e) => setAgree(Number(e.target.value))}
-            style={{ width: "100%", accentColor: "var(--ink)" }}
+            style={{ width: "100%", minHeight: "44px", accentColor: "var(--ink)" }}
           />
         </label>
       </div>
@@ -193,12 +216,13 @@ export default function RartSimulator() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
           gap: "0.8rem",
         }}
       >
         <div
           style={{
+            minWidth: 0,
             border: "var(--border-thin)",
             background: "var(--card)",
             padding: "0.5rem 0.7rem",
@@ -207,7 +231,7 @@ export default function RartSimulator() {
           <div
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: "0.78rem",
+              fontSize: "0.8125rem",
               fontWeight: 700,
               color: "var(--muted)",
               marginBottom: "0.3rem",
@@ -215,12 +239,13 @@ export default function RartSimulator() {
           >
             VANILLA · 只看标签
           </div>
-          <Chart data={van.spec} label="Specificity" color="#d92d20" />
-          <Chart data={van.rec} label="Recall" color="#2f5fe0" />
-          <Chart data={van.ra} label="RA_neg" color="#888888" />
+          <Chart data={van.spec} label="Specificity" color="var(--brand)" />
+          <Chart data={van.rec} label="Recall" color="var(--blue)" />
+          <Chart data={van.ra} label="RA_neg" color="var(--muted)" />
         </div>
         <div
           style={{
+            minWidth: 0,
             border: "var(--border-thin)",
             background: "var(--card)",
             padding: "0.5rem 0.7rem",
@@ -230,17 +255,17 @@ export default function RartSimulator() {
           <div
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: "0.78rem",
+              fontSize: "0.8125rem",
               fontWeight: 700,
-              color: "var(--brand)",
+              color: "var(--color-accent-2)",
               marginBottom: "0.3rem",
             }}
           >
             RART · 标签 + 理由双路
           </div>
-          <Chart data={rart.spec} label="Specificity" color="#d92d20" />
-          <Chart data={rart.rec} label="Recall" color="#2f5fe0" />
-          <Chart data={rart.ra} label="RA_neg" color="#57cc99" />
+          <Chart data={rart.spec} label="Specificity" color="var(--brand)" />
+          <Chart data={rart.rec} label="Recall" color="var(--blue)" />
+          <Chart data={rart.ra} label="RA_neg" color="var(--color-success)" />
         </div>
       </div>
 
@@ -249,19 +274,20 @@ export default function RartSimulator() {
           marginTop: "0.8rem",
           padding: "0.55rem 0.8rem",
           border: "var(--border-thin)",
-          background: rartWins ? "var(--yellow)" : "var(--paper-2)",
+          background: rartWins ? "var(--color-accent)" : "var(--paper-2)",
+          color: rartWins ? "var(--color-accent-ink)" : "var(--ink)",
           fontFamily: "var(--font-mono)",
-          fontSize: "0.78rem",
+          fontSize: "0.8125rem",
         }}
       >
         {rartWins ? (
           <>
-            <strong>RART 占优</strong> — 加权分 s = 3·Spec + Rec + RA_neg
+            <strong>RART 占优</strong>：加权分 s = 3·Spec + Rec + RA_neg
             下，RART 在 Spec/RA_neg 两路同时塑形，理由一致性是分水岭。
           </>
         ) : (
           <>
-            <strong>差异缩小</strong> — 改进空间接近 0% 时两路持平；RART
+            <strong>差异缩小</strong>：改进空间接近 0% 时两路持平；RART
             不会让已饱和的 rubric 退化。
           </>
         )}
@@ -269,8 +295,8 @@ export default function RartSimulator() {
       <p
         style={{
           fontFamily: "var(--font-mono)",
-          fontSize: "0.66rem",
-          opacity: 0.6,
+          fontSize: "0.8125rem",
+          color: "var(--muted)",
           margin: "0.5rem 0 0",
         }}
       >

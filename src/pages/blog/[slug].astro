@@ -16,33 +16,79 @@ const fmt = (d: Date) =>
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
-  <article class="prose">
-    <h1>{post.data.title}</h1>
-    <div class="post-meta">
-      <time>{fmt(post.data.date)}</time>
-      <span>{post.data.author}</span>
-      {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+  <article class="article container">
+    <div class="reading-column">
+      <a class="btn btn-ghost back-link" href="/blog/">返回文章</a>
+      <header class="article-header">
+        <h1>{post.data.title}</h1>
+        <div class="post-meta">
+          <time datetime={fmt(post.data.date)}>{fmt(post.data.date)}</time>
+          <span>{post.data.author}</span>
+          {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+        </div>
+      </header>
+      <div class="prose"><Content /></div>
+      {post.data.research.length > 0 && <section class="related-research" aria-labelledby="related-research-title">
+        <h2 id="related-research-title">延伸阅读</h2>
+        <p>本篇文章使用的研究资料。</p>
+        <div class="related-research__list">
+          {post.data.research.map((id) => {
+            const item = researchById.get(id.replace(/\.md$/, '').toLowerCase());
+            return item && <a href={`/research/${item.id.replace(/\.md$/, '')}/`}><strong>{item.data.title}</strong><span>{item.data.description}</span></a>;
+          })}
+        </div>
+      </section>}
     </div>
-    <Content />
-    {post.data.research.length > 0 && <section class="related-research" aria-labelledby="related-research-title">
-      <h2 id="related-research-title">research</h2>
-      <p>延伸阅读：本篇文章使用的研究资料。</p>
-      <div class="related-research__list">
-        {post.data.research.map((id) => {
-          const item = researchById.get(id.replace(/\.md$/, '').toLowerCase());
-          return item && <a href={`/research/${item.id.replace(/\.md$/, '')}/`}><strong>{item.data.title}</strong><span>{item.data.description}</span></a>;
-        })}
-      </div>
-    </section>}
   </article>
 </BaseLayout>
 
 <style>
-  .related-research { margin-top: 3rem; padding-top: 1.25rem; border-top: var(--border); }
-  .related-research p { color: var(--muted); }
-  .related-research__list { display: grid; gap: 0.6rem; }
-  .related-research__list a { display: block; padding: 0.75rem 0.9rem; border: var(--border); color: var(--ink); text-decoration: none; background: var(--paper-2); }
-  .related-research__list a:hover { background: var(--yellow); }
+  /* Hallmark · shape: Workbench · genre: playful · theme: Hum (deal 2/3, seed zompopo-7e95·8fca6596·2026-11-24·r0) · redesign: full
+   * hero: Rows (read) · nav: chip rail · footer: mast + colophon · imagery: article content · signature: card-stock wells and hairline seams
+   * sections: article header + reading rows + related research · axes: light/rounded-sans/chromatic-yellow · posture: Rows-read · contrast: pass · fold: pass */
+  /* Hallmark · waivers: 26b no page-owned form controls · 39b embedded interactive research controls belong to shared MDX components · 44c and 79 reading page starts its article immediately, rather than filling the fold · 77 long-form reading uses prose rows, not promotional sections · F19 KaTeX and embedded components use their own weights · 73 waived: KaTeX typeset glyph kerning (third-party math DOM, subscripts tuck under radicals by design) — verified visually in both modes, no authored text covered */
+  .article { padding-block: var(--space-xl) var(--space-2xl); }
+  .reading-column { max-width: 68ch; margin-inline: auto; min-width: 0; }
+  .back-link { margin-bottom: var(--space-xl); }
+  .article-header { padding-bottom: var(--space-xl); margin-bottom: var(--space-xl); border-bottom: var(--rule-hair) solid var(--color-rule); }
+  .article-header h1 { max-width: none; font-size: var(--text-display-s); line-height: 1.15; text-wrap: balance; }
+  .post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs) var(--space-sm); margin-top: var(--space-lg); color: var(--color-ink-2); font-size: var(--text-sm); }
+  .post-meta time { font-family: var(--font-mono, var(--font-outlier)); font-variant-numeric: tabular-nums; }
+  .tag { padding: var(--space-3xs) var(--space-sm); border: var(--rule-hair) solid var(--color-edge); border-radius: var(--radius-pill); background: var(--color-paper-2); }
+  .prose { font-size: var(--text-md); line-height: 1.75; overflow-wrap: anywhere; }
+  .prose :global(h2), .prose :global(h3), .prose :global(h4) { max-width: none; margin: var(--space-2xl) 0 var(--space-md); font-family: var(--font-display); line-height: 1.25; text-wrap: balance; }
+  .prose :global(h2) { font-size: var(--text-title); }
+  .prose :global(h3) { font-size: var(--text-lg); }
+  .prose :global(h4) { font-size: var(--text-md); }
+  .prose :global(p), .prose :global(ul), .prose :global(ol) { margin: 0 0 var(--space-lg); text-wrap: pretty; }
+  .prose :global(li + li) { margin-top: var(--space-xs); }
+  .prose :global(a) { color: var(--color-accent-2); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+  .prose :global(blockquote) { margin: var(--space-xl) 0; padding: var(--space-lg); background: var(--color-paper-2); border: var(--rule-hair) solid var(--color-edge); border-radius: var(--radius-stock); color: var(--color-ink); }
+  .prose :global(blockquote > :last-child) { margin-bottom: 0; }
+  .prose :global(code) { font-family: var(--font-mono, var(--font-outlier)); font-size: max(0.8125rem, 0.9em); }
+  .prose :global(:not(pre) > code) { padding: 0.1em 0.35em; border-radius: var(--radius-input); background: var(--color-sugar); color: var(--color-ink); }
+  .prose :global(pre) { max-width: 100%; overflow-x: auto; margin: var(--space-xl) 0; padding: var(--space-lg); border: var(--rule-hair) solid var(--color-edge); border-radius: var(--radius-stock); background: var(--color-paper-2) !important; color: var(--color-ink) !important; line-height: 1.6; }
+  .prose :global(pre code), .prose :global(pre code span) { color: var(--color-ink) !important; background: transparent !important; }
+  .prose :global(img), .prose :global(figure), .prose :global(table) { max-width: 100%; border: var(--rule-hair) solid var(--color-edge); border-radius: var(--radius-stock); }
+  .prose :global(figure) { margin: var(--space-xl) 0; padding: var(--space-sm); background: var(--color-card); }
+  .prose :global(figure img) { border: 0; }
+  .prose :global(figcaption) { padding: var(--space-sm); color: var(--color-ink-2); font-size: var(--text-sm); }
+  .prose :global(table) { display: block; width: max-content; overflow-x: auto; border-spacing: 0; background: var(--color-card); }
+  .prose :global(th), .prose :global(td) { padding: var(--space-sm); text-align: left; border-bottom: var(--rule-hair) solid var(--color-rule); }
+  .prose :global(th) { background: var(--color-paper-2); }
+  .prose :global(hr) { border: 0; border-top: var(--rule-hair) solid var(--color-rule); margin: var(--space-2xl) 0; }
+  .prose :global(.katex-display) { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding-block: var(--space-sm); text-align: center; }
+  .related-research { margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: var(--rule-hair) solid var(--color-rule); }
+  .related-research h2 { font-size: var(--text-title); text-wrap: balance; }
+  .related-research p { margin-top: var(--space-sm); color: var(--color-ink-2); text-wrap: pretty; }
+  .related-research__list { display: grid; gap: var(--space-sm); margin-top: var(--space-lg); }
+  .related-research__list a { display: block; padding: var(--space-lg); border: var(--rule-hair) solid var(--color-edge); border-radius: var(--radius-stock); color: var(--color-ink); text-decoration: none; background: var(--color-card); transition: transform var(--dur-micro) var(--ease-spring); }
+  .related-research__list a:hover { transform: translateY(-2px); }
+  .related-research__list a:active { transform: translateY(2px); }
   .related-research__list strong, .related-research__list span { display: block; }
-  .related-research__list span { margin-top: 0.25rem; color: var(--muted); font-size: 0.9rem; }
+  .related-research__list span { margin-top: var(--space-xs); color: var(--color-ink-2); font-size: var(--text-sm); }
+  .article :is(a, button):focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    .article *, .article *::before, .article *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  }
 </style>
