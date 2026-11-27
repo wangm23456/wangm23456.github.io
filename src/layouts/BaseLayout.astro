@@ -9,9 +9,11 @@ import Logo from '../components/Logo.astro';
 interface Props {
   title: string;
   description?: string;
+  /** lab: solid header that merges with the homepage character bay */
+  tone?: 'lab';
 }
 
-const { title, description } = Astro.props;
+const { title, description, tone } = Astro.props;
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const nav = [
   { text: '首页', href: '/' },
@@ -46,7 +48,7 @@ const nav = [
   </head>
   <body>
     <a class="skip-link" href="#main-content">跳到主要内容</a>
-    <header class="site-head">
+    <header class="site-head" class:list={{ 'is-lab': tone === 'lab' }}>
       <div class="head-inner container">
         <a class="brand" href="/" aria-label="Arcana 首页">
           <Logo size={28} />
@@ -138,8 +140,12 @@ const nav = [
       {
         const toggle = document.getElementById('dark-toggle');
         const root = document.documentElement;
+        const head = document.querySelector('.site-head');
         const reflect = () => toggle.setAttribute('aria-pressed', String(root.classList.contains('dark')));
+        const syncHeadHeight = () => root.style.setProperty('--head-h', `${head.offsetHeight}px`);
         reflect();
+        syncHeadHeight();
+        new ResizeObserver(syncHeadHeight).observe(head);
         toggle.hidden = false;
         toggle.addEventListener('click', () => {
           const dark = root.classList.toggle('dark');
@@ -152,7 +158,13 @@ const nav = [
 </html>
 
 <style>
-  .site-head { position: sticky; top: 0; z-index: var(--z-sticky-nav); background: color-mix(in srgb, var(--color-paper) 88%, transparent); backdrop-filter: blur(10px); border-bottom: var(--rule-hair) solid var(--color-rule); }
+  .site-head { position: sticky; top: 0; z-index: var(--z-sticky-nav); background: color-mix(in srgb, var(--color-paper) 88%, transparent); backdrop-filter: blur(10px); border-bottom: var(--rule-hair) solid var(--color-rule); transition: background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
+  .site-head.is-lab { background: var(--color-lab-panel); backdrop-filter: none; border-bottom-color: transparent; color: var(--color-lab-ink); }
+  .site-head.is-lab .brand { color: var(--color-lab-ink); }
+  .site-head.is-lab .site-nav a { color: var(--color-lab-ink-2); }
+  .site-head.is-lab .site-nav a:hover { background: var(--color-lab-panel-2); color: var(--color-lab-ink); }
+  .site-head.is-lab .site-nav a[aria-current='page'] { background: var(--color-lab-ink); color: var(--color-lab-panel); }
+  .site-head.is-lab .dark-toggle { border-color: var(--color-lab-line); background: var(--color-lab-panel-2); color: var(--color-lab-ink); box-shadow: none; }
   .head-inner { display: flex; align-items: center; gap: var(--space-md); min-height: 64px; }
   .brand { display: inline-flex; align-items: center; gap: var(--space-xs); color: var(--color-ink); text-decoration: none; }
   .wordmark { font-weight: 600; font-size: var(--text-lg); letter-spacing: 0.02em; }
